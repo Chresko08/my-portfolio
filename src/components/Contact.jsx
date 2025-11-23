@@ -32,15 +32,15 @@ const Contact = () => {
                         Say Hello
                     </a>
 
-                    <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'center', gap: '30px' }}>
+                    <div className="contact-links">
                         <a href="mailto:shubhamsrivastava08@gmail.com" style={{ color: 'var(--text-secondary)', fontSize: '1rem', borderBottom: '1px solid transparent', transition: 'all 0.3s' }}>
                             shubhamsrivastava08@gmail.com
                         </a>
-                        <span style={{ color: 'var(--text-secondary)' }}>|</span>
+                        <span className="contact-separator" style={{ color: 'var(--text-secondary)' }}>|</span>
                         <a href="https://www.linkedin.com/in/chresko" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', fontSize: '1rem', borderBottom: '1px solid transparent', transition: 'all 0.3s' }}>
                             LinkedIn
                         </a>
-                        <span style={{ color: 'var(--text-secondary)' }}>|</span>
+                        <span className="contact-separator" style={{ color: 'var(--text-secondary)' }}>|</span>
                         <span style={{ color: 'var(--text-secondary)' }}>+91 8887717686</span>
                     </div>
                 </motion.div>

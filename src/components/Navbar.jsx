@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Logo from './Logo';
 
 const Navbar = () => {
+    const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
@@ -22,29 +23,36 @@ const Navbar = () => {
         zIndex: 1000,
         padding: '20px 0',
         transition: 'all 0.3s ease',
-        background: scrolled ? 'rgba(10, 10, 10, 0.8)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(10px)' : 'none',
+        background: scrolled || isOpen ? 'rgba(10, 10, 10, 0.95)' : 'transparent',
+        backdropFilter: scrolled || isOpen ? 'blur(10px)' : 'none',
         borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
-    };
-
-    const linkStyles = {
-        marginLeft: '30px',
-        fontWeight: 500,
-        position: 'relative',
-        cursor: 'pointer',
     };
 
     return (
         <nav style={navStyles}>
-            <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Logo />
+            <div className="container navbar-container">
+                <div className="logo-container">
+                    <Logo />
+                </div>
 
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>
+                    <span style={{ transform: isOpen ? 'rotate(45deg) translate(5px, 6px)' : 'none' }}></span>
+                    <span style={{ opacity: isOpen ? 0 : 1 }}></span>
+                    <span style={{ transform: isOpen ? 'rotate(-45deg) translate(5px, -6px)' : 'none' }}></span>
+                </div>
+
+                <div className={`nav-links ${isOpen ? 'open' : ''}`}>
                     {['About', 'Experience', 'Projects', 'Contact'].map((item, index) => (
                         <motion.a
                             key={item}
                             href={`#${item.toLowerCase()}`}
-                            style={linkStyles}
+                            onClick={() => setIsOpen(false)}
+                            style={{
+                                marginLeft: '30px',
+                                fontWeight: 500,
+                                position: 'relative',
+                                cursor: 'pointer',
+                            }}
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}

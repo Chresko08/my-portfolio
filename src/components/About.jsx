@@ -15,8 +15,8 @@ const About = () => {
                         About <span className="gradient-text">Me</span>
                     </h2>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '50px', alignItems: 'center' }}>
-                        <div style={{
+                    <div className="about-grid">
+                        <div className="about-image-container" style={{
                             height: '400px',
                             borderRadius: '20px',
                             overflow: 'hidden',
@@ -29,7 +29,7 @@ const About = () => {
                             justifyContent: 'center'
                         }}>
                             <img
-                                src="/profile.jpg"
+                                src={`${import.meta.env.BASE_URL}profile.jpg`}
                                 alt="Shubham Srivastava"
                                 style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: '10px' }}
                             />
