@@ -18,6 +18,7 @@ jobs:
       - name: Install and Build
         run: |
           npm install
+          export VITE_LAST_UPDATED=$(date +'%B %d, %Y')
           npm run build
 
       - name: Deploy

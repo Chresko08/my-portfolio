@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { FiSun, FiMoon } from 'react-icons/fi';
 
 import Logo from './Logo';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -15,6 +17,15 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme(theme === 'dark' ? 'light' : 'dark');
+    };
+
     const navStyles = {
         position: 'fixed',
         top: 0,
@@ -23,7 +34,7 @@ const Navbar = () => {
         zIndex: 1000,
         padding: '20px 0',
         transition: 'all 0.3s ease',
-        background: scrolled || isOpen ? 'rgba(10, 10, 10, 0.95)' : 'transparent',
+        background: scrolled || isOpen ? 'var(--nav-bg)' : 'transparent',
         backdropFilter: scrolled || isOpen ? 'blur(10px)' : 'none',
         borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
     };
@@ -61,6 +72,25 @@ const Navbar = () => {
                             {item}
                         </motion.a>
                     ))}
+
+                    <button
+                        onClick={toggleTheme}
+                        style={{
+                            marginLeft: '30px',
+                            background: 'transparent',
+                            color: 'var(--text-primary)',
+                            fontSize: '1.2rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '8px',
+                            borderRadius: '50%',
+                            border: '1px solid var(--surface-color)'
+                        }}
+                    >
+                        {theme === 'dark' ? <FiSun /> : <FiMoon />}
+                    </button>
+
                     <motion.a
                         href="https://drive.google.com/file/d/13T3uAmP2iG6Pq2qosDZdNuk17G41v7cf/view?usp=share_link"
                         target="_blank"

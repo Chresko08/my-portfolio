@@ -25,6 +25,11 @@ function App() {
                     <p style={{ fontSize: '0.8rem', opacity: 0.6 }}>
                         ✨ Designed & Developed by AI Using Google Antigravity (Google DeepMind)
                     </p>
+                    {import.meta.env.VITE_LAST_UPDATED && (
+                        <p style={{ fontSize: '0.75rem', opacity: 0.4, marginTop: '5px' }}>
+                            Last Updated: {import.meta.env.VITE_LAST_UPDATED}
+                        </p>
+                    )}
                 </div>
             </footer>
         </div>
