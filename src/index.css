@@ -148,8 +148,9 @@ button {
     text-align: center;
     gap: 20px;
     padding: 20px 0;
-    background: rgba(10, 10, 10, 0.95);
+    background: var(--nav-bg);
     backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .nav-links.open {
@@ -179,7 +180,7 @@ button {
   .contact-separator {
     display: none;
   }
-  
+
   h2 {
     font-size: 2rem !important;
   }

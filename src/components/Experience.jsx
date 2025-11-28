@@ -20,6 +20,17 @@ const Experience = () => {
     ];
 
 
+    const internships = [
+        {
+            id: 1,
+            role: 'System Engineer Intern',
+            company: 'Infosys',
+            date: 'Feb 2021 - May 2021',
+            description: 'Completed comprehensive training on the LAMP stack, achieving 81.6% in the final assessment. Collaborated in a team of four to build a "Learner-Teacher Portal" that facilitated session scheduling, allowing learners to book slots and instructors to manage their availability and course offerings.',
+            certificate: 'https://drive.google.com/file/d/1TjlwMY3z7vPEvEU8M129hOcabnEyzdBK/view?usp=drive_link'
+        }
+    ];
+
     return (
         <section id="experience" className="section">
             <div className="container">
@@ -28,9 +39,9 @@ const Experience = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                     viewport={{ once: true }}
-                    style={{ fontSize: '2.5rem', marginBottom: '60px', textAlign: 'center' }}
+                    style={{ fontSize: '2.5rem', marginBottom: '50px', textAlign: 'center' }}
                 >
-                    My <span className="gradient-text">Experience</span>
+                    Work <span className="gradient-text">Experience</span>
                 </motion.h2>
 
                 <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -39,22 +50,92 @@ const Experience = () => {
                             key={exp.id}
                             initial={{ opacity: 0, x: -20 }}
                             whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            transition={{ duration: 0.5, delay: index * 0.2 }}
                             viewport={{ once: true }}
                             style={{
-                                marginBottom: '40px',
-                                padding: '30px',
-                                background: 'var(--surface-color)',
-                                borderRadius: '15px',
-                                borderLeft: '4px solid var(--primary-color)'
+                                marginBottom: '50px',
+                                paddingLeft: '20px',
+                                borderLeft: '2px solid var(--primary-color)',
+                                position: 'relative'
                             }}
                         >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', flexWrap: 'wrap' }}>
-                                <h3 style={{ fontSize: '1.5rem' }}>{exp.role}</h3>
+                            <div style={{
+                                position: 'absolute',
+                                left: '-9px',
+                                top: '0',
+                                width: '16px',
+                                height: '16px',
+                                borderRadius: '50%',
+                                background: 'var(--primary-color)'
+                            }}></div>
+
+                            <div style={{ marginBottom: '10px' }}>
+                                <h3 style={{ fontSize: '1.5rem', marginBottom: '5px' }}>{exp.role}</h3>
                                 <span style={{ color: 'var(--primary-color)', fontWeight: 500 }}>{exp.date}</span>
                             </div>
                             <h4 style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>{exp.company}</h4>
-                            <p style={{ color: '#ccc', lineHeight: '1.6' }}>{exp.description}</p>
+                            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>{exp.description}</p>
+                        </motion.div>
+                    ))}
+                </div>
+
+                <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    viewport={{ once: true }}
+                    style={{ fontSize: '2.5rem', margin: '80px 0 50px', textAlign: 'center' }}
+                >
+                    <span className="gradient-text">Internships</span>
+                </motion.h2>
+
+                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                    {internships.map((intern, index) => (
+                        <motion.div
+                            key={intern.id}
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5, delay: index * 0.2 }}
+                            viewport={{ once: true }}
+                            style={{
+                                marginBottom: '50px',
+                                paddingLeft: '20px',
+                                borderLeft: '2px solid var(--primary-color)',
+                                position: 'relative'
+                            }}
+                        >
+                            <div style={{
+                                position: 'absolute',
+                                left: '-9px',
+                                top: '0',
+                                width: '16px',
+                                height: '16px',
+                                borderRadius: '50%',
+                                background: 'var(--primary-color)'
+                            }}></div>
+
+                            <div style={{ marginBottom: '10px' }}>
+                                <h3 style={{ fontSize: '1.5rem', marginBottom: '5px' }}>{intern.role}</h3>
+                                <span style={{ color: 'var(--primary-color)', fontWeight: 500 }}>{intern.date}</span>
+                            </div>
+                            <h4 style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>{intern.company}</h4>
+                            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '15px' }}>{intern.description}</p>
+
+                            <a
+                                href={intern.certificate}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    color: 'var(--primary-color)',
+                                    fontWeight: 500,
+                                    fontSize: '0.9rem'
+                                }}
+                            >
+                                View Certificate <span>→</span>
+                            </a>
                         </motion.div>
                     ))}
                 </div>

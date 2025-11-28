@@ -47,9 +47,9 @@ const Logo = () => {
                 />
 
                 {/* Data Nodes */}
-                <motion.circle cx="20" cy="10" r="2" fill="#fff" animate={{ scale: [1, 1.5, 1] }} transition={{ duration: 2, repeat: Infinity }} />
-                <motion.circle cx="35" cy="17.5" r="2" fill="#fff" animate={{ scale: [1, 1.5, 1] }} transition={{ duration: 2, delay: 0.5, repeat: Infinity }} />
-                <motion.circle cx="5" cy="17.5" r="2" fill="#fff" animate={{ scale: [1, 1.5, 1] }} transition={{ duration: 2, delay: 1, repeat: Infinity }} />
+                <motion.circle cx="20" cy="10" r="2" fill="var(--text-primary)" animate={{ scale: [1, 1.5, 1] }} transition={{ duration: 2, repeat: Infinity }} />
+                <motion.circle cx="35" cy="17.5" r="2" fill="var(--text-primary)" animate={{ scale: [1, 1.5, 1] }} transition={{ duration: 2, delay: 0.5, repeat: Infinity }} />
+                <motion.circle cx="5" cy="17.5" r="2" fill="var(--text-primary)" animate={{ scale: [1, 1.5, 1] }} transition={{ duration: 2, delay: 1, repeat: Infinity }} />
             </motion.svg>
         </div>
     );

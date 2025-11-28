@@ -85,7 +85,8 @@ const Navbar = () => {
                             justifyContent: 'center',
                             padding: '8px',
                             borderRadius: '50%',
-                            border: '1px solid var(--surface-color)'
+                            border: '1px solid var(--text-secondary)',
+                            cursor: 'pointer'
                         }}
                     >
                         {theme === 'dark' ? <FiSun /> : <FiMoon />}
@@ -100,7 +101,7 @@ const Navbar = () => {
                             padding: '8px 20px',
                             border: '1px solid var(--primary-color)',
                             borderRadius: '20px',
-                            color: 'var(--primary-color)',
+                            color: 'var(--text-primary)',
                             background: 'transparent',
                             fontSize: '0.9rem',
                             fontWeight: 600,

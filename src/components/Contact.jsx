@@ -40,6 +40,14 @@ const Contact = () => {
                         <a href="https://www.linkedin.com/in/chresko" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', fontSize: '1rem', borderBottom: '1px solid transparent', transition: 'all 0.3s' }}>
                             LinkedIn
                         </a>
+                        <span className="contact-separator" style={{ color: 'var(--text-secondary)' }}>|</span>
+                        <a href="https://github.com/Chresko08" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', fontSize: '1rem', borderBottom: '1px solid transparent', transition: 'all 0.3s' }}>
+                            GitHub
+                        </a>
+                        <span className="contact-separator" style={{ color: 'var(--text-secondary)' }}>|</span>
+                        <a href="https://leetcode.com/u/shubham_chresko/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', fontSize: '1rem', borderBottom: '1px solid transparent', transition: 'all 0.3s' }}>
+                            LeetCode
+                        </a>
                     </div>
                 </motion.div>
             </div>
