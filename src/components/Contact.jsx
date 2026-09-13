@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMail, FiLinkedin, FiGithub, FiCopy, FiCheck, FiArrowUpRight } from 'react-icons/fi';
-import { SiLeetcode } from 'react-icons/si';
+import { FiMail, FiCopy, FiCheck } from 'react-icons/fi';
 
 const Contact = () => {
     const [copied, setCopied] = useState(false);
@@ -13,29 +12,7 @@ const Contact = () => {
         setTimeout(() => setCopied(false), 2500);
     };
 
-    const contactChannels = [
-        {
-            title: 'LinkedIn',
-            handle: 'linkedin.com/in/chresko',
-            link: 'https://www.linkedin.com/in/chresko',
-            icon: <FiLinkedin size={24} style={{ color: '#0077b5' }} />,
-            actionLabel: 'Connect'
-        },
-        {
-            title: 'GitHub',
-            handle: 'github.com/Chresko08',
-            link: 'https://github.com/Chresko08',
-            icon: <FiGithub size={24} style={{ color: 'var(--text-primary)' }} />,
-            actionLabel: 'View Repos'
-        },
-        {
-            title: 'LeetCode',
-            handle: 'leetcode.com/u/shubham_chresko',
-            link: 'https://leetcode.com/u/shubham_chresko/',
-            icon: <SiLeetcode size={24} style={{ color: '#f59e0b' }} />,
-            actionLabel: 'View Profile'
-        }
-    ];
+
 
     return (
         <section id="contact" className="section" style={{ paddingBottom: '120px' }}>
@@ -180,64 +157,7 @@ const Contact = () => {
                     </form>
                 </motion.div>
 
-                {/* Social Channels 4-Card Grid */}
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                    gap: '18px'
-                }}>
-                    {contactChannels.map((channel, index) => (
-                        <motion.a
-                            key={channel.title}
-                            href={channel.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: index * 0.08 }}
-                            viewport={{ once: true }}
-                            whileHover={{ y: -5, borderColor: 'var(--primary-color)' }}
-                            className="glass-card"
-                            style={{
-                                padding: '22px',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                textDecoration: 'none',
-                                color: 'inherit'
-                            }}
-                        >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                                <div style={{
-                                    width: '44px',
-                                    height: '44px',
-                                    borderRadius: '12px',
-                                    background: 'var(--surface-color)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    border: '1px solid var(--card-border)'
-                                }}>
-                                    {channel.icon}
-                                </div>
-                                <FiArrowUpRight size={18} style={{ color: 'var(--text-muted)' }} />
-                            </div>
-
-                            <div style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '4px' }}>
-                                {channel.title}
-                            </div>
-                            <div style={{
-                                fontSize: '0.82rem',
-                                color: 'var(--text-secondary)',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap'
-                            }}>
-                                {channel.handle}
-                            </div>
-                        </motion.a>
-                    ))}
                 </div>
-            </div>
         </section>
     );
 };

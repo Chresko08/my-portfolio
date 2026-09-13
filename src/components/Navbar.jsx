@@ -14,7 +14,7 @@ const Navbar = () => {
             setScrolled(window.scrollY > 40);
 
             // Scroll-spy to detect active section
-            const sections = ['hero', 'about', 'experience', 'certificates', 'contact'];
+            const sections = ['hero', 'experience', 'certificates', 'contact'];
             const scrollPosition = window.scrollY + 200;
 
             for (const section of sections) {
@@ -45,7 +45,6 @@ const Navbar = () => {
     };
 
     const navItems = [
-        { label: 'About', href: '#about', id: 'about' },
         { label: 'Experience', href: '#experience', id: 'experience' },
         { label: 'Certificates', href: '#certificates', id: 'certificates' },
         { label: 'Contact', href: '#contact', id: 'contact' },
@@ -80,7 +79,7 @@ const Navbar = () => {
                         S
                     </div>
                     <span style={{ fontWeight: 700, fontSize: '1.25rem', letterSpacing: '-0.5px' }}>
-                        S.S<span style={{ color: 'var(--primary-color)' }}>.</span>
+                        Shubham<span style={{ color: 'var(--primary-color)' }}>.</span>
                     </span>
                 </a>
 
