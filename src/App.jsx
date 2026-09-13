@@ -6,6 +6,7 @@ import Experience from './components/Experience';
 import Projects from './components/Projects';
 import Certificates from './components/Certificates';
 import Contact from './components/Contact';
+import BackToTop from './components/BackToTop';
 
 function App() {
     return (
@@ -19,14 +20,22 @@ function App() {
                 <Certificates />
                 <Contact />
             </main>
+            <BackToTop />
             <footer>
-                <div className="container" style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                    <p style={{ marginBottom: '10px' }}>&copy; {new Date().getFullYear()} Shubham Srivastava. All rights reserved.</p>
-                    <p style={{ fontSize: '0.8rem', opacity: 0.6 }}>
+                <div className="container" style={{
+                    textAlign: 'center',
+                    padding: '50px 20px 40px',
+                    color: 'var(--text-secondary)',
+                    borderTop: '1px solid var(--card-border)'
+                }}>
+                    <p style={{ marginBottom: '8px', fontSize: '0.95rem' }}>
+                        &copy; {new Date().getFullYear()} <strong style={{ color: 'var(--text-primary)' }}>Shubham Srivastava</strong>. All rights reserved.
+                    </p>
+                    <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
                         ✨ Designed & Developed by AI Using Google Antigravity (Google DeepMind)
                     </p>
                     {import.meta.env.VITE_LAST_UPDATED && (
-                        <p style={{ fontSize: '0.75rem', opacity: 0.4, marginTop: '5px' }}>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '6px', opacity: 0.8 }}>
                             Last Updated: {import.meta.env.VITE_LAST_UPDATED}
                         </p>
                     )}
