@@ -8,17 +8,19 @@ const Experience = () => {
     const experiences = [
         {
             id: 1,
-            role: 'Business Analyst',
+            role: 'Consultant - Data Engineer',
             company: 'EY',
             client: 'Client: American Express',
             date: 'Nov 2024 – Present',
             status: 'Current Role',
-            metrics: ['+20% Data Quality', '500+ SQL Rules', 'ODL Architecture'],
-            description: 'Spearheading the data quality modernization program for a major global card issuer. Designed over 500 complex validation rules and architected a new Operational Data Layer (ODL).',
+            metrics: ['+20% Data Reliability', '500+ Automated Rules', 'GCP BigQuery & Composer'],
+            description: 'Architecting and orchestrating highly scalable data pipelines using GCP BigQuery to integrate disparate external architectures, ensuring strict data localization and regulatory compliance.',
             highlights: [
-                'Architected the new Operational Data Layer (ODL) supporting targeted marketing campaigns and high-volume customer redemptions.',
-                'Developed 500+ automated SQL/BigQuery rules reducing rule failure rates and increasing downstream campaign precision.',
-                'Collaborated with global business teams and engineering leads to align data models with enterprise compliance standards.'
+                'Designed and deployed an end-to-end Operational Data Layer (ODL) establishing a new Source of Record (SOR). Automated ETL/ELT pipelines using GCP Cloud Composer (Apache Airflow).',
+                'Engineered a robust Data Quality (DQ) framework across a massive-scale platform, implementing 500+ automated validation rules. Eliminated zero-coverage gaps, reducing pipeline failures by 60% and improving reliability by 20%.',
+                'Migrated demographic data from multiple legacy systems into a modernized Single Source of Truth (SSOT), reverse-engineering complex business logic via Unix and SQL.',
+                'Mentored a team of 3 data professionals, driving engineering best practices, conducting code reviews, and resolving pipeline bottlenecks.',
+                'Delivered critical infrastructure for the "Early Evidence Campaign," empowering product teams with high-value customer targeting insights through complex behavioral data.'
             ]
         },
         {
@@ -31,9 +33,11 @@ const Experience = () => {
             metrics: ['60% Automation Speedup', '25% Cost Reduction', 'Teradata → Hadoop'],
             description: 'Engineered scalable big data solutions for premier investment banking and healthcare clients, automating critical data pipelines and leading large-scale cloud migrations.',
             highlights: [
-                'Optimized high-volume ETL pipelines by 60% through custom automation and workload orchestration.',
-                'Led cloud transformation initiatives migrating PySpark and Scala pipelines to Microsoft Azure, reducing operational costs by 25%.',
-                'Spearheaded the migration of legacy Teradata data marts to modern distributed Hadoop/Hive clusters, handling terabyte-scale datasets without downtime.'
+                'Developed an end-to-end workflow for quarterly regulatory reporting for loan syndication analysis, automating jobs using workload automation tools to increase efficiency by 60%.',
+                'Led the migration of PySpark and Spark Scala scripts to Azure cloud servers, reducing infrastructure costs by 25% and enhancing scalability.',
+                'Led the migration of data dependencies from Teradata to Hive, significantly reducing operational costs for managing large volumes of data by leveraging Hive\'s cost-effective architecture.',
+                'Created Unix scripts for data quality checks with automated email notifications, and led the migration of checks to a separate web portal application for real-time monitoring.',
+                'Used Bitbucket/Git and collaborated with CI/CD teams to ensure smooth deployment of code to production, reducing deployment time by 30%.'
             ]
         }
     ];
@@ -86,7 +90,7 @@ const Experience = () => {
                 </div>
 
                 {/* Timeline Container */}
-                <div style={{ maxWidth: '860px', margin: '0 auto', position: 'relative' }}>
+                <div style={{ maxWidth: '960px', margin: '0 auto', position: 'relative' }}>
                     {/* Glowing vertical line */}
                     <div style={{
                         position: 'absolute',

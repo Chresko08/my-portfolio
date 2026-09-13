@@ -4,7 +4,7 @@ import { FiArrowDown, FiMail, FiGithub, FiLinkedin } from 'react-icons/fi';
 import { SiLeetcode } from 'react-icons/si';
 
 const Hero = () => {
-    const techHighlights = ['Big Data Analytics', 'Cloud Architecture (AWS/Azure/GCP)', 'ETL Pipelines', 'Data Quality'];
+    const techHighlights = ['Databricks & Spark', 'Cloud Architecture (GCP/Azure/AWS)', 'Data Quality & ODL', 'Pipeline Orchestration'];
 
     return (
         <section id="hero" style={{
@@ -55,7 +55,7 @@ const Hero = () => {
                 >
                     <span className="status-pill">
                         <span className="pulse-dot"></span>
-                        Available for Full-time Roles & Consulting
+                        Available for Full-time Senior Roles & Consulting
                     </span>
                 </motion.div>
 
@@ -105,7 +105,7 @@ const Hero = () => {
                         lineHeight: 1.3
                     }}
                 >
-                    Big Data Engineer & <span className="gradient-text">Business Analyst</span>
+                    Senior <span className="gradient-text">Data Engineer</span>
                 </motion.h2>
 
                 {/* Short Bio */}
@@ -114,14 +114,14 @@ const Hero = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.5 }}
                     style={{
-                        maxWidth: '680px',
+                        maxWidth: '720px',
                         margin: '0 auto 30px',
                         color: 'var(--text-secondary)',
                         fontSize: '1.12rem',
                         lineHeight: 1.7
                     }}
                 >
-                    Specializing in enterprise Big Data analytics, cloud computing architectures (AWS, Azure, GCP), and automated ETL pipelines. I engineer high-throughput data layers and convert massive data into actionable business intelligence.
+                    Specializing in enterprise Big Data analytics, cloud-native architectures (AWS, Azure, GCP), and automated ETL/ELT pipelines. I engineer high-throughput Operational Data Layers (ODL), implement rigorous data quality frameworks, and mentor technical teams to convert massive datasets into actionable, compliant business intelligence.
                 </motion.p>
 
                 {/* Floating Tech Highlight Chips */}
@@ -158,7 +158,7 @@ const Hero = () => {
                     }}
                 >
                     <a href="#projects" className="btn-primary">
-                        <span>Explore Projects</span>
+                        <span>Explore Deep Dives</span>
                         <FiArrowDown />
                     </a>
                     <a href="#contact" className="btn-secondary">

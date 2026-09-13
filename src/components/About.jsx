@@ -6,27 +6,39 @@ const About = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
 
     const stats = [
-        { number: '4+', label: 'Years Experience' },
+        { number: '5+', label: 'Years Experience' },
+        { number: '6x', label: 'Cloud Certified' },
         { number: '500+', label: 'Validation Rules' },
-        { number: '60%', label: 'Pipeline Speedup' },
-        { number: 'AWS', label: 'Certified Cloud' },
+        { number: '3', label: 'Major Clouds' },
     ];
 
-    const skillCategories = ['All', 'Big Data & ETL', 'Cloud & DBs', 'Languages & Tools'];
+    const skillCategories = ['All', 'Big Data & Processing', 'Cloud & DevOps', 'Databases & Warehousing', 'Programming & Scripting'];
 
     const skillsData = [
-        { name: 'PySpark', category: 'Big Data & ETL', proficiency: 'Expert' },
-        { name: 'Hadoop', category: 'Big Data & ETL', proficiency: 'Advanced' },
-        { name: 'Hive', category: 'Big Data & ETL', proficiency: 'Advanced' },
-        { name: 'ETL Pipelines', category: 'Big Data & ETL', proficiency: 'Expert' },
-        { name: 'AWS Cloud', category: 'Cloud & DBs', proficiency: 'Certified' },
-        { name: 'Azure Cloud', category: 'Cloud & DBs', proficiency: 'Advanced' },
-        { name: 'GCP BigQuery', category: 'Cloud & DBs', proficiency: 'Advanced' },
-        { name: 'SQL', category: 'Languages & Tools', proficiency: 'Expert' },
-        { name: 'Python', category: 'Languages & Tools', proficiency: 'Advanced' },
-        { name: 'Git', category: 'Languages & Tools', proficiency: 'Proficient' },
-        { name: 'Jira', category: 'Languages & Tools', proficiency: 'Proficient' },
-        { name: 'Teradata', category: 'Cloud & DBs', proficiency: 'Proficient' },
+        // Big Data & Processing
+        { name: 'PySpark', category: 'Big Data & Processing', proficiency: 'Expert' },
+        { name: 'Databricks', category: 'Big Data & Processing', proficiency: 'Expert' },
+        { name: 'Apache Spark', category: 'Big Data & Processing', proficiency: 'Expert' },
+        { name: 'Hadoop', category: 'Big Data & Processing', proficiency: 'Advanced' },
+        { name: 'Hive', category: 'Big Data & Processing', proficiency: 'Advanced' },
+        // Cloud & DevOps
+        { name: 'AWS', category: 'Cloud & DevOps', proficiency: 'Certified' },
+        { name: 'Azure', category: 'Cloud & DevOps', proficiency: 'Advanced' },
+        { name: 'GCP (Cloud Composer)', category: 'Cloud & DevOps', proficiency: 'Advanced' },
+        { name: 'Docker & Kubernetes', category: 'Cloud & DevOps', proficiency: 'Proficient' },
+        { name: 'CI/CD Pipelines', category: 'Cloud & DevOps', proficiency: 'Advanced' },
+        { name: 'Git', category: 'Cloud & DevOps', proficiency: 'Advanced' },
+        // Databases & Warehousing
+        { name: 'GCP BigQuery', category: 'Databases & Warehousing', proficiency: 'Advanced' },
+        { name: 'Snowflake', category: 'Databases & Warehousing', proficiency: 'Proficient' },
+        { name: 'Teradata', category: 'Databases & Warehousing', proficiency: 'Advanced' },
+        { name: 'Oracle', category: 'Databases & Warehousing', proficiency: 'Proficient' },
+        { name: 'dbt (Data Build Tool)', category: 'Databases & Warehousing', proficiency: 'Proficient' },
+        // Programming & Scripting
+        { name: 'Python', category: 'Programming & Scripting', proficiency: 'Expert' },
+        { name: 'SQL', category: 'Programming & Scripting', proficiency: 'Expert' },
+        { name: 'Unix/Shell Scripting', category: 'Programming & Scripting', proficiency: 'Advanced' },
+        { name: 'Java', category: 'Programming & Scripting', proficiency: 'Proficient' },
     ];
 
     const filteredSkills = selectedCategory === 'All'
@@ -106,7 +118,7 @@ const About = () => {
                         >
                             <span style={{ fontSize: '1.4rem' }}>🚀</span>
                             <div>
-                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>Big Data Engineer</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>Senior Data Engineer</div>
                                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>EY & Infosys Alum</div>
                             </div>
                         </motion.div>
@@ -120,10 +132,10 @@ const About = () => {
                         viewport={{ once: true }}
                     >
                         <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '20px' }}>
-                            I am a dedicated <strong style={{ color: 'var(--text-primary)' }}>Big Data Engineer</strong> and <strong style={{ color: 'var(--text-primary)' }}>Business Analyst</strong> with proven enterprise experience at tier-1 global organizations including <span style={{ color: 'var(--primary-color)', fontWeight: 600 }}>EY</span> and <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>Infosys</span>.
+                            I am a <strong style={{ color: 'var(--text-primary)' }}>Senior Data Engineer</strong> with over 5 years of proven enterprise experience at tier-1 global organizations including <span style={{ color: 'var(--primary-color)', fontWeight: 600 }}>EY</span> and <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>Infosys</span>.
                         </p>
                         <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '24px' }}>
-                            My expertise centers on architecting resilient distributed data pipelines, executing high-stakes cloud migrations (AWS, Azure, GCP), and orchestrating automated data validation layers for Fortune 100 financial and healthcare institutions.
+                            My expertise centers on architecting resilient distributed data pipelines, executing high-stakes cloud migrations across AWS, Azure, and GCP, and orchestrating automated data validation layers for Fortune 100 financial and healthcare institutions.
                         </p>
 
                         {/* Education & Certs Pills */}
@@ -143,7 +155,7 @@ const About = () => {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.95rem' }}>
                                 <FiAward style={{ color: '#f59e0b' }} />
-                                <span><strong>Certification:</strong> AWS Certified Cloud Practitioner</span>
+                                <span><strong>Certifications:</strong> 5x Databricks Certified & 1x AWS Certified Cloud Practitioner</span>
                             </div>
                         </div>
 
