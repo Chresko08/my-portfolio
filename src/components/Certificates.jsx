@@ -9,7 +9,7 @@ const Certificates = () => {
             title: "Databricks Certified Data Engineer Professional",
             issuer: "Databricks",
             icon: <SiDatabricks size={28} color="#FF3621" />,
-            link: "https://www.databricks.com/learn/certification/data-engineer-professional",
+            link: "https://credentials.databricks.com/82604b02-ba08-432c-b7e1-b095a5cfb995",
             color: "#FF3621",
             category: "Databricks Architecture"
         },
@@ -17,7 +17,7 @@ const Certificates = () => {
             title: "Databricks Certified Data Engineer Associate",
             issuer: "Databricks",
             icon: <SiDatabricks size={28} color="#FF3621" />,
-            link: "https://www.databricks.com/learn/certification/data-engineer-associate",
+            link: "https://credentials.databricks.com/ff55ea21-ef3a-49ef-9d09-fc85d2e4e99e",
             color: "#FF3621",
             category: "Databricks Data Engineering"
         },
@@ -25,7 +25,7 @@ const Certificates = () => {
             title: "Databricks Certified Apache Spark Developer Associate",
             issuer: "Databricks",
             icon: <SiDatabricks size={28} color="#FF3621" />,
-            link: "https://www.databricks.com/learn/certification/apache-spark-developer-associate",
+            link: "https://credentials.databricks.com/3ae62d70-e265-4005-8f1d-ae7d9c506ad7",
             color: "#FF3621",
             category: "Databricks Data Processing"
         },
@@ -33,7 +33,7 @@ const Certificates = () => {
             title: "Databricks Certified Data Analyst Associate",
             issuer: "Databricks",
             icon: <SiDatabricks size={28} color="#FF3621" />,
-            link: "https://www.databricks.com/learn/certification/data-analyst-associate",
+            link: "https://credentials.databricks.com/f0720754-ff63-4244-8b11-d7d4453f3e05",
             color: "#FF3621",
             category: "Databricks Analytics"
         },
@@ -41,7 +41,7 @@ const Certificates = () => {
             title: "Databricks Certified Generative AI Engineer Associate",
             issuer: "Databricks",
             icon: <SiDatabricks size={28} color="#FF3621" />,
-            link: "https://www.databricks.com/learn/certification/generative-ai-engineer",
+            link: "https://credentials.databricks.com/86f24cec-3bb7-418f-8c5c-5eea84e235db",
             color: "#FF3621",
             category: "Databricks Machine Learning"
         },
@@ -49,7 +49,7 @@ const Certificates = () => {
             title: "AWS Certified Cloud Practitioner",
             issuer: "Amazon Web Services",
             icon: <SiAmazon size={28} color="#FF9900" />,
-            link: "https://aws.amazon.com/certification/certified-cloud-practitioner/",
+            link: "https://drive.google.com/open?id=13UTvMKwyU4u13A5Fk-dwMT7LqXe3hOyY",
             color: "#FF9900",
             category: "Cloud Infrastructure"
         },
@@ -57,7 +57,7 @@ const Certificates = () => {
             title: "HackerRank Certifications (SQL, Python, REST)",
             issuer: "HackerRank",
             icon: <SiHackerrank size={28} color="#00EA64" />,
-            link: "https://www.hackerrank.com/certificates/c2d287ef1c05",
+            link: "https://www.hackerrank.com/profile/shubham_chresko",
             color: "#00EA64",
             category: "Core Competency"
         }
