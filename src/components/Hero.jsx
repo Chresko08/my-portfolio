@@ -105,7 +105,7 @@ const Hero = () => {
                         lineHeight: 1.3
                     }}
                 >
-                    Senior <span className="gradient-text">Data Engineer</span>
+                    Senior Data & <span className="gradient-text">Cloud Engineer</span>
                 </motion.h2>
 
                 {/* Short Bio */}
@@ -121,7 +121,7 @@ const Hero = () => {
                         lineHeight: 1.7
                     }}
                 >
-                    Specializing in enterprise Big Data analytics, cloud-native architectures (AWS, Azure, GCP), and automated ETL/ELT pipelines. I engineer high-throughput Operational Data Layers (ODL), implement rigorous data quality frameworks, and mentor technical teams to convert massive datasets into actionable, compliant business intelligence.
+                    Specializing in Big Data analytics, Cloud Architecture, and automated ETL/ELT pipelines. I engineer high-throughput Operational Data Layers (ODL), implement rigorous data quality frameworks, and orchestrate complex cloud migrations to convert massive datasets into actionable, compliant business intelligence.
                 </motion.p>
 
                 {/* Floating Tech Highlight Chips */}
@@ -157,78 +157,13 @@ const Hero = () => {
                         marginBottom: '40px'
                     }}
                 >
-                    <a href="#projects" className="btn-primary">
-                        <span>Explore Deep Dives</span>
+                    <a href="#experience" className="btn-primary">
+                        <span>Explore Experience</span>
                         <FiArrowDown />
                     </a>
                     <a href="#contact" className="btn-secondary">
                         <span>Get In Touch</span>
                         <FiMail />
-                    </a>
-                </motion.div>
-
-                {/* Social Quick Links */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.85 }}
-                    style={{
-                        display: 'flex',
-                        gap: '20px',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}
-                >
-                    <a
-                        href="https://github.com/Chresko08"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="GitHub Profile"
-                        style={{
-                            color: 'var(--text-secondary)',
-                            fontSize: '1.3rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            transition: 'color 0.2s, transform 0.2s'
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                    >
-                        <FiGithub />
-                    </a>
-                    <a
-                        href="https://www.linkedin.com/in/chresko"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="LinkedIn Profile"
-                        style={{
-                            color: 'var(--text-secondary)',
-                            fontSize: '1.3rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            transition: 'color 0.2s, transform 0.2s'
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = '#0077b5'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                    >
-                        <FiLinkedin />
-                    </a>
-                    <a
-                        href="https://leetcode.com/u/shubham_chresko/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="LeetCode Profile"
-                        style={{
-                            color: 'var(--text-secondary)',
-                            fontSize: '1.3rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            transition: 'color 0.2s, transform 0.2s'
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = '#f59e0b'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                    >
-                        <SiLeetcode />
                     </a>
                 </motion.div>
             </div>

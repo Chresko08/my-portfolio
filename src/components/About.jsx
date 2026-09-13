@@ -131,11 +131,14 @@ const About = () => {
                         transition={{ duration: 0.6 }}
                         viewport={{ once: true }}
                     >
-                        <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '20px' }}>
-                            I am a <strong style={{ color: 'var(--text-primary)' }}>Senior Data Engineer</strong> with over 5 years of proven enterprise experience at tier-1 global organizations including <span style={{ color: 'var(--primary-color)', fontWeight: 600 }}>EY</span> and <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>Infosys</span>.
+                        <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '16px' }}>
+                            I am a <strong style={{ color: 'var(--text-primary)' }}>Senior Data Engineer</strong> with over 5 years of proven enterprise experience consulting for tier-1 global organizations, including <span style={{ color: 'var(--primary-color)', fontWeight: 600 }}>EY</span> and <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>Infosys</span>.
+                        </p>
+                        <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '16px' }}>
+                            My technical foundation is highly versatile. I operate seamlessly across the data spectrum as a <strong style={{ color: 'var(--text-primary)' }}>Big Data Engineer</strong> processing terabytes of information, a <strong style={{ color: 'var(--text-primary)' }}>Cloud Architect</strong> designing robust infrastructure across AWS, Azure, and GCP, and an <strong style={{ color: 'var(--text-primary)' }}>ETL Developer</strong> orchestrating complex, dependency-driven pipelines.
                         </p>
                         <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '24px' }}>
-                            My expertise centers on architecting resilient distributed data pipelines, executing high-stakes cloud migrations across AWS, Azure, and GCP, and orchestrating automated data validation layers for Fortune 100 financial and healthcare institutions.
+                            I specialize in migrating legacy on-premise systems to modern cloud-native architectures. Beyond just moving data, I focus on engineering strict data governance, optimizing pipeline SLAs (reducing runtimes by up to 70%), and building automated validation frameworks that Fortune 100 financial and healthcare institutions rely on for critical business intelligence.
                         </p>
 
                         {/* Education & Certs Pills */}
