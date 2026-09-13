@@ -15,13 +15,6 @@ const Contact = () => {
 
     const contactChannels = [
         {
-            title: 'Email',
-            handle: 'shubhamsrivastava08@gmail.com',
-            link: `mailto:${emailAddress}`,
-            icon: <FiMail size={24} style={{ color: 'var(--primary-color)' }} />,
-            actionLabel: 'Send Mail'
-        },
-        {
             title: 'LinkedIn',
             handle: 'linkedin.com/in/chresko',
             link: 'https://www.linkedin.com/in/chresko',
