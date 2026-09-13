@@ -30,9 +30,13 @@ function App() {
                     <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
                         ✨ Designed & Developed by AI Using Google Antigravity (Google DeepMind)
                     </p>
-                    {import.meta.env.VITE_LAST_UPDATED && (
+                    {import.meta.env.VITE_LAST_UPDATED ? (
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '6px', opacity: 0.8 }}>
-                            Last Updated: {import.meta.env.VITE_LAST_UPDATED}
+                            Last Updated: {new Date(import.meta.env.VITE_LAST_UPDATED).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) !== 'Invalid Date' ? new Date(import.meta.env.VITE_LAST_UPDATED).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : import.meta.env.VITE_LAST_UPDATED}
+                        </p>
+                    ) : (
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '6px', opacity: 0.8 }}>
+                            Last Updated: September 2026
                         </p>
                     )}
                 </div>

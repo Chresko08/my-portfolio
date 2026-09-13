@@ -68,19 +68,8 @@ const Navbar = () => {
     return (
         <nav style={navStyles}>
             <div className="container navbar-container">
-                <a href="#hero" className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{
-                        width: '35px', height: '35px',
-                        background: 'linear-gradient(135deg, var(--primary-color), var(--accent-purple))',
-                        borderRadius: '8px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: 'white', fontWeight: 800, fontSize: '1.2rem'
-                    }}>
-                        S
-                    </div>
-                    <span style={{ fontWeight: 700, fontSize: '1.25rem', letterSpacing: '-0.5px' }}>
-                        Shubham<span style={{ color: 'var(--primary-color)' }}>.</span>
-                    </span>
+                <a href="#hero" className="nav-brand" style={{ display: 'flex', alignItems: 'center' }}>
+                    <Logo />
                 </a>
 
                 {/* Mobile hamburger button */}

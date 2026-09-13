@@ -210,33 +210,7 @@ const Hero = () => {
                             </div>
                         </div>
 
-                        {/* Experience Floating Badge */}
-                        <motion.div
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ delay: 0.5 }}
-                            style={{
-                                position: 'absolute',
-                                bottom: '-15px',
-                                right: '0px',
-                                background: 'var(--nav-bg)',
-                                backdropFilter: 'blur(12px)',
-                                padding: '12px 20px',
-                                borderRadius: '14px',
-                                border: '1px solid var(--card-border-hover)',
-                                boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '12px'
-                            }}
-                        >
-                            <span style={{ fontSize: '1.5rem' }}>🚀</span>
-                            <div>
-                                <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>Senior Data Engineer</div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>EY & Infosys Alum</div>
-                            </div>
                         </motion.div>
-                    </motion.div>
                 </div>
 
                 {/* Stats Counter Cards */}
