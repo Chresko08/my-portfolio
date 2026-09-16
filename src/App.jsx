@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Experience from './components/Experience';
@@ -7,14 +7,38 @@ import Contact from './components/Contact';
 import BackToTop from './components/BackToTop';
 
 function App() {
+    const [theme, setTheme] = useState('dark');
+    // viewMode can be 'all', 'recruiter', or 'technical'
+    const [viewMode, setViewMode] = useState('all');
+
+    const toggleTheme = () => {
+        const newTheme = theme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+    };
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        // Check local storage for viewMode preference
+        const savedViewMode = localStorage.getItem('portfolioViewMode');
+        if (savedViewMode) {
+            setViewMode(savedViewMode);
+        }
+    }, [theme]);
+
+    const handleViewModeChange = (mode) => {
+        setViewMode(mode);
+        localStorage.setItem('portfolioViewMode', mode);
+    };
+
     return (
         <div className="app">
-            <Navbar />
+            <Navbar theme={theme} toggleTheme={toggleTheme} viewMode={viewMode} setViewMode={handleViewModeChange} />
             <main>
                 <Hero />
-                <Experience />
+                <Experience viewMode={viewMode} />
                 <Certificates />
-                <Contact />
+                <Contact viewMode={viewMode} />
             </main>
             <BackToTop />
             <footer>
@@ -36,7 +60,7 @@ function App() {
                         </p>
                     ) : (
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '6px', opacity: 0.8 }}>
-                            Last Updated: September 2026
+                            Last Updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                         </p>
                     )}
                 </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiBriefcase, FiCalendar, FiChevronDown, FiChevronUp, FiExternalLink, FiAward, FiCheck } from 'react-icons/fi';
 
-const Experience = () => {
+const Experience = ({ viewMode }) => {
     // Array to manage which project "Deep Dives" are expanded
     const [expandedProjects, setExpandedProjects] = useState([]);
 
@@ -18,15 +18,15 @@ const Experience = () => {
             company: 'EY',
             role: 'Consultant - Data Engineer',
             client: 'Client: American Express',
-            date: 'Dec 2024 – Nov 2026',
+            date: 'Nov 2024 – Present',
             metrics: ['+20% Data Reliability', '500+ Automated Rules', 'GCP BigQuery & Composer'],
             description: 'Architecting and orchestrating highly scalable data pipelines using GCP BigQuery to integrate disparate external architectures, ensuring strict data localization and regulatory compliance.',
             highlights: [
-                'Designed and deployed an end-to-end Operational Data Layer (ODL) establishing a new Source of Record (SOR). Automated ETL/ELT pipelines using GCP Cloud Composer (Apache Airflow).',
-                'Engineered a robust Data Quality (DQ) framework across a massive-scale platform, implementing 500+ automated validation rules. Eliminated zero-coverage gaps, reducing pipeline failures by 60% and improving reliability by 20%.',
-                'Migrated demographic data from multiple legacy systems into a modernized Single Source of Truth (SSOT), reverse-engineering complex business logic via Unix and SQL.',
-                'Mentored a team of 3 data professionals, driving engineering best practices, conducting code reviews, and resolving pipeline bottlenecks.',
-                'Delivered critical infrastructure for the "Early Evidence Campaign," empowering product teams with high-value customer targeting insights through complex behavioral data.'
+                'Architected and deployed an end-to-end Operational Data Layer (ODL) in GCP BigQuery, engineering complex ledger cross-referencing and left anti-joins to process 15M+ transactional records. This pipeline directly empowered product teams to execute high-yield marketing campaigns targeting dormant offer enrollees.',
+                'Spearheaded the legacy decommissioning of 4 MapR Hadoop/Oracle Systems of Record (SORs), orchestrating the migration of fragmented demographic data into a unified Customer 360 (C360) Single Source of Truth (SSOT) to strictly enforce enterprise data localization.',
+                'Engineered deterministic deduplication and schema evolution frameworks, utilizing advanced BigQuery Window functions (ROW_NUMBER) and CTEs to guarantee 100% data fidelity and exact state resolution for daily append-load workloads.',
+                'Re-architected a massive-scale Data Quality (DQ) framework within the Qalibrate portal, systematically refactoring legacy Hive logic into optimized BigQuery SQL. Enforced strict datatype mapping (e.g., upcasting to BIGNUMERIC for precise financial ledgers) to eliminate zero-coverage gaps on Critical Data Elements (CDEs).',
+                'Orchestrated fault-tolerant ETL pipelines using GCP Cloud Composer (Apache Airflow), architecting resilient DAG dependencies and driving rigorous Post-Implementation Verification (PIV) protocols to ensure zero data loss during critical cloud cutovers.'
             ],
             project: {
                 title: 'Global Card Issuer ODL Platform',
@@ -34,13 +34,15 @@ const Experience = () => {
                 tags: ['GCP BigQuery', 'Cloud Composer', 'SQL', 'Data Quality'],
                 deepDive: (
                     <div className="deep-dive-content">
-                        <h4>Architectural Context</h4>
-                        <p>Designed and deployed an end-to-end Operational Data Layer (ODL) that serves as a new Source of Record (SOR) for demographic and behavioral data. Replaced legacy monolithic ingestion processes with highly scalable GCP components.</p>
-                        <h4>Core Engineering Responsibilities</h4>
+                        <h4>The Business Catalyst & Architectural Context</h4>
+                        <p>I am a Data Engineer for American Express, driving a massive infrastructure modernization from an on-premise MapR Hadoop/Hive data lake (Cornerstone) to a cloud-native GCP BigQuery architecture (Lumi). My mandate spans three critical pillars: architecting Operational Data Layers (ODLs) for targeted marketing campaigns, executing major Source of Record (SOR) migrations to establish Single Sources of Truth (SSOT), and engineering a stringent Data Quality (DQ) framework to ensure zero-defect regulatory compliance across the massive-scale card-issuer platform.</p>
+                        
+                        <h4>My Core Engineering Responsibilities</h4>
                         <ul>
-                            <li><strong>Data Quality Framework:</strong> Built a comprehensive Data Quality (DQ) engine running 500+ automated validation rules. This framework enforces strict governance, preventing corrupted data from entering downstream ML models and BI dashboards.</li>
-                            <li><strong>Orchestration:</strong> Utilized GCP Cloud Composer (Apache Airflow) to orchestrate complex ETL/ELT DAGs, dynamically scaling workers to handle high-throughput batch files.</li>
-                            <li><strong>Legacy Migration:</strong> Reverse-engineered legacy business logic embedded in old Unix and SQL systems, translating them into modern, scalable BigQuery SQL transformations.</li>
+                            <li><strong>Operational Data Layer (ODL) Engineering:</strong> I architected an end-to-end ODL to power a high-priority marketing campaign targeting customers who enrolled in offers but never redeemed them. I reverse-engineered legacy Oracle SQL logic (previously executed manually by adjacent teams) and modernized it for BigQuery. I engineered complex pipelines to process 10-15 million records, cross-referencing customer enrollment tables with transactional ledger tables. By isolating enrollee data and performing left anti-joins/filtering against redeemer data, I created a highly performant dataset that directly empowered the product team's targeting logic.</li>
+                            <li><strong>Source of Record (SOR) Migrations & SSOT Consolidation:</strong> I drove the migration and decommissioning of 4 major legacy systems, including transitioning USMR to R42 and consolidating fragmented customer demographic sources into a unified C360 SSOT. Because data quality at Amex requires absolute precision, I handled complex edge cases in customer deduplication. I utilized advanced BigQuery window functions—specifically <code>ROW_NUMBER() OVER(PARTITION BY cm13/customerID ORDER BY last_updated_timestamp DESC)</code>—to enforce strict deduplication and extract the most recent valid customer state. I owned the Post-Implementation Verification (PIV) testing phase, ensuring that the daily append outputs of the new Lumi pipelines matched the legacy business logic outputs precisely before providing production sign-off.</li>
+                            <li><strong>Data Quality (DQ) Framework & Dialect Translation:</strong> I migrated and strengthened hundreds of Data Quality rules from the legacy Cornerstone (Hive) environment to Lumi (BigQuery) using the Qalibrate DQM portal. I analyzed pass/fail rates for Critical Data Elements (CDE) and non-CDE attributes, secured Product Owner sign-off, and engineered custom BigQuery SQL logic (CTEs, Window Functions) to close coverage gaps. I executed a massive dialect translation effort, refactoring legacy Hive queries into native BigQuery SQL. This required systematic data type downcasting and upcasting, alongside rewriting string, date, and null-handling functions to optimize compute costs.</li>
+                            <li><strong>Pipeline Orchestration (Cloud Composer/Airflow):</strong> I orchestrated the daily append load jobs for the new ODL and migrated SSOTs utilizing GCP Cloud Composer (Apache Airflow). I configured DAGs, established logical task dependencies between BigQuery extraction and load operators, and monitored execution logs during integration testing to guarantee fault-tolerant daily pipeline runs.</li>
                         </ul>
                     </div>
                 )
@@ -55,9 +57,11 @@ const Experience = () => {
             metrics: ['Zero-Defect Compliance', 'REST API Integration', 'CI/CD Orchestration'],
             description: 'Led the ETL development and deployment for regulatory reporting pipelines processing millions of financial records.',
             highlights: [
-                'Developed an end-to-end workflow for quarterly regulatory reporting for loan syndication analysis, automating jobs using workload automation tools to increase efficiency by 60%.',
-                'Led the migration of data quality checks from an existing workflow to a separate application with a web portal, providing real-time status updates and detailed reporting.',
-                'Used Bitbucket/Git and collaborated with CI/CD teams to ensure smooth deployment of code to production, reducing deployment time by 30%.'
+                'Engineered multi-layered ETL pipelines for loan syndication regulatory reporting, writing Unix shell scripts and Oracle SQL to orchestrate data flow across Staging, Curated, and Materialized layers for millions of financial records.',
+                'Automated enterprise data quality (DQ) validation by integrating a centralized REST API portal, parsing JSON responses via awk to enforce automated pipeline hard-stops and email alerting upon validation failures.',
+                'Directed monthly production deployments and cross-functional release management, enforcing a strict CI/CD sequence (Unix -> Oracle -> Autosys JIL) and conducting rigorous Post-Implementation Verification (PIV) to guarantee zero-defect rollouts.',
+                'Collaborated with internal platform teams to optimize a nascent DQ portal, driving architectural upgrades to connection stability and data retention schedules while mentoring 3 junior developers in SDLC best practices and complex deployment workflows.',
+                'Orchestrated automated job scheduling and dependency management using Autosys, ensuring high availability and fault-tolerant execution of critical regulatory reporting workloads.'
             ],
             project: {
                 title: 'My Project Loan Syndication Master Reference',
@@ -88,8 +92,11 @@ const Experience = () => {
             metrics: ['60% Automation Speedup', '25% Cost Reduction', 'Teradata → Hadoop'],
             description: 'Operated as the primary Big Data Engineer on a high-stakes POC to replace Teradata with Hadoop.',
             highlights: [
-                'Led the migration of PySpark and Spark Scala scripts to Azure cloud servers, reducing infrastructure costs by 25% and enhancing scalability.',
-                'Led the migration of data dependencies from Teradata to Hive, significantly reducing operational costs for managing large volumes of data by leveraging Hive\'s cost-effective architecture.'
+                'Architected a high-throughput Teradata-to-Hadoop migration POC using IBM DataStage, establishing the initial Dev environment, configuring Kerberos service principals, and managing JDBC connectivity across Oracle, DB2, and Hive systems.',
+                'Engineered an HDFS bypass ingestion strategy for billion-row historical loads, swapping JDBC Hive connectors for Native HDFS file streaming, reducing processing time for massive datasets from 45 minutes to under 10 minutes.',
+                'Optimized Hadoop execution pipelines by decoupling data ingestion from schema enforcement, loading Snappy-compressed Parquet files into external staging tables before utilizing Tez execution engines to dynamically partition and bucket the finalized datasets.',
+                'Implemented ACID-compliant mutation pipelines via HiveServer2 and ORC formatting, ensuring robust security by managing keytab generation and automating kinit cron routines to prevent Kerberos ticket expiration during long-running batch operations.',
+                'Mentored junior engineers and documented tuning strategies including dynamic partition thresholds and parallel execution parameters, successfully meeting stringent SLA targets before the strategic reprioritization of Project OMNI.'
             ],
             project: {
                 title: 'Project OMNI - Teradata to Hadoop Migration',
@@ -120,9 +127,10 @@ const Experience = () => {
             metrics: ['Zero Data Loss', 'Schema Preservation', 'Azure Synapse'],
             description: 'Engineered robust data pipelines and audit frameworks during a massive on-premise CDP to Azure cloud migration.',
             highlights: [
-                'Migrated legacy PySpark and Spark Scala workloads into modern Azure Synapse Pipelines.',
-                'Engineered automated Unix shell scripts running on Hive edge nodes to systematically generate pre-migration baselines for hundreds of tables.',
-                'Validated perfect schema translation programmatically using Synapse Notebooks.'
+                'Engineered the lift-and-shift migration of legacy PySpark and Scala workloads from an on-premise Cloudera Data Platform to Azure, orchestrating complex execution dependencies to extract heterogeneous files (Avro, Parquet, JSON) from ADLS Gen2, apply transformations, and load into Synapse Dedicated SQL Pools.',
+                'Developed and executed Unix shell scripts on legacy Hive edge nodes to establish stringent audit controls and metadata baselines, ensuring 100% data fidelity and exact row-count reconciliation for highly sensitive healthcare enrollment data during the cloud cutover.',
+                'Reverse-engineered legacy Talend ETL jobs and mapped complex data dependencies, migrating transformation logic into native Azure Data Factory (ADF) pipelines to consolidate enterprise orchestration and reduce third-party licensing overhead.',
+                'Conducted rigorous end-to-end testing of Synapse Pipeline activities, monitoring execution logs to resolve schema mismatches and validate proper execution order within the dependency graph, resulting in zero data loss during staging layer loads.'
             ],
             project: {
                 title: 'HCSC Infrastructure Modernization',
@@ -165,9 +173,9 @@ const Experience = () => {
     ];
 
     return (
-        <section id="experience" className="section">
+        <section id="experience" className="section" style={{ paddingTop: '80px', paddingBottom: '60px' }}>
             <div className="container">
-                <div className="section-title-wrap">
+                <div className="section-title-wrap" style={{ marginBottom: '40px' }}>
                     <span className="section-subtitle">Career Pathway & Featured Projects</span>
                     <h2 className="section-heading">
                         Work <span className="gradient-text">Experience</span>
@@ -175,48 +183,47 @@ const Experience = () => {
                 </div>
 
                 {/* Timeline Container */}
-                <div style={{ maxWidth: '960px', margin: '0 auto', position: 'relative' }}>
+                <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative' }}>
                     {/* Glowing vertical line */}
                     <div style={{
                         position: 'absolute',
-                        left: '20px',
+                        left: '16px',
                         top: '10px',
                         bottom: '10px',
                         width: '2px',
                         background: 'linear-gradient(to bottom, var(--primary-color), var(--accent-purple), transparent)',
                         borderRadius: '2px',
-                        opacity: 0.7
+                        opacity: 0.5
                     }} />
 
                     {experiences.map((exp, expIdx) => (
-                        <div key={exp.id} style={{ marginBottom: '60px' }}>
+                        <div key={exp.id} style={{ marginBottom: '40px' }}>
                             <motion.div
-                                initial={{ opacity: 0, y: 20 }}
+                                initial={{ opacity: 0, y: 15 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: 0.1 }}
-                                viewport={{ once: true }}
+                                transition={{ duration: 0.4, delay: 0.05 }}
+                                viewport={{ once: true, margin: "-50px" }}
                                 style={{
                                     position: 'relative',
-                                    paddingLeft: '60px',
-                                    marginBottom: '40px'
+                                    paddingLeft: '48px'
                                 }}
                             >
                                 {/* Timeline Dot */}
                                 <div style={{
                                     position: 'absolute',
                                     left: '9px',
-                                    top: '32px',
-                                    width: '24px',
-                                    height: '24px',
+                                    top: '24px',
+                                    width: '16px',
+                                    height: '16px',
                                     borderRadius: '50%',
                                     background: 'var(--surface-card)',
                                     border: '3px solid var(--primary-color)',
                                     zIndex: 2,
-                                    boxShadow: '0 0 15px rgba(99, 102, 241, 0.4)'
+                                    boxShadow: '0 0 10px rgba(99, 102, 241, 0.4)'
                                 }}></div>
                                 
                                 {/* Experience Glass Card */}
-                                <div className="glass-card" style={{ padding: '32px' }}>
+                                <div className="glass-card" style={{ padding: '24px' }}>
                                     {/* Header Row */}
                                     <div style={{
                                         display: 'flex',
@@ -224,13 +231,13 @@ const Experience = () => {
                                         alignItems: 'flex-start',
                                         flexWrap: 'wrap',
                                         gap: '12px',
-                                        marginBottom: '16px'
+                                        marginBottom: '12px'
                                     }}>
                                         <div>
-                                            <h4 style={{ fontSize: '1.45rem', fontWeight: 700, marginBottom: '6px', color: 'var(--primary-color)' }}>
+                                            <h4 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '4px', color: 'var(--primary-color)' }}>
                                                 {exp.role}
                                             </h4>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                                                 <strong style={{ color: 'var(--text-primary)' }}>{exp.company}</strong>
                                                 <span>•</span>
                                                 <span style={{ fontWeight: 500 }}>{exp.client}</span>
@@ -242,122 +249,50 @@ const Experience = () => {
                                                 display: 'inline-flex',
                                                 alignItems: 'center',
                                                 gap: '6px',
-                                                padding: '6px 14px',
+                                                padding: '4px 12px',
                                                 borderRadius: '9999px',
-                                                fontSize: '0.85rem',
+                                                fontSize: '0.8rem',
                                                 fontWeight: 600,
                                                 background: 'var(--badge-bg)',
                                                 border: '1px solid var(--badge-border)',
                                                 color: 'var(--text-primary)'
                                             }}>
-                                                <FiCalendar size={14} style={{ color: 'var(--primary-color)' }} />
+                                                <FiCalendar size={12} style={{ color: 'var(--primary-color)' }} />
                                                 {exp.date}
                                             </span>
                                         </div>
                                     </div>
 
-                                    {/* Impact KPI Metric Badges */}
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', margin: '0 0 20px' }}>
-                                        {exp.metrics.map((metric) => (
-                                            <span key={metric} style={{
-                                                fontSize: '0.85rem',
-                                                fontWeight: 600,
-                                                padding: '4px 12px',
-                                                borderRadius: '6px',
-                                                background: 'rgba(6, 182, 212, 0.1)',
-                                                color: 'var(--accent-cyan)',
-                                                border: '1px solid rgba(6, 182, 212, 0.25)'
-                                            }}>
-                                                ⚡ {metric}
-                                            </span>
-                                        ))}
-                                    </div>
-
-                                    <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.6, marginBottom: '20px' }}>
-                                        {exp.description}
-                                    </p>
-
                                     {/* Highlights list */}
-                                    <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px 0', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                    <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 16px 0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                         {exp.highlights.map((h, hIdx) => (
-                                            <li key={hIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.5 }}>
-                                                <FiCheck style={{ color: 'var(--accent-emerald)', marginTop: '4px', flexShrink: 0 }} size={16} />
+                                            <li key={hIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.5 }}>
+                                                <FiCheck style={{ color: 'var(--accent-emerald)', marginTop: '4px', flexShrink: 0 }} size={14} />
                                                 <span>{h}</span>
                                             </li>
                                         ))}
                                     </ul>
 
-                                    {/* Certificate link for internship */}
-                                    {exp.certificate && (
-                                        <a
-                                            href={exp.certificate}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="btn-secondary"
-                                            style={{ padding: '10px 20px', fontSize: '0.9rem', display: 'inline-flex', marginBottom: '10px' }}
-                                        >
-                                            <span>View Internship Certificate</span>
-                                            <FiExternalLink size={14} />
-                                        </a>
-                                    )}
-
-                                    {/* Project Deep Dive */}
-                                    {exp.project && (
-                                        <div style={{ marginTop: '30px', paddingTop: '24px', borderTop: '1px solid var(--card-border)' }}>
-                                            <h5 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '20px', color: 'var(--text-primary)' }}>
-                                                Featured Project
-                                            </h5>
-                                            
+                                    {/* Project Deep Dive (hidden in recruiter view) */}
+                                    {exp.project && viewMode !== 'recruiter' && (
+                                        <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--card-border)' }}>
                                             <div style={{
                                                 background: 'var(--surface-color)',
                                                 border: '1px solid var(--card-border)',
-                                                borderRadius: '12px',
+                                                borderRadius: '8px',
                                                 overflow: 'hidden'
                                             }}>
-                                                <div style={{ padding: '20px' }}>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
-                                                        <h6 style={{ fontSize: '1.15rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)' }}>
+                                                <div style={{ padding: '16px' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
+                                                        <h6 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)' }}>
                                                             {exp.project.title}
                                                         </h6>
-                                                        {exp.project.impact && (
-                                                            <div style={{
-                                                                background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(14,165,233,0.1))',
-                                                                border: '1px solid rgba(139,92,246,0.2)',
-                                                                padding: '4px 10px',
-                                                                borderRadius: '6px',
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                gap: '6px',
-                                                                color: 'var(--accent-purple)',
-                                                                fontWeight: 600,
-                                                                fontSize: '0.8rem'
-                                                            }}>
-                                                                <FiAward size={13} />
-                                                                {exp.project.impact}
-                                                            </div>
-                                                        )}
-                                                    </div>
-
-                                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px' }}>
-                                                        {exp.project.tags.map((tag) => (
-                                                            <span key={tag} style={{
-                                                                fontSize: '0.75rem',
-                                                                padding: '4px 10px',
-                                                                background: 'var(--bg-color)',
-                                                                border: '1px solid var(--card-border)',
-                                                                borderRadius: '4px',
-                                                                color: 'var(--text-muted)',
-                                                                fontWeight: 600
-                                                            }}>
-                                                                {tag}
-                                                            </span>
-                                                        ))}
                                                     </div>
 
                                                     <button
                                                         onClick={() => toggleProject(exp.id)}
                                                         className="btn-secondary"
-                                                        style={{ padding: '8px 16px', fontSize: '0.9rem', width: '100%', justifyContent: 'center', border: '1px solid var(--card-border)' }}
+                                                        style={{ padding: '6px 14px', fontSize: '0.85rem', width: '100%', justifyContent: 'center', border: '1px solid var(--card-border)' }}
                                                     >
                                                         <span>{expandedProjects.includes(exp.id) ? 'Close Deep Dive' : 'Read Master Reference Deep Dive'}</span>
                                                         {expandedProjects.includes(exp.id) ? <FiChevronUp /> : <FiChevronDown />}
@@ -371,22 +306,22 @@ const Experience = () => {
                                                             initial={{ height: 0, opacity: 0 }}
                                                             animate={{ height: 'auto', opacity: 1 }}
                                                             exit={{ height: 0, opacity: 0 }}
-                                                            transition={{ duration: 0.4, ease: "easeInOut" }}
+                                                            transition={{ duration: 0.3, ease: "easeInOut" }}
                                                             style={{ overflow: 'hidden' }}
                                                         >
                                                             <div style={{
-                                                                padding: '24px',
+                                                                padding: '20px',
                                                                 background: 'rgba(0,0,0,0.02)',
                                                                 borderTop: '1px solid var(--card-border)'
                                                             }}>
                                                                 <style dangerouslySetInnerHTML={{__html: `
-                                                                    .deep-dive-content h4 { font-size: 1.1rem; color: var(--primary-color); margin-top: 20px; margin-bottom: 12px; font-weight: 600; }
+                                                                    .deep-dive-content h4 { font-size: 1rem; color: var(--primary-color); margin-top: 16px; margin-bottom: 8px; font-weight: 600; }
                                                                     .deep-dive-content h4:first-child { margin-top: 0; }
-                                                                    .deep-dive-content p { color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px; font-size: 0.95rem; }
-                                                                    .deep-dive-content ul { list-style-type: none; padding-left: 0; margin-bottom: 16px; }
-                                                                    .deep-dive-content li { position: relative; padding-left: 20px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; font-size: 0.95rem; }
+                                                                    .deep-dive-content p { color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; font-size: 0.9rem; }
+                                                                    .deep-dive-content ul { list-style-type: none; padding-left: 0; margin-bottom: 12px; }
+                                                                    .deep-dive-content li { position: relative; padding-left: 16px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px; font-size: 0.9rem; }
                                                                     .deep-dive-content li::before { content: "▹"; position: absolute; left: 0; color: var(--accent-purple); font-weight: bold; }
-                                                                    .deep-dive-content code { background: var(--bg-color); padding: 2px 6px; border-radius: 4px; font-size: 0.85em; font-family: monospace; border: 1px solid var(--card-border); color: var(--text-primary); }
+                                                                    .deep-dive-content code { background: var(--bg-color); padding: 2px 4px; border-radius: 4px; font-size: 0.85em; font-family: monospace; border: 1px solid var(--card-border); color: var(--text-primary); }
                                                                 `}} />
                                                                 {exp.project.deepDive}
                                                             </div>

@@ -1,159 +1,177 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowDown, FiMail, FiGithub, FiLinkedin, FiCheckCircle } from 'react-icons/fi';
+import { FiArrowDown, FiMail, FiCheckCircle, FiLinkedin, FiGithub } from 'react-icons/fi';
 import { SiLeetcode } from 'react-icons/si';
 
 const Hero = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
 
-    const techHighlights = ['Databricks & Spark', 'Cloud Architecture', 'ETL/ELT Pipelines', 'Data Quality & Governance'];
+    const skills = [
+        { category: 'Compute & Processing', name: 'GCP BigQuery' },
+        { category: 'Compute & Processing', name: 'Apache Spark (PySpark, Scala)' },
+        { category: 'Compute & Processing', name: 'Databricks (Delta Lake, Vector Search)' },
+        { category: 'Compute & Processing', name: 'Azure Synapse Analytics' },
+        { category: 'Compute & Processing', name: 'Apache Hive (Tez)' },
+        { category: 'Compute & Processing', name: 'MapR Hadoop' },
+        
+        { category: 'Orchestration & ETL', name: 'GCP Cloud Composer (Airflow)' },
+        { category: 'Orchestration & ETL', name: 'Azure Data Factory (ADF)' },
+        { category: 'Orchestration & ETL', name: 'IBM DataStage' },
+        { category: 'Orchestration & ETL', name: 'Autosys' },
+        
+        { category: 'Storage & Architecture', name: 'Azure Data Lake Storage (ADLS Gen2)' },
+        { category: 'Storage & Architecture', name: 'HDFS' },
+        { category: 'Storage & Architecture', name: 'Snowflake' },
+        { category: 'Storage & Architecture', name: 'Teradata' },
+        { category: 'Storage & Architecture', name: 'Oracle RDBMS' },
+        
+        { category: 'Programming & Scripting', name: 'Python' },
+        { category: 'Programming & Scripting', name: 'Advanced SQL (Window Functions, CTEs)' },
+        { category: 'Programming & Scripting', name: 'Unix/Shell Scripting' }
+    ];
+
+    const skillCategories = ['All', ...new Set(skills.map(s => s.category))];
+    const filteredSkills = selectedCategory === 'All' ? skills : skills.filter(s => s.category === selectedCategory);
 
     const stats = [
-        { number: '5+', label: 'Years Experience' },
-        { number: '6x', label: 'Cloud Certified' },
-        { number: '500+', label: 'Validation Rules' },
-        { number: '3', label: 'Major Clouds' },
+        { number: '15M+', label: 'Records Processed/Day' },
+        { number: '4', label: 'Systems Decommissioned' },
+        { number: '500+', label: 'DQ Rules Engineered' },
+        { number: '5', label: 'Years Experience' }
     ];
 
-    const skillCategories = ['All', 'Big Data & Processing', 'Cloud & DevOps', 'Databases & Warehousing', 'Programming & Scripting'];
-
-    const skillsData = [
-        { name: 'PySpark', category: 'Big Data & Processing', proficiency: 'Expert' },
-        { name: 'Databricks', category: 'Big Data & Processing', proficiency: 'Expert' },
-        { name: 'Apache Spark', category: 'Big Data & Processing', proficiency: 'Expert' },
-        { name: 'Hadoop', category: 'Big Data & Processing', proficiency: 'Advanced' },
-        { name: 'Hive', category: 'Big Data & Processing', proficiency: 'Advanced' },
-        { name: 'AWS', category: 'Cloud & DevOps', proficiency: 'Certified' },
-        { name: 'Azure', category: 'Cloud & DevOps', proficiency: 'Advanced' },
-        { name: 'GCP (Cloud Composer)', category: 'Cloud & DevOps', proficiency: 'Advanced' },
-        { name: 'Docker & Kubernetes', category: 'Cloud & DevOps', proficiency: 'Proficient' },
-        { name: 'CI/CD Pipelines', category: 'Cloud & DevOps', proficiency: 'Advanced' },
-        { name: 'Git', category: 'Cloud & DevOps', proficiency: 'Advanced' },
-        { name: 'GCP BigQuery', category: 'Databases & Warehousing', proficiency: 'Advanced' },
-        { name: 'Snowflake', category: 'Databases & Warehousing', proficiency: 'Proficient' },
-        { name: 'Teradata', category: 'Databases & Warehousing', proficiency: 'Advanced' },
-        { name: 'Oracle', category: 'Databases & Warehousing', proficiency: 'Proficient' },
-        { name: 'dbt (Data Build Tool)', category: 'Databases & Warehousing', proficiency: 'Proficient' },
-        { name: 'Python', category: 'Programming & Scripting', proficiency: 'Expert' },
-        { name: 'SQL', category: 'Programming & Scripting', proficiency: 'Expert' },
-        { name: 'Unix/Shell Scripting', category: 'Programming & Scripting', proficiency: 'Advanced' },
-        { name: 'Java', category: 'Programming & Scripting', proficiency: 'Proficient' },
+    const socialLinks = [
+        { icon: <FiLinkedin size={20} />, url: 'https://www.linkedin.com/in/chresko/', label: 'LinkedIn' },
+        { icon: <FiGithub size={20} />, url: 'https://github.com/Chresko08', label: 'GitHub' },
+        { icon: <SiLeetcode size={20} />, url: 'https://leetcode.com/chresko', label: 'LeetCode' }
     ];
-
-    const filteredSkills = selectedCategory === 'All'
-        ? skillsData
-        : skillsData.filter(s => s.category === selectedCategory);
 
     return (
-        <section id="hero" style={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
-            overflow: 'hidden',
-            paddingTop: '120px',
-            paddingBottom: '80px',
-            background: 'var(--surface-card)'
-        }}>
-            {/* Ambient Background Glow Elements */}
+        <section id="hero" className="hero-section" style={{ position: 'relative', overflow: 'hidden' }}>
+            {/* Data Engineering Decorative DAG Background */}
             <div style={{
                 position: 'absolute',
-                top: '15%',
-                left: '10%',
-                width: '380px',
-                height: '380px',
-                background: 'radial-gradient(circle, var(--primary-color) 0%, transparent 70%)',
-                filter: 'blur(120px)',
-                opacity: 0.18,
-                borderRadius: '50%',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
                 zIndex: 0,
-                pointerEvents: 'none'
-            }} />
-            <div style={{
-                position: 'absolute',
-                bottom: '15%',
-                right: '10%',
-                width: '420px',
-                height: '420px',
-                background: 'radial-gradient(circle, var(--accent-purple) 0%, transparent 70%)',
-                filter: 'blur(140px)',
-                opacity: 0.15,
-                borderRadius: '50%',
-                zIndex: 0,
-                pointerEvents: 'none'
-            }} />
-
-            <div className="container" style={{ zIndex: 1, maxWidth: '1100px' }}>
-                
-                {/* Hero / About Split Layout */}
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                    gap: '60px',
-                    alignItems: 'center',
-                    marginBottom: '80px'
-                }}>
+                opacity: 0.05,
+                pointerEvents: 'none',
+                overflow: 'hidden'
+            }}>
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="var(--primary-color)" />
+                            <stop offset="100%" stopColor="var(--accent-purple)" />
+                        </linearGradient>
+                    </defs>
+                    <g stroke="url(#lineGrad)" strokeWidth="1.5" fill="none">
+                        {/* Pipelines */}
+                        <path d="M 50,200 C 150,200 150,100 250,100" />
+                        <path d="M 50,200 C 150,200 150,300 250,300" />
+                        <path d="M 250,100 C 350,100 350,200 450,200" />
+                        <path d="M 250,300 C 350,300 350,200 450,200" />
+                        <path d="M 450,200 C 600,200 600,100 750,100" />
+                        <path d="M 450,200 C 600,200 600,300 750,300" />
+                        <path d="M 450,200 C 600,200 600,450 750,450" />
+                        
+                        <path d="M 750,100 C 850,100 850,200 950,200" />
+                        <path d="M 750,300 C 850,300 850,200 950,200" />
+                        
+                        {/* Floating Nodes */}
+                        <circle cx="50" cy="200" r="6" fill="var(--bg-color)" />
+                        <circle cx="250" cy="100" r="6" fill="var(--bg-color)" />
+                        <circle cx="250" cy="300" r="6" fill="var(--bg-color)" />
+                        <circle cx="450" cy="200" r="8" fill="var(--bg-color)" strokeWidth="2" />
+                        <circle cx="750" cy="100" r="6" fill="var(--bg-color)" />
+                        <circle cx="750" cy="300" r="6" fill="var(--bg-color)" />
+                        <circle cx="750" cy="450" r="6" fill="var(--bg-color)" />
+                        <circle cx="950" cy="200" r="8" fill="var(--bg-color)" strokeWidth="2" />
+                    </g>
                     
-                    {/* Left Column: Intro, Bio, and CTAs */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.6 }}
-                    >
-                        {/* Status Pill */}
-                        <div style={{ marginBottom: '24px', display: 'inline-block' }}>
-                            <span className="status-pill">
-                                <span className="pulse-dot"></span>
-                                Available for Full-time Senior Roles & Consulting
-                            </span>
-                        </div>
+                    {/* Animated Data Packets */}
+                    <circle r="3" fill="var(--primary-color)">
+                        <animateMotion dur="4s" repeatCount="indefinite" path="M 50,200 C 150,200 150,100 250,100" />
+                    </circle>
+                    <circle r="3" fill="var(--accent-cyan)">
+                        <animateMotion dur="3s" repeatCount="indefinite" path="M 50,200 C 150,200 150,300 250,300" />
+                    </circle>
+                    <circle r="3" fill="var(--primary-color)">
+                        <animateMotion dur="3.5s" repeatCount="indefinite" path="M 250,100 C 350,100 350,200 450,200" />
+                    </circle>
+                    <circle r="3" fill="var(--accent-purple)">
+                        <animateMotion dur="4s" repeatCount="indefinite" path="M 250,300 C 350,300 350,200 450,200" />
+                    </circle>
+                    <circle r="4" fill="var(--accent-emerald)">
+                        <animateMotion dur="5s" repeatCount="indefinite" path="M 450,200 C 600,200 600,100 750,100" />
+                    </circle>
+                    <circle r="4" fill="var(--primary-color)">
+                        <animateMotion dur="4.5s" repeatCount="indefinite" path="M 450,200 C 600,200 600,300 750,300" />
+                    </circle>
+                </svg>
+            </div>
 
-                        {/* Name */}
-                        <h1 style={{
-                            fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-                            fontWeight: 800,
-                            marginBottom: '10px',
-                            lineHeight: 1.1,
-                            letterSpacing: '-1px'
-                        }}>
+            <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '40px', alignItems: 'center', marginBottom: '80px' }}>
+                    
+                    {/* Left Column: Intro */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        style={{ flex: '1 1 500px' }}
+                    >
+                        <div style={{ display: 'inline-block', padding: '8px 16px', background: 'var(--badge-bg)', color: 'var(--primary-color)', borderRadius: '9999px', fontWeight: 600, fontSize: '0.9rem', marginBottom: '24px', border: '1px solid var(--badge-border)' }}>
+                            <span style={{ marginRight: '8px' }}>👋</span> Hello, I'm
+                        </div>
+                        
+                        <h1 className="hero-title" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', lineHeight: 1.1, marginBottom: '20px', letterSpacing: '-1px' }}>
                             Shubham Srivastava
                         </h1>
-
-                        {/* Title */}
-                        <h2 style={{
-                            fontSize: 'clamp(1.4rem, 3vw, 2rem)',
-                            fontWeight: 600,
-                            color: 'var(--text-secondary)',
-                            marginBottom: '24px',
-                            lineHeight: 1.3
-                        }}>
-                            Senior Data & <span className="gradient-text">Cloud Engineer</span>
+                        <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2.2rem)', color: 'var(--text-secondary)', marginBottom: '30px', fontWeight: 400 }}>
+                            Senior Data & <span className="gradient-text" style={{ fontWeight: 600 }}>Cloud Engineer</span>
                         </h2>
 
-                        {/* Social Links (Moved here from Contact as per user request) */}
-                        <div style={{ display: 'flex', gap: '16px', marginBottom: '30px' }}>
-                            <a href="https://www.linkedin.com/in/chresko" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.95rem' }}>
-                                <FiLinkedin /> <span>LinkedIn</span>
-                            </a>
-                            <a href="https://github.com/Chresko08" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.95rem' }}>
-                                <FiGithub /> <span>GitHub</span>
-                            </a>
-                            <a href="https://leetcode.com/u/shubham_chresko/" target="_blank" rel="noopener noreferrer" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.95rem' }}>
-                                <SiLeetcode /> <span>LeetCode</span>
-                            </a>
+                        {/* Social Links Moved Here */}
+                        <div style={{ display: 'flex', gap: '15px', marginBottom: '30px' }}>
+                            {socialLinks.map((link) => (
+                                <a
+                                    key={link.label}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="social-icon"
+                                    aria-label={link.label}
+                                    style={{
+                                        width: '40px', height: '40px', borderRadius: '50%',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        background: 'var(--surface-color)', border: '1px solid var(--card-border)',
+                                        color: 'var(--text-secondary)', transition: 'all 0.3s ease'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = 'var(--primary-color)';
+                                        e.currentTarget.style.color = '#fff';
+                                        e.currentTarget.style.transform = 'translateY(-3px)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = 'var(--surface-color)';
+                                        e.currentTarget.style.color = 'var(--text-secondary)';
+                                        e.currentTarget.style.transform = 'translateY(0)';
+                                    }}
+                                >
+                                    {link.icon}
+                                </a>
+                            ))}
                         </div>
 
-                        {/* Bio Paragraphs */}
-                        <div style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.7, marginBottom: '35px' }}>
-                            <p style={{ marginBottom: '16px' }}>
-                                I am a <strong style={{ color: 'var(--text-primary)' }}>Senior Data Engineer</strong> with over 5 years of proven enterprise experience consulting for tier-1 global organizations, including <span style={{ color: 'var(--primary-color)', fontWeight: 600 }}>EY</span> and <span style={{ color: 'var(--accent-cyan)', fontWeight: 600 }}>Infosys</span>.
+                        <div className="glass-card" style={{ padding: '24px', marginBottom: '32px', borderLeft: '4px solid var(--primary-color)' }}>
+                            <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '16px' }}>
+                                Specializing in migrating legacy on-premise systems to modern cloud-native architectures. Beyond just moving data, I focus on engineering strict data governance, optimizing pipeline SLAs (reducing runtimes by up to 70%), and building automated validation frameworks that Fortune 100 financial and healthcare institutions rely on for critical business intelligence.
                             </p>
-                            <p style={{ marginBottom: '16px' }}>
-                                My technical foundation is highly versatile. I operate seamlessly across the data spectrum as a <strong style={{ color: 'var(--text-primary)' }}>Big Data Engineer</strong> processing terabytes of information, a <strong style={{ color: 'var(--text-primary)' }}>Cloud Architect</strong> designing robust infrastructure across AWS, Azure, and GCP, and an <strong style={{ color: 'var(--text-primary)' }}>ETL Developer</strong> orchestrating complex, dependency-driven pipelines.
-                            </p>
-                            <p>
-                                I specialize in migrating legacy on-premise systems to modern cloud-native architectures. Beyond just moving data, I focus on engineering strict data governance, optimizing pipeline SLAs (reducing runtimes by up to 70%), and building automated validation frameworks that Fortune 100 financial and healthcare institutions rely on for critical business intelligence.
+                            <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 0 }}>
+                                <strong style={{ color: 'var(--text-primary)' }}>I bring a relentless go-getter attitude to my engineering.</strong> I don't sit on problems—I proactively connect with the right people, hunt down resources, and forge new pathways to engineer solutions that perfectly fit the client's architectural requirements.
                             </p>
                         </div>
 

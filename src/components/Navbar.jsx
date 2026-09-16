@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiSun, FiMoon, FiExternalLink } from 'react-icons/fi';
+import { FiMenu, FiX, FiMoon, FiSun, FiExternalLink, FiEye } from 'react-icons/fi';
 import Logo from './Logo';
 
-const Navbar = () => {
+const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
     const [activeSection, setActiveSection] = useState('hero');
+    const [showViewMenu, setShowViewMenu] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -19,29 +19,26 @@ const Navbar = () => {
 
             for (const section of sections) {
                 const element = document.getElementById(section);
-                if (element) {
-                    const top = element.offsetTop;
-                    const height = element.offsetHeight;
-                    if (scrollPosition >= top && scrollPosition < top + height) {
-                        setActiveSection(section);
-                        break;
-                    }
+                if (element && element.offsetTop <= scrollPosition && (element.offsetTop + element.offsetHeight) > scrollPosition) {
+                    setActiveSection(section);
                 }
             }
         };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
+        window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    useEffect(() => {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-    }, [theme]);
-
-    const toggleTheme = () => {
-        setTheme(theme === 'dark' ? 'light' : 'dark');
+    const navStyles = {
+        position: 'fixed',
+        top: 0,
+        width: '100%',
+        padding: scrolled ? '15px 0' : '25px 0',
+        background: scrolled ? 'var(--nav-bg)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(10px)' : 'none',
+        boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.05)' : 'none',
+        zIndex: 1000,
+        transition: 'all 0.3s ease'
     };
 
     const navItems = [
@@ -50,20 +47,11 @@ const Navbar = () => {
         { label: 'Contact', href: '#contact', id: 'contact' },
     ];
 
-    const navStyles = {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        padding: scrolled ? '14px 0' : '22px 0',
-        transition: 'all 0.35s ease',
-        background: scrolled ? 'var(--nav-bg)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(16px)' : 'none',
-        WebkitBackdropFilter: scrolled ? 'blur(16px)' : 'none',
-        borderBottom: scrolled ? '1px solid var(--card-border)' : '1px solid transparent',
-        boxShadow: scrolled ? '0 10px 30px -10px rgba(0,0,0,0.3)' : 'none'
-    };
+    const viewOptions = [
+        { id: 'all', label: 'All Content' },
+        { id: 'recruiter', label: 'Recruiter View' },
+        { id: 'technical', label: 'Technical View' }
+    ];
 
     return (
         <nav style={navStyles}>
@@ -102,6 +90,90 @@ const Navbar = () => {
                     })}
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'center' }}>
+                        
+                        {/* View Mode Dropdown */}
+                        <div style={{ position: 'relative' }}>
+                            <motion.button
+                                onClick={() => setShowViewMenu(!showViewMenu)}
+                                whileTap={{ scale: 0.95 }}
+                                style={{
+                                    background: 'var(--surface-color)',
+                                    color: 'var(--text-primary)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    padding: '6px 12px',
+                                    borderRadius: '8px',
+                                    border: '1px solid var(--card-border)',
+                                    cursor: 'pointer',
+                                    fontSize: '0.85rem',
+                                    fontWeight: 600
+                                }}
+                            >
+                                <FiEye size={14} style={{ color: 'var(--primary-color)' }} />
+                                {viewOptions.find(opt => opt.id === viewMode)?.label}
+                            </motion.button>
+
+                            <AnimatePresence>
+                                {showViewMenu && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        transition={{ duration: 0.15 }}
+                                        style={{
+                                            position: 'absolute',
+                                            top: '100%',
+                                            right: 0,
+                                            marginTop: '8px',
+                                            background: 'var(--surface-card)',
+                                            border: '1px solid var(--card-border)',
+                                            borderRadius: '8px',
+                                            padding: '8px',
+                                            minWidth: '160px',
+                                            boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+                                            zIndex: 10
+                                        }}
+                                    >
+                                        {viewOptions.map((opt) => (
+                                            <div
+                                                key={opt.id}
+                                                onClick={() => {
+                                                    setViewMode(opt.id);
+                                                    setShowViewMenu(false);
+                                                }}
+                                                style={{
+                                                    padding: '8px 12px',
+                                                    fontSize: '0.85rem',
+                                                    fontWeight: 500,
+                                                    color: viewMode === opt.id ? 'var(--primary-color)' : 'var(--text-secondary)',
+                                                    cursor: 'pointer',
+                                                    borderRadius: '6px',
+                                                    background: viewMode === opt.id ? 'var(--badge-bg)' : 'transparent',
+                                                    transition: 'all 0.2s ease',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    if(viewMode !== opt.id) e.currentTarget.style.background = 'var(--surface-color)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    if(viewMode !== opt.id) e.currentTarget.style.background = 'transparent';
+                                                }}
+                                            >
+                                                <div style={{
+                                                    width: '6px', height: '6px', borderRadius: '50%',
+                                                    background: viewMode === opt.id ? 'var(--primary-color)' : 'transparent'
+                                                }} />
+                                                {opt.label}
+                                            </div>
+                                        ))}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
                         {/* Theme Toggle */}
                         <motion.button
                             onClick={toggleTheme}
@@ -139,7 +211,7 @@ const Navbar = () => {
 
                         {/* Resume CTA button */}
                         <motion.a
-                            href="https://drive.google.com/file/d/13T3uAmP2iG6Pq2qosDZdNuk17G41v7cf/view?usp=share_link"
+                            href="https://drive.google.com/file/d/1X7xri0IVDUtWYZz_MF_WN2IHHtFK56Bc/view?usp=sharing"
                             target="_blank"
                             rel="noopener noreferrer"
                             whileHover={{ scale: 1.03 }}
