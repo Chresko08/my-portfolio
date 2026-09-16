@@ -54,23 +54,39 @@ const Certificates = () => {
             category: "Cloud Infrastructure"
         },
         {
-            title: "HackerRank Advanced SQL Certificate",
+            title: "HackerRank SQL (Advanced)",
             issuer: "HackerRank",
             icon: <SiHackerrank size={28} color="#00EA64" />,
-            link: "https://www.hackerrank.com/profile/shubham_chresko",
+            link: "https://www.hackerrank.com/certificates/54d980f0649b",
             color: "#00EA64",
             category: "Database & SQL"
         },
         {
-            title: "HackerRank Python Certificate",
+            title: "HackerRank SQL (Intermediate)",
             issuer: "HackerRank",
             icon: <SiHackerrank size={28} color="#00EA64" />,
-            link: "https://www.hackerrank.com/profile/shubham_chresko",
+            link: "https://www.hackerrank.com/certificates/632dd6e24bbc",
+            color: "#00EA64",
+            category: "Database & SQL"
+        },
+        {
+            title: "HackerRank SQL (Basic)",
+            issuer: "HackerRank",
+            icon: <SiHackerrank size={28} color="#00EA64" />,
+            link: "https://www.hackerrank.com/certificates/bedfcced02a0",
+            color: "#00EA64",
+            category: "Database & SQL"
+        },
+        {
+            title: "HackerRank Python (Basic)",
+            issuer: "HackerRank",
+            icon: <SiHackerrank size={28} color="#00EA64" />,
+            link: "https://www.hackerrank.com/certificates/3d9adfc63466",
             color: "#00EA64",
             category: "Programming"
         },
         {
-            title: "HackerRank Certificates (REST API & Others)",
+            title: "HackerRank Problem Solving & Java (Basic)",
             issuer: "HackerRank",
             icon: <SiHackerrank size={28} color="#00EA64" />,
             link: "https://www.hackerrank.com/profile/shubham_chresko",
