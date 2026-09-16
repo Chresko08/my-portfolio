@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMenu, FiX, FiMoon, FiSun, FiExternalLink, FiEye } from 'react-icons/fi';
+import { FiMoon, FiSun, FiExternalLink, FiLock, FiUnlock, FiUser, FiCode } from 'react-icons/fi';
 import Logo from './Logo';
 
 const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState('hero');
-    const [showViewMenu, setShowViewMenu] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 40);
 
-            // Scroll-spy to detect active section
             const sections = ['hero', 'experience', 'certificates', 'contact'];
             const scrollPosition = window.scrollY + 200;
 
@@ -29,11 +27,22 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    const handleModeChange = (mode) => {
+        if (mode === 'all') {
+            const pwd = window.prompt("Enter password to view All Content:");
+            if (pwd !== 'open') {
+                alert("Incorrect password.");
+                return;
+            }
+        }
+        setViewMode(mode);
+    };
+
     const navStyles = {
         position: 'fixed',
         top: 0,
         width: '100%',
-        padding: scrolled ? '15px 0' : '25px 0',
+        padding: scrolled ? '12px 0' : '20px 0',
         background: scrolled ? 'var(--nav-bg)' : 'transparent',
         backdropFilter: scrolled ? 'blur(10px)' : 'none',
         boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.05)' : 'none',
@@ -47,12 +56,6 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
         { label: 'Contact', href: '#contact', id: 'contact' },
     ];
 
-    const viewOptions = [
-        { id: 'all', label: 'All Content' },
-        { id: 'recruiter', label: 'Recruiter View' },
-        { id: 'technical', label: 'Technical View' }
-    ];
-
     return (
         <nav style={navStyles}>
             <div className="container navbar-container">
@@ -64,7 +67,6 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
                 <div
                     className="hamburger"
                     onClick={() => setIsOpen(!isOpen)}
-                    aria-label="Toggle navigation menu"
                     role="button"
                     tabIndex={0}
                 >
@@ -89,89 +91,53 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
                         );
                     })}
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
                         
-                        {/* View Mode Dropdown */}
-                        <div style={{ position: 'relative' }}>
-                            <motion.button
-                                onClick={() => setShowViewMenu(!showViewMenu)}
-                                whileTap={{ scale: 0.95 }}
+                        {/* Inline View Mode Toggles */}
+                        <div style={{
+                            display: 'flex',
+                            background: 'var(--surface-color)',
+                            borderRadius: '8px',
+                            border: '1px solid var(--card-border)',
+                            padding: '4px',
+                            gap: '4px'
+                        }}>
+                            <button
+                                onClick={() => handleModeChange('recruiter')}
                                 style={{
-                                    background: 'var(--surface-color)',
-                                    color: 'var(--text-primary)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    padding: '6px 12px',
-                                    borderRadius: '8px',
-                                    border: '1px solid var(--card-border)',
-                                    cursor: 'pointer',
-                                    fontSize: '0.85rem',
-                                    fontWeight: 600
+                                    display: 'flex', alignItems: 'center', gap: '6px',
+                                    padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600,
+                                    background: viewMode === 'recruiter' ? 'var(--badge-bg)' : 'transparent',
+                                    color: viewMode === 'recruiter' ? 'var(--primary-color)' : 'var(--text-secondary)',
+                                    border: 'none', cursor: 'pointer', transition: 'all 0.2s ease'
                                 }}
                             >
-                                <FiEye size={14} style={{ color: 'var(--primary-color)' }} />
-                                {viewOptions.find(opt => opt.id === viewMode)?.label}
-                            </motion.button>
-
-                            <AnimatePresence>
-                                {showViewMenu && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                        transition={{ duration: 0.15 }}
-                                        style={{
-                                            position: 'absolute',
-                                            top: '100%',
-                                            right: 0,
-                                            marginTop: '8px',
-                                            background: 'var(--surface-card)',
-                                            border: '1px solid var(--card-border)',
-                                            borderRadius: '8px',
-                                            padding: '8px',
-                                            minWidth: '160px',
-                                            boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
-                                            zIndex: 10
-                                        }}
-                                    >
-                                        {viewOptions.map((opt) => (
-                                            <div
-                                                key={opt.id}
-                                                onClick={() => {
-                                                    setViewMode(opt.id);
-                                                    setShowViewMenu(false);
-                                                }}
-                                                style={{
-                                                    padding: '8px 12px',
-                                                    fontSize: '0.85rem',
-                                                    fontWeight: 500,
-                                                    color: viewMode === opt.id ? 'var(--primary-color)' : 'var(--text-secondary)',
-                                                    cursor: 'pointer',
-                                                    borderRadius: '6px',
-                                                    background: viewMode === opt.id ? 'var(--badge-bg)' : 'transparent',
-                                                    transition: 'all 0.2s ease',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '8px'
-                                                }}
-                                                onMouseEnter={(e) => {
-                                                    if(viewMode !== opt.id) e.currentTarget.style.background = 'var(--surface-color)';
-                                                }}
-                                                onMouseLeave={(e) => {
-                                                    if(viewMode !== opt.id) e.currentTarget.style.background = 'transparent';
-                                                }}
-                                            >
-                                                <div style={{
-                                                    width: '6px', height: '6px', borderRadius: '50%',
-                                                    background: viewMode === opt.id ? 'var(--primary-color)' : 'transparent'
-                                                }} />
-                                                {opt.label}
-                                            </div>
-                                        ))}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                                <FiUser size={13} /> Recruiter
+                            </button>
+                            <button
+                                onClick={() => handleModeChange('all')}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '6px',
+                                    padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600,
+                                    background: viewMode === 'all' ? 'var(--badge-bg)' : 'transparent',
+                                    color: viewMode === 'all' ? 'var(--primary-color)' : 'var(--text-secondary)',
+                                    border: 'none', cursor: 'pointer', transition: 'all 0.2s ease'
+                                }}
+                            >
+                                {viewMode === 'all' ? <FiUnlock size={13} /> : <FiLock size={13} />} All Content
+                            </button>
+                            <button
+                                onClick={() => handleModeChange('technical')}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '6px',
+                                    padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600,
+                                    background: viewMode === 'technical' ? 'var(--badge-bg)' : 'transparent',
+                                    color: viewMode === 'technical' ? 'var(--primary-color)' : 'var(--text-secondary)',
+                                    border: 'none', cursor: 'pointer', transition: 'all 0.2s ease'
+                                }}
+                            >
+                                <FiCode size={13} /> Technical
+                            </button>
                         </div>
 
                         {/* Theme Toggle */}
@@ -183,12 +149,12 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
                             style={{
                                 background: 'var(--surface-color)',
                                 color: 'var(--text-primary)',
-                                fontSize: '1.1rem',
+                                fontSize: '1rem',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                width: '38px',
-                                height: '38px',
+                                width: '34px',
+                                height: '34px',
                                 borderRadius: '50%',
                                 border: '1px solid var(--card-border)',
                                 cursor: 'pointer',
@@ -220,12 +186,12 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '6px',
-                                padding: '8px 18px',
+                                padding: '6px 14px',
                                 border: '1px solid var(--primary-color)',
                                 borderRadius: '9999px',
                                 color: 'var(--primary-color)',
                                 background: 'var(--badge-bg)',
-                                fontSize: '0.88rem',
+                                fontSize: '0.85rem',
                                 fontWeight: 600,
                                 cursor: 'pointer',
                                 textDecoration: 'none',

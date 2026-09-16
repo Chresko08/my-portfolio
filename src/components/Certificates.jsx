@@ -54,7 +54,23 @@ const Certificates = () => {
             category: "Cloud Infrastructure"
         },
         {
-            title: "HackerRank Certifications (SQL, Python, REST)",
+            title: "HackerRank Advanced SQL Certificate",
+            issuer: "HackerRank",
+            icon: <SiHackerrank size={28} color="#00EA64" />,
+            link: "https://www.hackerrank.com/profile/shubham_chresko",
+            color: "#00EA64",
+            category: "Database & SQL"
+        },
+        {
+            title: "HackerRank Python Certificate",
+            issuer: "HackerRank",
+            icon: <SiHackerrank size={28} color="#00EA64" />,
+            link: "https://www.hackerrank.com/profile/shubham_chresko",
+            color: "#00EA64",
+            category: "Programming"
+        },
+        {
+            title: "HackerRank Certificates (REST API & Others)",
             issuer: "HackerRank",
             icon: <SiHackerrank size={28} color="#00EA64" />,
             link: "https://www.hackerrank.com/profile/shubham_chresko",

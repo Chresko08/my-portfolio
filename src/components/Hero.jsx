@@ -47,7 +47,7 @@ const Hero = () => {
     ];
 
     return (
-        <section id="hero" className="hero-section" style={{ position: 'relative', overflow: 'hidden' }}>
+        <section id="hero" className="hero-section" style={{ position: 'relative', overflow: 'hidden', paddingTop: '130px' }}>
             {/* Data Engineering Decorative DAG Background */}
             <div style={{
                 position: 'absolute',
@@ -56,7 +56,7 @@ const Hero = () => {
                 right: 0,
                 bottom: 0,
                 zIndex: 0,
-                opacity: 0.05,
+                opacity: 0.2,
                 pointerEvents: 'none',
                 overflow: 'hidden'
             }}>
@@ -67,7 +67,7 @@ const Hero = () => {
                             <stop offset="100%" stopColor="var(--accent-purple)" />
                         </linearGradient>
                     </defs>
-                    <g stroke="url(#lineGrad)" strokeWidth="1.5" fill="none">
+                    <g stroke="url(#lineGrad)" strokeWidth="2.5" fill="none">
                         {/* Pipelines */}
                         <path d="M 50,200 C 150,200 150,100 250,100" />
                         <path d="M 50,200 C 150,200 150,300 250,300" />

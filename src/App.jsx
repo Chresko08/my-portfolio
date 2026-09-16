@@ -8,8 +8,8 @@ import BackToTop from './components/BackToTop';
 
 function App() {
     const [theme, setTheme] = useState('dark');
-    // viewMode can be 'all', 'recruiter', or 'technical'
-    const [viewMode, setViewMode] = useState('all');
+    // viewMode can be 'all', 'recruiter', or 'technical'. Defaulting to technical as requested.
+    const [viewMode, setViewMode] = useState('technical');
 
     const toggleTheme = () => {
         const newTheme = theme === 'dark' ? 'light' : 'dark';
