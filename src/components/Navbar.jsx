@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMoon, FiSun, FiExternalLink, FiLock, FiUnlock, FiUser, FiCode } from 'react-icons/fi';
+import { FiMoon, FiSun, FiExternalLink, FiLock, FiUnlock, FiUser, FiCode, FiMail } from 'react-icons/fi';
 import Logo from './Logo';
 
 const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
@@ -175,6 +175,30 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
                                 </motion.div>
                             </AnimatePresence>
                         </motion.button>
+
+                        {/* Email CTA button */}
+                        <motion.a
+                            href="mailto:shubhamsrivastava08@gmail.com"
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                padding: '6px 14px',
+                                borderRadius: '9999px',
+                                color: 'var(--bg-color)',
+                                background: 'var(--primary-color)',
+                                fontSize: '0.85rem',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                                transition: 'all 0.25s ease'
+                            }}
+                        >
+                            <FiMail size={13} />
+                            <span>Contact</span>
+                        </motion.a>
 
                         {/* Resume CTA button */}
                         <motion.a

@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiChevronDown, FiChevronUp, FiBookOpen, FiSearch, FiFilter, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiChevronDown, FiChevronUp, FiBookOpen, FiSearch, FiFilter, FiChevronLeft, FiChevronRight, FiCheckCircle, FiStar } from 'react-icons/fi';
 import { interviewCategories } from '../data/interviewData';
 
 const ITEMS_PER_PAGE = 10;
@@ -14,6 +14,29 @@ const InterviewPrep = ({ viewMode }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [complexityFilter, setComplexityFilter] = useState("All");
     const [currentPage, setCurrentPage] = useState(1);
+    const [questionStatuses, setQuestionStatuses] = useState({});
+
+    // Load from local storage on mount
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('interviewQuestionStatuses');
+            if (saved) {
+                setQuestionStatuses(JSON.parse(saved));
+            }
+        } catch (e) {
+            console.error("Error loading statuses", e);
+        }
+    }, []);
+
+    const toggleStatus = (qNo, type, e) => {
+        e.stopPropagation(); // Prevent expanding the accordion
+        setQuestionStatuses(prev => {
+            const current = prev[qNo] || { completed: false, review: false };
+            const updated = { ...prev, [qNo]: { ...current, [type]: !current[type] } };
+            localStorage.setItem('interviewQuestionStatuses', JSON.stringify(updated));
+            return updated;
+        });
+    };
 
     const toggleQuestion = (qIndex) => {
         setExpandedQuestion(prev => prev === qIndex ? null : qIndex);
@@ -226,8 +249,13 @@ const InterviewPrep = ({ viewMode }) => {
                                         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', width: '100%' }}>
                                             <FiBookOpen style={{ color: 'var(--primary-color)', marginTop: '4px', flexShrink: 0 }} size={18} />
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                                                <span style={{ lineHeight: '1.4' }}>
-                                                    {item.qNo && <span style={{ color: 'var(--primary-color)', marginRight: '6px' }}>Q{item.qNo}.</span>}
+                                                <span style={{ 
+                                                    lineHeight: '1.4',
+                                                    textDecoration: questionStatuses[item.qNo]?.completed ? 'line-through' : 'none',
+                                                    opacity: questionStatuses[item.qNo]?.completed ? 0.6 : 1,
+                                                    transition: 'all 0.2s'
+                                                }}>
+                                                    {item.qNo && <span style={{ color: 'var(--primary-color)', marginRight: '6px', textDecoration: 'none', display: 'inline-block' }}>Q{item.qNo}.</span>}
                                                     {item.q}
                                                 </span>
                                                 {item.complexity && (
@@ -247,12 +275,40 @@ const InterviewPrep = ({ viewMode }) => {
                                                 )}
                                             </div>
                                         </div>
-                                        <div style={{ flexShrink: 0, marginLeft: '16px', marginTop: '2px' }}>
-                                            {expandedQuestion === globalIndex ? (
-                                                <FiChevronUp size={20} style={{ color: 'var(--text-secondary)' }} />
-                                            ) : (
-                                                <FiChevronDown size={20} style={{ color: 'var(--text-secondary)' }} />
+                                        <div style={{ flexShrink: 0, marginLeft: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            {item.qNo && (
+                                                <>
+                                                    <button 
+                                                        onClick={(e) => toggleStatus(item.qNo, 'review', e)}
+                                                        title="Mark for Review"
+                                                        style={{
+                                                            background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px',
+                                                            color: questionStatuses[item.qNo]?.review ? '#f59e0b' : 'var(--text-muted)',
+                                                            display: 'flex', alignItems: 'center', transition: 'color 0.2s'
+                                                        }}
+                                                    >
+                                                        <FiStar size={18} fill={questionStatuses[item.qNo]?.review ? '#f59e0b' : 'none'} />
+                                                    </button>
+                                                    <button 
+                                                        onClick={(e) => toggleStatus(item.qNo, 'completed', e)}
+                                                        title="Mark as Completed"
+                                                        style={{
+                                                            background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px',
+                                                            color: questionStatuses[item.qNo]?.completed ? 'var(--accent-emerald)' : 'var(--text-muted)',
+                                                            display: 'flex', alignItems: 'center', transition: 'color 0.2s'
+                                                        }}
+                                                    >
+                                                        <FiCheckCircle size={18} fill={questionStatuses[item.qNo]?.completed ? 'var(--accent-emerald)' : 'none'} color={questionStatuses[item.qNo]?.completed ? 'var(--bg-color)' : 'currentColor'} />
+                                                    </button>
+                                                </>
                                             )}
+                                            <div style={{ marginLeft: '4px', display: 'flex', alignItems: 'center' }}>
+                                                {expandedQuestion === globalIndex ? (
+                                                    <FiChevronUp size={20} style={{ color: 'var(--text-secondary)' }} />
+                                                ) : (
+                                                    <FiChevronDown size={20} style={{ color: 'var(--text-secondary)' }} />
+                                                )}
+                                            </div>
                                         </div>
                                     </button>
 
