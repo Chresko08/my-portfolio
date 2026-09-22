@@ -5,6 +5,7 @@ import Experience from './components/Experience';
 import Certificates from './components/Certificates';
 import Contact from './components/Contact';
 import BackToTop from './components/BackToTop';
+import InterviewPrep from './components/InterviewPrep';
 
 function App() {
     const [theme, setTheme] = useState('dark');
@@ -38,6 +39,7 @@ function App() {
                 <Hero />
                 <Experience viewMode={viewMode} />
                 <Certificates />
+                <InterviewPrep viewMode={viewMode} />
                 <Contact viewMode={viewMode} />
             </main>
             <BackToTop />
