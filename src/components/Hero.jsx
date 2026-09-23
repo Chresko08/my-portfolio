@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowDown, FiMail, FiCheckCircle, FiLinkedin, FiGithub } from 'react-icons/fi';
+import { FiArrowDown, FiMail, FiCheckCircle, FiLinkedin, FiGithub, FiExternalLink } from 'react-icons/fi';
 import { SiLeetcode } from 'react-icons/si';
 
 const Hero = () => {
@@ -184,6 +184,24 @@ const Hero = () => {
                             <a href="#contact" className="btn-secondary" style={{ padding: '14px 28px' }}>
                                 <span>Contact Me</span>
                                 <FiMail />
+                            </a>
+                            <a 
+                                href="https://drive.google.com/file/d/1X7xri0IVDUtWYZz_MF_WN2IHHtFK56Bc/view?usp=sharing" 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn-secondary" 
+                                style={{ 
+                                    padding: '14px 28px',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    background: 'var(--badge-bg)',
+                                    color: 'var(--primary-color)',
+                                    borderColor: 'var(--primary-color)'
+                                }}
+                            >
+                                <span>Resume</span>
+                                <FiExternalLink />
                             </a>
                         </div>
                     </motion.div>

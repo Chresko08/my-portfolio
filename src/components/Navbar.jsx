@@ -7,14 +7,7 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState('hero');
-    const [copied, setCopied] = useState(false);
-
-    const handleCopyEmail = () => {
-        navigator.clipboard.writeText('shubhamsrivastava08@gmail.com');
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
+    
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 40);
@@ -183,58 +176,7 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
                             </AnimatePresence>
                         </motion.button>
 
-                        {/* Email Plain Text Display */}
-                        <motion.div
-                            onClick={handleCopyEmail}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                padding: '6px 14px',
-                                borderRadius: '8px',
-                                color: 'var(--text-primary)',
-                                background: 'var(--surface-color)',
-                                border: '1px solid var(--card-border)',
-                                fontSize: '0.85rem',
-                                fontWeight: 500,
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                                userSelect: 'all' // Allows HR to easily double click and select
-                            }}
-                            title="Click to copy email"
-                        >
-                            <FiMail size={14} style={{ color: 'var(--primary-color)' }} />
-                            <span>{copied ? 'Copied!' : 'shubhamsrivastava08@gmail.com'}</span>
-                        </motion.div>
-
-                        {/* Resume CTA button */}
-                        <motion.a
-                            href="https://drive.google.com/file/d/1X7xri0IVDUtWYZz_MF_WN2IHHtFK56Bc/view?usp=sharing"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            whileHover={{ scale: 1.03 }}
-                            whileTap={{ scale: 0.97 }}
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                padding: '6px 14px',
-                                border: '1px solid var(--primary-color)',
-                                borderRadius: '9999px',
-                                color: 'var(--primary-color)',
-                                background: 'var(--badge-bg)',
-                                fontSize: '0.85rem',
-                                fontWeight: 600,
-                                cursor: 'pointer',
-                                textDecoration: 'none',
-                                transition: 'all 0.25s ease'
-                            }}
-                        >
-                            <span>Resume</span>
-                            <FiExternalLink size={13} />
-                        </motion.a>
+                        
                     </div>
                 </div>
             </div>

@@ -108,38 +108,7 @@ const Contact = ({ viewMode }) => {
                                     <FiMail size={18} />
                                     Send
                                 </button>
-                                <button
-                                    type="button"
-                                    onClick={handleCopyEmail}
-                                    className="btn-secondary"
-                                    style={{
-                                        flex: 1, padding: '14px', borderRadius: '8px', fontSize: '1rem', position: 'relative'
-                                    }}
-                                >
-                                    <AnimatePresence mode="wait" initial={false}>
-                                        {copied ? (
-                                            <motion.span
-                                                key="copied"
-                                                initial={{ opacity: 0, y: -5 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: 5 }}
-                                                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: 'var(--accent-emerald)' }}
-                                            >
-                                                <FiCheck size={16} /> Copied!
-                                            </motion.span>
-                                        ) : (
-                                            <motion.span
-                                                key="copy"
-                                                initial={{ opacity: 0, y: 5 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -5 }}
-                                                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-                                            >
-                                                <FiCopy size={16} /> Copy Email
-                                            </motion.span>
-                                        )}
-                                    </AnimatePresence>
-                                </button>
+                                
                             </div>
                         </form>
                     </motion.div>
