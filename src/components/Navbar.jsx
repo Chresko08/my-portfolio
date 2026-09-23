@@ -7,6 +7,13 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState('hero');
+    const [copied, setCopied] = useState(false);
+
+    const handleCopyEmail = () => {
+        navigator.clipboard.writeText('shubhamsrivastava08@gmail.com');
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -176,29 +183,31 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
                             </AnimatePresence>
                         </motion.button>
 
-                        {/* Email CTA button */}
-                        <motion.a
-                            href="mailto:shubhamsrivastava08@gmail.com"
-                            whileHover={{ scale: 1.03 }}
-                            whileTap={{ scale: 0.97 }}
+                        {/* Email Plain Text Display */}
+                        <motion.div
+                            onClick={handleCopyEmail}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                             style={{
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: '6px',
+                                gap: '8px',
                                 padding: '6px 14px',
-                                borderRadius: '9999px',
-                                color: 'var(--bg-color)',
-                                background: 'var(--primary-color)',
+                                borderRadius: '8px',
+                                color: 'var(--text-primary)',
+                                background: 'var(--surface-color)',
+                                border: '1px solid var(--card-border)',
                                 fontSize: '0.85rem',
-                                fontWeight: 600,
+                                fontWeight: 500,
                                 cursor: 'pointer',
-                                textDecoration: 'none',
-                                transition: 'all 0.25s ease'
+                                transition: 'all 0.2s ease',
+                                userSelect: 'all' // Allows HR to easily double click and select
                             }}
+                            title="Click to copy email"
                         >
-                            <FiMail size={13} />
-                            <span>Contact</span>
-                        </motion.a>
+                            <FiMail size={14} style={{ color: 'var(--primary-color)' }} />
+                            <span>{copied ? 'Copied!' : 'shubhamsrivastava08@gmail.com'}</span>
+                        </motion.div>
 
                         {/* Resume CTA button */}
                         <motion.a
