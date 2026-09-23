@@ -38,7 +38,36 @@ const Contact = ({ viewMode }) => {
                         className="glass-card"
                         style={{ padding: '40px', position: 'relative' }}
                     >
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '24px', color: 'var(--text-primary)' }}>Send me a message</h3>
+                        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px', color: 'var(--text-primary)' }}>Reach Out Directly</h3>
+                        <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '0.95rem', lineHeight: '1.5' }}>
+                            You can directly copy my email address below, or use the contact form to send a message.
+                        </p>
+
+                        <div 
+                            style={{ 
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
+                                background: 'var(--bg-color)', padding: '16px 20px', borderRadius: '12px', 
+                                border: '1px solid var(--primary-color)', marginBottom: '32px'
+                            }}
+                        >
+                            <span style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-primary)', userSelect: 'all' }}>
+                                {emailAddress}
+                            </span>
+                            <button
+                                type="button"
+                                onClick={handleCopyEmail}
+                                style={{
+                                    background: copied ? 'var(--accent-emerald)' : 'var(--surface-color)', 
+                                    border: '1px solid', borderColor: copied ? 'var(--accent-emerald)' : 'var(--card-border)', 
+                                    padding: '8px 14px', borderRadius: '8px', cursor: 'pointer', 
+                                    display: 'flex', alignItems: 'center', gap: '8px', 
+                                    color: copied ? 'var(--bg-color)' : 'var(--text-primary)',
+                                    fontWeight: 500, transition: 'all 0.2s ease'
+                                }}
+                            >
+                                {copied ? <><FiCheck /> Copied!</> : <><FiCopy /> Copy Email</>}
+                            </button>
+                        </div>
                         
                         <form
                             action={`https://formsubmit.co/${emailAddress}`}
@@ -51,11 +80,10 @@ const Contact = ({ viewMode }) => {
                             <input type="text" name="_honey" style={{ display: 'none' }} />
 
                             <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Name</label>
+                                <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Name (Optional)</label>
                                 <input
                                     type="text"
                                     name="name"
-                                    required
                                     style={{
                                         width: '100%', padding: '12px 16px',
                                         background: 'var(--surface-color)', border: '1px solid var(--card-border)',
