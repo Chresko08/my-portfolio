@@ -12,7 +12,7 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 40);
 
-            const sections = ['hero', 'experience', 'certificates', 'interview-prep', 'contact'];
+            const sections = ['hero', 'experience', 'certificates', 'interview-prep', 'study-notes', 'contact'];
             const scrollPosition = window.scrollY + 200;
 
             for (const section of sections) {
@@ -53,7 +53,10 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
     const navItems = [
         { label: 'Experience', href: '#experience', id: 'experience' },
         { label: 'Certificates', href: '#certificates', id: 'certificates' },
-        ...(viewMode === 'all' ? [{ label: 'Interview Prep', href: '#interview-prep', id: 'interview-prep' }] : []),
+        ...(viewMode === 'all' ? [
+            { label: 'Interview Prep', href: '#interview-prep', id: 'interview-prep' },
+            { label: 'Study Notes', href: '#study-notes', id: 'study-notes' },
+        ] : []),
         { label: 'Contact', href: '#contact', id: 'contact' },
     ];
 
