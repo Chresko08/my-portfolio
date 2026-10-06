@@ -274,7 +274,7 @@ const Experience = ({ viewMode }) => {
                                     </ul>
 
                                     {/* Project Deep Dive (hidden in recruiter view) */}
-                                    {exp.project && viewMode !== 'recruiter' && (
+                                    {exp.project && (
                                         <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--card-border)' }}>
                                             <div style={{
                                                 background: 'var(--surface-color)',

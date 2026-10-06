@@ -6,31 +6,44 @@ import Certificates from './components/Certificates';
 import Contact from './components/Contact';
 import BackToTop from './components/BackToTop';
 import InterviewPrep from './components/InterviewPrep';
-import StudyNotes from './components/StudyNotes';
+import InterviewTracker from './components/InterviewTracker';
 
 function App() {
     const [theme, setTheme] = useState('dark');
-    // viewMode can be 'all', 'recruiter', or 'technical'. Defaulting to technical as requested.
-    const [viewMode, setViewMode] = useState('technical');
+    // viewMode: 'general' (public) or 'personal' (password-protected 'For Me')
+    const [viewMode, setViewMode] = useState('general');
 
     const toggleTheme = () => {
         const newTheme = theme === 'dark' ? 'light' : 'dark';
         setTheme(newTheme);
-        document.documentElement.setAttribute('data-theme', newTheme);
     };
 
+    // Synchronize HTML data-theme attribute
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
-        // Check local storage for viewMode preference
-        const savedViewMode = localStorage.getItem('portfolioViewMode');
-        if (savedViewMode) {
-            setViewMode(savedViewMode);
-        }
     }, [theme]);
+
+    // Check device persistence on initial mount
+    useEffect(() => {
+        const isAuthenticated = localStorage.getItem('portfolioAuthenticated') === 'true';
+        const savedMode = localStorage.getItem('portfolioActiveMode');
+        if (isAuthenticated) {
+            setViewMode(savedMode || 'personal');
+        }
+    }, []);
 
     const handleViewModeChange = (mode) => {
         setViewMode(mode);
-        localStorage.setItem('portfolioViewMode', mode);
+        localStorage.setItem('portfolioActiveMode', mode);
+        if (mode === 'personal') {
+            localStorage.setItem('portfolioAuthenticated', 'true');
+        }
+    };
+
+    const handleLockDevice = () => {
+        localStorage.removeItem('portfolioAuthenticated');
+        localStorage.removeItem('portfolioActiveMode');
+        setViewMode('general');
     };
 
     return (
@@ -40,8 +53,8 @@ function App() {
                 <Hero />
                 <Experience viewMode={viewMode} />
                 <Certificates />
+                <InterviewTracker viewMode={viewMode} onLockDevice={handleLockDevice} />
                 <InterviewPrep viewMode={viewMode} />
-                <StudyNotes viewMode={viewMode} />
                 <Contact viewMode={viewMode} />
             </main>
             <BackToTop />

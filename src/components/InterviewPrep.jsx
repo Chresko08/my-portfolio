@@ -6,8 +6,8 @@ import { interviewCategories } from '../data/interviewData';
 const ITEMS_PER_PAGE = 10;
 
 const InterviewPrep = ({ viewMode }) => {
-    // We only show this section in 'all' viewMode
-    if (viewMode !== 'all') return null;
+    // We only show this section in 'personal' viewMode
+    if (viewMode !== 'personal') return null;
 
     const [expandedQuestion, setExpandedQuestion] = useState(null);
     const [activeCategory, setActiveCategory] = useState(interviewCategories[0].id);

@@ -14,7 +14,7 @@ const Contact = ({ viewMode }) => {
 
     return (
         <section id="contact" className="section" style={{ paddingBottom: '120px' }}>
-            <div className="container" style={{ maxWidth: viewMode === 'technical' ? '600px' : '1000px', transition: 'max-width 0.3s ease' }}>
+            <div className="container" style={{ maxWidth: viewMode === 'general' ? '600px' : '1000px', transition: 'max-width 0.3s ease' }}>
                 <div className="section-title-wrap" style={{ textAlign: 'center', marginBottom: '60px' }}>
                     <span className="section-subtitle">Get In Touch</span>
                     <h2 className="section-heading">
@@ -24,7 +24,7 @@ const Contact = ({ viewMode }) => {
 
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: viewMode === 'technical' ? '1fr' : 'repeat(auto-fit, minmax(320px, 1fr))',
+                    gridTemplateColumns: viewMode === 'general' ? '1fr' : 'repeat(auto-fit, minmax(320px, 1fr))',
                     gap: '40px',
                     alignItems: 'start'
                 }}>
@@ -143,7 +143,7 @@ const Contact = ({ viewMode }) => {
 
                     {/* Right Column: Recruiter Quick Facts */}
                     <AnimatePresence>
-                        {viewMode !== 'technical' && (
+                        {viewMode !== 'general' && (
                             <motion.div
                                 initial={{ opacity: 0, x: 20, width: 0 }}
                                 animate={{ opacity: 1, x: 0, width: 'auto' }}
