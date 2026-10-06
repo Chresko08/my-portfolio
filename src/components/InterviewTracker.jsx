@@ -210,7 +210,7 @@ const InterviewTracker = ({ viewMode, onLockDevice }) => {
                         { label: 'Selected / Offer', count: stats.selected, color: '#10b981', filter: 'selected' },
                         { label: 'Under Review', count: stats.pending, color: '#f59e0b', filter: 'pending' },
                         { label: 'Not Selected', count: stats.rejected, color: '#ef4444', filter: 'rejected' },
-                        { label: 'Lapsed / Skipped', count: stats.skipped, color: '#94a3b8', filter: 'not-attempted' },
+                        ...(stats.skipped > 0 ? [{ label: 'Lapsed / Skipped', count: stats.skipped, color: '#94a3b8', filter: 'not-attempted' }] : []),
                     ].map(kpi => {
                         const isCurrent = statusFilter === kpi.filter;
                         return (
@@ -265,11 +265,11 @@ const InterviewTracker = ({ viewMode, onLockDevice }) => {
                     {/* Filter Pills */}
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                         {[
-                            { id: 'all', label: 'All' },
-                            { id: 'selected', label: 'Selected (1)' },
-                            { id: 'pending', label: 'Pending (1)' },
-                            { id: 'rejected', label: 'Rejected (4)' },
-                            { id: 'not-attempted', label: 'Skipped (1)' }
+                            { id: 'all', label: `All (${stats.total})` },
+                            { id: 'selected', label: `Selected (${stats.selected})` },
+                            { id: 'pending', label: `Pending (${stats.pending})` },
+                            { id: 'rejected', label: `Not Selected (${stats.rejected})` },
+                            ...(stats.skipped > 0 ? [{ id: 'not-attempted', label: `Skipped (${stats.skipped})` }] : [])
                         ].map(f => (
                             <button
                                 key={f.id}

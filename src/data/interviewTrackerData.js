@@ -1,6 +1,6 @@
 export const resignationDetails = {
     resignationDate: 'Aug 22, 2026',
-    lastWorkingDay: 'Nov 20, 2026',
+    lastWorkingDay: 'Nov 19, 2026',
     noticePeriod: '90 Days (Serving Notice)',
     currentCtc: '17 LPA Fixed + 20% Variable',
     expectedCtc: '20 - 24 LPA',
@@ -136,7 +136,7 @@ export const interviewRecords = [
         clientAccount: 'Data & Analytics Engineering Practice',
         date: 'Sept 30, 2026',
         status: 'rejected',
-        statusLabel: 'Round 1 Completed • Rejected',
+        statusLabel: 'Round 1 Completed • Not Selected',
         ctcOffered: null,
         location: 'Noida / Remote',
         rounds: [
@@ -183,12 +183,12 @@ export const interviewRecords = [
         clientAccount: 'Data Science & Analytics Division',
         date: 'Sept 26, 2026',
         status: 'rejected',
-        statusLabel: 'In-Person Hackathon • Rejected',
+        statusLabel: 'In-Person Hackathon • Not Selected',
         ctcOffered: null,
         location: 'Sector 126 Campus, Noida',
         rounds: [
             {
-                name: 'Virtual Orientation Call',
+                name: 'Stage 1: Virtual Orientation Call',
                 date: 'Sept 24, 2026',
                 duration: '30 min',
                 platform: 'MS Teams',
@@ -196,28 +196,20 @@ export const interviewRecords = [
                 notes: 'Hackathon logistics, sandbox parameters, and problem statement orientation.'
             },
             {
-                name: 'Online Technical Screening',
+                name: 'Stage 2: HirePanel GCP Assessment-Level2 (Initial Screening)',
                 date: 'Sept 25, 2026',
                 duration: '60 min',
-                platform: 'Online Assessment',
+                platform: 'TalentStudio Online',
                 status: 'cleared',
-                notes: 'Cleared technical screening assessment with ~80% score, qualifying for in-person campus hackathon.'
+                notes: 'Initial online proctored technical assessment cleared with ~80% score on Sept 25th, unlocking admission to the in-person campus hackathon.'
             },
             {
-                name: 'In-Person Hiring Challenge & Hackathon',
+                name: 'Stage 3: In-Person Hiring Challenge & Hackathon',
                 date: 'Sept 26, 2026 (08:30 AM – 05:30 PM IST)',
                 duration: '9 hours',
                 platform: 'In-Person (OMC-2 / ANDES Room, Noida)',
                 status: 'rejected',
-                notes: '9-hour full day coding challenge parsing interleaved banking extracts into Medallion architecture.'
-            },
-            {
-                name: 'HirePanel GCP Assessment-Level2',
-                date: 'Sept 26, 2026 (Post-Hackathon)',
-                duration: '45 min',
-                platform: 'TalentStudio',
-                status: 'completed',
-                notes: 'Mandatory proctored GCP Level-2 assessment completed after hackathon.'
+                notes: '9-hour full day on-premise coding challenge parsing interleaved banking extracts into Medallion architecture.'
             }
         ],
         keyTopics: [
@@ -243,7 +235,7 @@ export const interviewRecords = [
         clientAccount: 'Databricks-focused Boutique Consulting',
         date: 'Aug 25, 2026',
         status: 'rejected',
-        statusLabel: 'L1 Screening • Rejected',
+        statusLabel: 'L1 Screening • Not Selected',
         ctcOffered: null,
         location: 'Remote',
         rounds: [
@@ -280,7 +272,7 @@ export const interviewRecords = [
         clientAccount: 'Deloitte LLP / USI Consulting Practice',
         date: 'Aug 24, 2026',
         status: 'rejected',
-        statusLabel: 'Screening Completed • Rejected',
+        statusLabel: 'Screening Completed • Not Selected',
         ctcOffered: null,
         location: 'Gurugram / Delhi NCR',
         rounds: [
@@ -325,30 +317,30 @@ export const interviewRecords = [
                 myAnswer: 'Walked through end-to-end cloud migration patterns and enterprise data quality governance.'
             }
         ],
-        notes: 'Sourced via Covenant Consultants against 17 LPA Current / 20 LPA Target CTC. Serving notice with LWD recorded as Nov 20, 2026. External screening round did not convert to Deloitte hiring manager discussion.'
+        notes: 'Sourced via Covenant Consultants against 17 LPA Current / 20 LPA Target CTC. Serving notice with LWD recorded as Nov 19, 2026. External screening round did not convert to Deloitte hiring manager discussion.'
     },
     {
         id: 'micro1',
         company: 'micro1',
         role: 'Data Engineer (Remote Global Talent Pool)',
         clientAccount: 'Global US/Remote Talent Network',
-        date: 'May 12, 2026',
-        status: 'not-attempted',
-        statusLabel: 'Not Attempted • Expired',
+        date: 'Aug 2026',
+        status: 'rejected',
+        statusLabel: 'AI Interview Attempted • Not Selected',
         ctcOffered: '$80,000 – $150,000 USD / year',
         location: '100% Remote (Global)',
         rounds: [
             {
-                name: 'Asynchronous AI Video Assessment',
-                date: 'May 12, 2026 (Automated reminders May–Aug)',
+                name: 'Asynchronous AI Video Assessment ("Zara")',
+                date: 'Attempted on Final Reminder Date',
                 duration: '30 min',
                 platform: 'micro1 Conversational AI ("Zara")',
-                status: 'not-attempted',
-                notes: 'Adaptive conversational AI engine probing Big Data architecture, live Python systems, and Spark optimization. Link never attempted and lapsed.'
+                status: 'rejected',
+                notes: 'Attempted the 30-minute timed conversational AI video interview with Zara avatar on the final day of the reminder sequence. Probed PySpark internals, modern cloud DWH architectures, and live Python systems.'
             }
         ],
         keyTopics: [
-            'Adaptive Conversational AI Screen',
+            'Conversational AI Screen (Zara Avatar)',
             'PySpark Catalyst & Memory Tuning',
             'Cloud DWH (BigQuery, Redshift, Snowflake)',
             'Production Python OOP & Windowed SQL',
@@ -356,11 +348,11 @@ export const interviewRecords = [
         ],
         interviewQuestions: [
             {
-                topic: 'micro1 Evaluation Rubric',
-                q: 'Standard micro1 AI gate covers rapid spoken technical diagnostics on Spark internals (JVM layout, memory management), dimensional data modeling, and algorithmic Python under strict timing.',
-                myAnswer: 'Session was not scheduled/attempted prior to link expiration.'
+                topic: 'micro1 Conversational AI Evaluation',
+                q: 'Proprietary conversational AI evaluation probing spoken technical mastery:\n• Distributed Computing: Spark execution plans, shuffle bottlenecks, and memory management.\n• Data Architecture: Partitioning, clustering, and CDC ingestion paradigms.\n• Python & SQL: Modular data pipeline design and analytical window functions.',
+                myAnswer: 'Completed timed conversational assessment with AI interviewer on final reminder day.'
             }
         ],
-        notes: 'Sourced through Crossing Hurdles. Stated compensation band: $80,000–$150,000 USD/yr. High upside global talent pool gate that lapsed during intake funnel.'
+        notes: 'Sourced through Crossing Hurdles. Attempted the conversational AI screening on the final day of the reminder sequence. Did not convert to the vetted talent bench / matching stage.'
     }
 ];

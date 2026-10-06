@@ -273,8 +273,8 @@ const Experience = ({ viewMode }) => {
                                         ))}
                                     </ul>
 
-                                    {/* Project Deep Dive (hidden in recruiter view) */}
-                                    {exp.project && (
+                                    {/* Project Deep Dive (only visible in personal / For Me view) */}
+                                    {exp.project && viewMode === 'personal' && (
                                         <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--card-border)' }}>
                                             <div style={{
                                                 background: 'var(--surface-color)',
