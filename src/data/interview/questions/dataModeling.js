@@ -294,5 +294,26 @@ export const dataModelingQuestions = [
       "group-by-having"
     ],
     "codeSnippet": "SELECT order_id, product_id, COUNT(*) as duplicate_count\nFROM fact_order_lines\nGROUP BY order_id, product_id\nHAVING COUNT(*) > 1;"
+  },
+  {
+    "id": "dm-scd-type-2-customer-query-implementation",
+    "qNo": 145,
+    "q": "Write SQL queries to implement SCD (Slowly Changing Dimension) Type 2 updates for a Customer table. Walk through both traditional RDBMS transaction syntax and modern BigQuery/Databricks MERGE statements.",
+    "a": "Managing historical dimensions without overwriting prior records is fundamental to enterprise data warehousing (frequently asked at top banks like Standard Chartered).\n\n### 1. Traditional RDBMS Pattern (Two-Step Atomic Transaction)\nWhen customer `customerId = 1` updates their address to `\"abcd\"`:\n```sql\n-- Step 1: Invalidate / Expire the existing active version\nUPDATE Customer\nSET endDate = now(),\n    isCurrent = FALSE\nWHERE customerId = 1\n  AND isCurrent = TRUE;\n\n-- Step 2: Insert the newly active historical version\nINSERT INTO Customer (customerID, address, startDate, endDate, isCurrent)\nVALUES (1, 'abcd', now(), NULL, TRUE);\n```\n*Best Practice:* Both queries must execute inside a `BEGIN TRANSACTION ... COMMIT` block to ensure transactional atomicity.\n\n### 2. Modern Cloud Data Warehouse Pattern: Atomic MERGE INTO\nIn modern distributed engines (BigQuery, Snowflake, Databricks Delta Lake), updates and inserts are combined into an atomic `MERGE` using a Staging table:\n```sql\nMERGE INTO gold.dim_customer AS target\nUSING (\n    -- Combine incoming changes with existing active records\n    SELECT customer_id as merge_key, staging.* FROM stg_customer staging\n    UNION ALL\n    SELECT NULL as merge_key, staging.* FROM stg_customer staging\n) AS source\nON target.customer_id = source.merge_key AND target.is_current = TRUE\n-- Expire matched existing row when attribute changed\nWHEN MATCHED AND target.address <> source.address THEN\n    UPDATE SET target.end_date = CURRENT_TIMESTAMP(), target.is_current = FALSE\n-- Insert new active version\nWHEN NOT MATCHED THEN\n    INSERT (customer_id, address, start_date, end_date, is_current)\n    VALUES (source.customer_id, source.address, CURRENT_TIMESTAMP(), NULL, TRUE);\n```\n*Key Benefit:* The Delta Lake / BigQuery MERGE guarantees ACID serializability without table locks or race conditions during high-volume batch append runs.",
+    "complexity": "Intermediate",
+    "topics": [
+      "data-modeling",
+      "advanced-sql",
+      "bigquery",
+      "databricks"
+    ],
+    "tags": [
+      "scd-type-2",
+      "merge-dml",
+      "slowly-changing-dimensions",
+      "atomic-transactions",
+      "surrogate-keys"
+    ],
+    "codeSnippet": "-- Step 1: Invalidate existing active record\nUPDATE Customer SET endDate = now(), isCurrent = FALSE WHERE customerId = 1 AND isCurrent = TRUE;\n-- Step 2: Insert new record version\nINSERT INTO Customer (customerID, address, startDate, endDate, isCurrent) VALUES (1, 'abcd', now(), NULL, TRUE);"
   }
 ];

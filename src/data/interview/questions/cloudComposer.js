@@ -148,5 +148,26 @@ export const cloudComposerQuestions = [
       "worker-slot-exhaustion"
     ],
     "codeSnippet": "from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor\n\n# Modern Deferrable GCS Sensor: Zero worker slots consumed while waiting!\nwait_for_file = GCSObjectExistenceSensor(\n    task_id=\"wait_for_daily_file\",\n    bucket=\"landing-zone\",\n    object=\"data/daily_sales_{{ ds }}.parquet\",\n    deferrable=True,      # Hands execution over to Airflow Triggerer\n    timeout=60 * 60 * 6   # 6 hour timeout\n)"
+  },
+  {
+    "id": "composer-airflow-execution-models-cli-task-run",
+    "qNo": 144,
+    "q": "Apache Airflow Execution Models: Is Airflow synchronous or asynchronous? Can it execute tasks in parallel? Are workers stateful, can multiple instances of the same task run concurrently, and how do you execute a specific task via CLI?",
+    "a": "This is an essential operational questions suite asked in lead data engineering interviews (such as Standard Chartered Bank), evaluating your low-level understanding of the Airflow scheduler, executor engines, and CLI operational control.\n\n### 1. Synchronous vs. Asynchronous Execution\n- **Fundamentally Asynchronous:** The Airflow Scheduler does not synchronously wait for tasks to finish. It periodically parses DAGs, evaluates task upstream dependencies, and places runnable TaskInstances into an executor queue (`queued` state).\n- **Asynchronous Deferral (Airflow 2.2+):** With Deferrable Operators, tasks that wait for external systems (e.g. Dataproc jobs, BigQuery queries, or sensors) release their worker slot completely and register an async event with the lightweight `Triggerer` daemon.\n\n### 2. Can Parallel Execution Be Achieved?\n**Yes, absolutely:**\n- **SequentialExecutor:** Runs one task at a time (synchronous / SQLite only; dev only).\n- **LocalExecutor:** Spawns multiple worker processes or threads on a single node (parallel execution up to `parallelism` limit).\n- **CeleryExecutor / KubernetesExecutor:** Distributes tasks across a fleet of independent worker pods/machines, executing dozens or hundreds of tasks in parallel across separate nodes.\n\n### 3. Are Airflow Workers Stateful or Stateless?\n**Airflow Workers are strictly STATELESS.**\n- Workers receive a task execution payload from the executor queue, download the DAG file, run the task, upload logs to remote storage (GCS/S3), write task status (`SUCCESS`/`FAILED`) to the central Cloud SQL / Postgres metadata DB, and exit.\n- Workers do NOT maintain memory or local disk state across DAG runs. Cross-task state sharing is mediated exclusively via **XComs** (metadata DB / GCS object storage) or external tables.\n\n### 4. Can Airflow Run Multiple Instances of the Same Task Simultaneously?\n**Yes:**\n- Airflow can run multiple instances of the exact same task across different `logical_date` (execution date) intervals simultaneously during backfills.\n- **Concurrency Controls:** Controlled via:\n  - `max_active_tis_per_dag`: Max active task instances across runs of a single DAG.\n  - `max_active_runs`: Max active DAG runs allowed concurrently.\n  - `concurrency` (or task-level pool slots) to prevent overwhelming downstream databases.\n\n### 5. Running Specific Tasks Directly via CLI\nTo test or re-run a specific task without triggering the entire DAG:\n```bash\n# Airflow 2.x standard CLI to run a single task instance directly:\nairflow tasks run <dag_id> <task_id> <logical_date>\n\n# Example:\nairflow tasks run financial_odl_pipeline bq_load_transactions 2026-10-08\n\n# Testing a task locally without recording state in the metadata database:\nairflow tasks test financial_odl_pipeline bq_load_transactions 2026-10-08\n\n# Selectively backfilling only specific task regex across a date window:\nairflow dags backfill -t \"^bq_.*\" -s 2026-10-01 -e 2026-10-07 financial_odl_pipeline\n```",
+    "complexity": "Intermediate",
+    "topics": [
+      "cloud-composer",
+      "distributed-systems"
+    ],
+    "tags": [
+      "airflow-cli",
+      "airflow-internals",
+      "parallel-execution",
+      "stateless-workers",
+      "deferrable-operators",
+      "concurrency",
+      "task-instances"
+    ],
+    "codeSnippet": "# Run a specific task instance directly via Airflow CLI\nairflow tasks run financial_odl_pipeline bq_load_transactions 2026-10-08\n# Backfill specific tasks matching regex without running the entire DAG\nairflow dags backfill -t \"^bq_.*\" -s 2026-10-01 -e 2026-10-07 financial_odl_pipeline"
   }
 ];

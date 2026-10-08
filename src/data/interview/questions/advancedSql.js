@@ -294,5 +294,23 @@ export const advancedSqlQuestions = [
       "full-table-scan"
     ],
     "codeSnippet": "EXPLAIN ANALYZE SELECT c.customer_name, SUM(o.total_amount)\nFROM customers c JOIN orders o ON c.customer_id = o.customer_id\nWHERE o.order_date >= '2023-01-01' GROUP BY c.customer_name;"
+  },
+  {
+    "id": "sql-pairwise-highest-lowest-cross-join",
+    "qNo": 142,
+    "q": "SQL Pairwise Ranking: Given a table of products and prices, write a query to generate all unique pairs displaying the highest and lowest priced item in each pair.",
+    "a": "This is a classic query interview problem (asked at top financial institutions like Standard Chartered) testing self-joins, Cartesian products, and conditional logic.\n\n### Problem Statement\nInput Table A:\n```text\nproduct  | price\nlaptop   | 1500\nkeyboard | 1000\nmouse    | 500\n```\nExpected Output:\n```text\nhighest  | lowest\nlaptop   | keyboard\nlaptop   | mouse\nkeyboard | mouse\n```\n\n### Solution 1: CROSS JOIN with CASE Expressions & Inequality Filtering\n```sql\nSELECT\n    CASE\n        WHEN a1.price > a2.price THEN a1.product\n        ELSE a2.product\n    END AS highest,\n    CASE\n        WHEN a1.price < a2.price THEN a1.product\n        ELSE a2.product\n    END AS lowest\nFROM A AS a1\nCROSS JOIN A AS a2\nWHERE a1.product <> a2.product\n  AND a1.price > a2.price; -- Filters out duplicate inverted pairs (e.g. keyboard/laptop)\n```\n\n### Solution 2: Direct Theta Self-Join (Most Performant)\n```sql\nSELECT\n    a1.product AS highest,\n    a2.product AS lowest\nFROM A AS a1\nJOIN A AS a2 ON a1.price > a2.price;\n```\n*Why Solution 2 is preferred by optimizers:* By expressing the condition `ON a1.price > a2.price` directly in the join condition, the query optimizer avoids generating the full N*N Cartesian product in memory, directly streaming matching ordered pairs without post-filtering.",
+    "complexity": "Intermediate",
+    "topics": [
+      "advanced-sql"
+    ],
+    "tags": [
+      "cross-join",
+      "self-join",
+      "case-when",
+      "pairwise-comparison",
+      "ranking"
+    ],
+    "codeSnippet": "SELECT\n    CASE WHEN a1.price > a2.price THEN a1.product ELSE a2.product END AS highest,\n    CASE WHEN a1.price < a2.price THEN a1.product ELSE a2.product END AS lowest\nFROM A AS a1 CROSS JOIN A AS a2\nWHERE a1.product <> a2.product AND a1.price > a2.price;"
   }
 ];

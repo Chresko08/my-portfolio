@@ -102,5 +102,27 @@ export const dataGovernanceQuestions = [
       "key-shredding"
     ],
     "codeSnippet": "-- Enforcing Right to be Forgotten in Delta Lake\nDELETE FROM lakehouse.dim_customer WHERE customer_id = 'USR-98412';\n-- Force hard physical deletion of tombstone files older than retention\nSET spark.databricks.delta.vacuum.parallelDelete.enabled = true;\nVACUUM lakehouse.dim_customer RETAIN 168 HOURS;"
+  },
+  {
+    "id": "gov-data-integrity-vs-quality-hdfs-checksum",
+    "qNo": 143,
+    "q": "Data Integrity vs Data Quality: What is the fundamental architectural difference, and how do you ensure data integrity in HDFS and data quality across enterprise ETL pipelines?",
+    "a": "This is a cornerstone question in senior data engineering and financial systems interviews (such as Standard Chartered Bank), distinguishing structural engineering guarantees from semantic data correctness.\n\n### 1. Data Integrity vs. Data Quality: The Core Difference\n| Dimension | Data Integrity | Data Quality |\n|---|---|---|\n| **Definition** | Structural, physical, and technical correctness of bits on disk and in transit. | Business, contextual, and semantic correctness of information. |\n| **Focus** | Preventing bit-rot, corruption, network loss, and orphaned records. | Ensuring accuracy, completeness, freshness, validity, and consistency. |\n| **Mechanism** | ACID constraints, foreign keys, block checksums (CRC32), idempotent retries. | Great Expectations, Deequ assertions, schema drift detection, SLA monitors. |\n| **Analogy** | \"Did all 1,000,000 bytes transfer without dropping a packet?\" | \"Is the customer's birthdate valid and not set to January 1, 1900?\" |\n\n### 2. Ensuring Data Integrity in HDFS (Moving Data Across Clusters)\nWhen moving massive datasets across HDFS directories or between clusters (e.g. on-premise MapR to cloud Hadoop via `distcp`):\n- **HDFS Block Checksums:** HDFS computes a **CRC32** (or **CRC32C**) checksum for every 512 bytes of data when writing blocks. During block replication or reads, DataNodes verify checksums against client data.\n- **DistCp Checksum Verification:** When using Distributed Copy (`distcp`), HDFS compares source and destination block checksums:\n```bash\n# Enforce byte-for-byte checksum verification across clusters\nhadoop distcp -update -diff sst1 sst2 -strategy dynamic hdfs://nn1:8020/raw/ hdfs://nn2:8020/raw/\n```\n- **HDFS Fsck Audits:** Running `hdfs fsck /path -includeSnapshots -files -blocks -locations` detects corrupt blocks, under-replicated blocks, and missing replicas.\n\n### 3. Ensuring Enterprise Data Quality\n1. **Shift-Left Circuit Breakers:** Validate data at staging ingestion before pushing to presentation layers. If null rates or record drops violate thresholds, trip a hard exception.\n2. **Quarantine Dead-Letter Queues (DLQ):** Separate invalid rows into an anomaly quarantine path for reconciliation instead of silently dropping them or polluting downstream analytics.\n3. **Automated Reconciliation Frameworks:** Run daily automated SQL reconciliations comparing Source of Record (SOR) counts and ledger totals against the analytical warehouse outputs.",
+    "complexity": "Intermediate",
+    "topics": [
+      "data-governance",
+      "hadoop-hive",
+      "distributed-systems"
+    ],
+    "tags": [
+      "data-integrity",
+      "data-quality",
+      "hdfs-checksum",
+      "distcp",
+      "crc32",
+      "circuit-breakers",
+      "governance"
+    ],
+    "codeSnippet": "# HDFS Checksum and File Health Audit\nhdfs fsck /data/financial_ledger -files -blocks\n# Reconciling row counts and sums between staging and warehouse\nSELECT 'STAGING' as layer, COUNT(*) as rows, SUM(amount) as total FROM stg_transactions\nUNION ALL\nSELECT 'GOLD' as layer, COUNT(*) as rows, SUM(amount) as total FROM gold_transactions;"
   }
 ];

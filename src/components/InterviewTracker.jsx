@@ -192,7 +192,7 @@ const InterviewTracker = ({ viewMode, onLockDevice }) => {
                                 Tech Mahindra (21 LPA)
                             </div>
                             <div style={{ fontSize: '0.75rem', color: '#f59e0b', marginTop: '2px' }}>
-                                Nagarro Result Pending
+                                Nagarro Pending • Amgen (Nov 2026)
                             </div>
                         </div>
                     </div>
