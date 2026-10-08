@@ -148,5 +148,26 @@ export const pythonQuestions = [
       "__slots__"
     ],
     "codeSnippet": "class StreamingBatchExtractor:\n    def __enter__(self):\n        self._file = open(self.filepath, 'r')\n        return self\n    def __exit__(self, exc_type, exc_val, exc_tb):\n        if self._file: self._file.close()"
+  },
+  {
+    "id": "py-kth-largest-element-min-heap-quickselect",
+    "qNo": 146,
+    "q": "Find Kth Largest Element in an Array (LeetCode 215): How do you solve this using a Min-Heap versus QuickSelect in Python? Explain why this problem is a classic tier-1 product company elimination gate.",
+    "a": "This is one of the most frequently asked algorithmic screening problems at tier-1 product companies (ServiceNow, Uber, Amazon, Meta). In live technical rounds, failing to produce at least the min-heap approach is often an immediate elimination gate that basic SQL queries cannot rescue.\n\n### 1. Approach A: Min-Heap / Priority Queue (Industry Standard)\n- **Concept:** Maintain a min-heap containing only `k` elements. Iterate through the array. For each element, push to the heap. Whenever the heap size exceeds `k`, pop the smallest element via `heapq.heappop()`. After checking all `N` elements, the top of the min-heap holds the `k`-th largest element.\n- **Time Complexity:** $O(N \\log k)$ — significantly faster than sorting $O(N \\log N)$ when $k \\ll N$.\n- **Space Complexity:** $O(k)$ auxiliary memory.\n\n```python\nimport heapq\n\ndef find_kth_largest_heap(nums: list[int], k: int) -> int:\n    min_heap = []\n    for num in nums:\n        heapq.heappush(min_heap, num)\n        if len(min_heap) > k:\n            heapq.heappop(min_heap)\n    return min_heap[0]\n\n# Verification\narr = [10, 40, 20, 30, 50, 60, 5, 4]\nassert find_kth_largest_heap(arr, 3) == 40\n```\n\n### 2. Approach B: QuickSelect (Hoare's Selection Algorithm — Optimal Average Time)\n- **Concept:** Partition the array around a random pivot identical to QuickSort. If the pivot index lands exactly on `len(nums) - k` (the target index for $k$-th largest in ascending order), return that value. Otherwise, recurse solely into the partition half containing the target index.\n- **Time Complexity:** Average $O(N)$, Worst-case $O(N^2)$ (mitigated with randomized pivot).\n- **Space Complexity:** $O(1)$ iterative auxiliary memory.\n\n```python\nimport random\n\ndef find_kth_largest_quickselect(nums: list[int], k: int) -> int:\n    target_idx = len(nums) - k\n\n    def quick_select(left: int, right: int) -> int:\n        pivot_idx = random.randint(left, right)\n        pivot = nums[pivot_idx]\n        nums[pivot_idx], nums[right] = nums[right], nums[pivot_idx]\n\n        store_idx = left\n        for i in range(left, right):\n            if nums[i] < pivot:\n                nums[store_idx], nums[i] = nums[i], nums[store_idx]\n                store_idx += 1\n        nums[store_idx], nums[right] = nums[right], nums[store_idx]\n\n        if store_idx == target_idx:\n            return nums[store_idx]\n        elif store_idx < target_idx:\n            return quick_select(store_idx + 1, right)\n        else:\n            return quick_select(left, store_idx - 1)\n\n    return quick_select(0, len(nums) - 1)\n```\n\n### 3. Critical Interview Takeaway: Never Skip Heaps\nCandidates frequently revise Arrays, Hash Maps, and Trees while neglecting Heaps assuming they are rare. However, Min/Max-Heaps are fundamental to top-K streaming data, priority task scheduling, and real-time top-percentile pipelines. In live coding interviews, always state the brute force sorting approach ($O(N \\log N)$) first, then transition to $O(N \\log k)$ min-heap before coding.",
+    "complexity": "Intermediate",
+    "topics": [
+      "python",
+      "distributed-systems"
+    ],
+    "tags": [
+      "heapq",
+      "min-heap",
+      "priority-queue",
+      "quickselect",
+      "kth-largest",
+      "leetcode-215",
+      "algorithms"
+    ],
+    "codeSnippet": "import heapq\ndef find_kth_largest(nums, k):\n    heap = []\n    for n in nums:\n        heapq.heappush(heap, n)\n        if len(heap) > k:\n            heapq.heappop(heap)\n    return heap[0]"
   }
 ];

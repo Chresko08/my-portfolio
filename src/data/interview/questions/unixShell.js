@@ -123,5 +123,26 @@ export const unixShellQuestions = [
       "data-integrity"
     ],
     "codeSnippet": "# Automated transfer script with SHA256 integrity verification\nrsync -avz --partial /exports/data.csv remote:/landing/\nssh remote \"cd /landing && sha256sum -c data.csv.sha256\""
+  },
+  {
+    "id": "shell-pipeline-validation-hdfs-checksum-script",
+    "qNo": 148,
+    "q": "Write a production Bash script that validates data file landing zones, verifies HDFS block checksums, and safely triggers downstream Spark jobs with proper exit codes.",
+    "a": "Data engineering interview panels (such as Standard Chartered / Tech Mahindra) frequently ask candidates to write live shell scripts to verify ingestion files and execute HDFS integrity checks before triggering cluster processing.\n\n### 1. Key Production Shell Scripting Principles\n- **`set -euo pipefail`**: Exits immediately on command failure (`-e`), unset variables (`-u`), and pipe failures (`-o pipefail`).\n- **Error Trapping**: Uses `trap` to print exact line numbers and cleanup temporary lock files upon script abortion.\n- **HDFS Checksum Auditing**: Verifies file block presence and checksums using `hdfs dfs -test` and `hdfs fsck` before compute allocation.\n\n### 2. Complete Production Script\n```bash\n#!/usr/bin/env bash\nset -euo pipefail\n\n# Configuration parameters\nreadonly LANDING_DIR=\"hdfs:///data/landing/transactions\"\nreadonly LOG_FILE=\"/var/log/etl_precheck_$(date +%Y%m%d).log\"\n\nlog() {\n    echo \"[$(date '+%Y-%m-%d %H:%M:%S')] $*\" | tee -a \"${LOG_FILE}\"\n}\n\ntrap 'log \"ERROR: Precheck script failed at line ${LINENO} with exit code $?\"; exit 1' ERR\n\nlog \"Starting pre-ingestion audit for: ${LANDING_DIR}\"\n\n# 1. Verify landing directory exists in HDFS\nif ! hdfs dfs -test -d \"${LANDING_DIR}\"; then\n    log \"FATAL: Landing directory does not exist!\"\n    exit 2\nfi\n\n# 2. Verify files landed and check size > 0\nFILE_COUNT=$(hdfs dfs -count -q \"${LANDING_DIR}\" | awk '{print $5}')\nif [ \"${FILE_COUNT}\" -eq 0 ]; then\n    log \"FATAL: Zero data files detected in landing directory!\"\n    exit 3\nfi\nlog \"Found ${FILE_COUNT} files to process.\"\n\n# 3. Check for corrupt HDFS blocks using fsck\nlog \"Auditing HDFS block integrity...\"\nCORRUPT_BLOCKS=$(hdfs fsck \"${LANDING_DIR}\" -blocks | grep -i \"CORRUPT\" | wc -l || true)\nif [ \"${CORRUPT_BLOCKS}\" -gt 0 ]; then\n    log \"FATAL: Detected corrupt HDFS blocks in landing partition! Halting pipeline.\"\n    exit 4\nfi\n\n# 4. Trigger downstream Spark submission\nlog \"Data integrity verified. Triggering PySpark pipeline...\"\nspark-submit \\\n    --master yarn \\\n    --deploy-mode cluster \\\n    --driver-memory 4G \\\n    --executor-memory 8G \\\n    --num-executors 10 \\\n    /opt/etl/process_transactions.py\n\nlog \"Ingestion and Spark submission completed successfully.\"\nexit 0\n```",
+    "complexity": "Intermediate",
+    "topics": [
+      "unix-shell",
+      "hadoop-hive",
+      "data-governance"
+    ],
+    "tags": [
+      "bash-scripting",
+      "hdfs-fsck",
+      "data-integrity",
+      "spark-submit",
+      "error-traps",
+      "exit-codes"
+    ],
+    "codeSnippet": "#!/usr/bin/env bash\nset -euo pipefail\nif ! hdfs dfs -test -e /data/transactions/data.parquet; then\n    echo \"Data missing!\" && exit 1\nfi\nhdfs fsck /data/transactions -files -blocks"
   }
 ];

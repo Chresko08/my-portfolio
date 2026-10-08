@@ -196,5 +196,25 @@ export const pysparkQuestions = [
       "runtime-optimizations",
       "adaptive-query-execution"
     ]
+  },
+  {
+    "id": "pyspark-scd-type-2-delta-merge-implementation",
+    "qNo": 147,
+    "q": "How do you implement SCD (Slowly Changing Dimension) Type 2 updates in PySpark? Walk through both pure PySpark DataFrame operations and Delta Lake's PySpark MERGE API.",
+    "a": "Senior Data Engineering interviewers (e.g. Standard Chartered / Tech Mahindra) frequently evaluate candidates on whether they can write live **PySpark code** for SCD Type 2 rather than reverting to traditional SQL.\n\n### 1. Pure PySpark DataFrame Implementation (Non-Delta / Append-Only Lake)\nWhen working with plain Parquet or Hive tables, you cannot do in-place updates. You must reconstruct the dimension table via set operations:\n```python\nfrom pyspark.sql import functions as F\n\n# 1. Load active target dimension and incoming staging changes\ndim_df = spark.table(\"dim_customer\")\nstg_df = spark.table(\"stg_customer\") # e.g. customer_id, address, updated_at\n\n# 2. Identify active target records\nactive_dim = dim_df.filter(F.col(\"is_current\") == True)\n\n# 3. Join on business key and detect attribute changes\njoined = active_dim.alias(\"tgt\").join(\n    stg_df.alias(\"src\"),\n    on=\"customer_id\",\n    how=\"inner\"\n).filter(F.col(\"tgt.address\") != F.col(\"src.address\"))\n\n# 4. Expire previous versions: set is_current = False, end_date = now\nexpired_records = joined.select(\n    F.col(\"tgt.customer_id\"),\n    F.col(\"tgt.address\"),\n    F.col(\"tgt.start_date\"),\n    F.current_timestamp().alias(\"end_date\"),\n    F.lit(False).alias(\"is_current\")\n)\n\n# 5. Create new active versions for updated & brand new inserts\nnew_records = stg_df.select(\n    F.col(\"customer_id\"),\n    F.col(\"address\"),\n    F.current_timestamp().alias(\"start_date\"),\n    F.lit(None).cast(\"timestamp\").alias(\"end_date\"),\n    F.lit(True).alias(\"is_current\")\n)\n\n# 6. Unaffected unchanged records\nunchanged_records = dim_df.join(\n    stg_df.select(\"customer_id\"), on=\"customer_id\", how=\"left_anti\"\n)\n\n# 7. Final union & write back\nfinal_dim_df = unchanged_records.unionByName(expired_records).unionByName(new_records)\n```\n\n### 2. Delta Lake PySpark MERGE (Production Standard)\nDelta Lake eliminates complex multi-DataFrame reconstruction with an atomic, transactional `MERGE` in PySpark:\n```python\nfrom delta.tables import DeltaTable\n\ndelta_target = DeltaTable.forName(spark, \"dim_customer\")\n\n# Generate merge key: NULL for second stage to force INSERT of new version\nstg_with_keys = stg_df.selectExpr(\"customer_id as merge_key\", \"*\").unionByName(\n    stg_df.selectExpr(\"NULL as merge_key\", \"*\")\n)\n\ndelta_target.alias(\"target\").merge(\n    source=stg_with_keys.alias(\"source\"),\n    condition=\"target.customer_id = source.merge_key AND target.is_current = true\"\n).whenMatchedUpdate(\n    condition=\"target.address <> source.address\",\n    set={\"end_date\": \"current_timestamp()\", \"is_current\": \"false\"}\n).whenNotMatchedInsert(\n    values={\n        \"customer_id\": \"source.customer_id\",\n        \"address\": \"source.address\",\n        \"start_date\": \"current_timestamp()\",\n        \"end_date\": \"NULL\",\n        \"is_current\": \"true\"\n    }\n).execute()\n```",
+    "complexity": "Intermediate",
+    "topics": [
+      "pyspark",
+      "data-modeling",
+      "databricks"
+    ],
+    "tags": [
+      "scd-type-2",
+      "pyspark-dataframe",
+      "delta-merge",
+      "left-anti-join",
+      "dimensional-modeling"
+    ],
+    "codeSnippet": "delta_target.alias('target').merge(\n    source=stg_df.alias('source'),\n    condition='target.customer_id = source.customer_id AND target.is_current = true'\n).whenMatchedUpdate(\n    condition='target.address != source.address',\n    set={'end_date': 'current_timestamp()', 'is_current': 'false'}\n).whenNotMatchedInsert(\n    values={'customer_id': 'source.customer_id', 'is_current': 'true'}\n).execute()"
   }
 ];

@@ -4,8 +4,8 @@ export const resignationDetails = {
     noticePeriod: '90 Days (Serving Notice)',
     currentCtc: '17 LPA Fixed + 20% Variable',
     expectedCtc: '20 - 24 LPA',
-    activeOffer: 'Tech Mahindra — 21 LPA CTC (Standard Chartered Client Round Completed)',
-    pendingResult: 'Nagarro — Round 1 Technical (Awaiting feedback)',
+    activeOffer: 'None (TechM client round closed; Nagarro closed)',
+    pendingResult: 'None (All recent rounds concluded)',
     upcomingPipeline: 'Amgen (Hyderabad GCC) — Re-applying Nov 2026 via Workday Referral (Target: 24 - 28 LPA)'
 };
 
@@ -16,9 +16,9 @@ export const interviewRecords = [
         role: 'Sr. Software Engineer (Data Engineering / Cloud Analytics)',
         clientAccount: 'Standard Chartered Bank (SCB) — Global Business Services',
         date: 'Oct 8, 2026',
-        status: 'selected',
-        statusLabel: 'Internal Cleared • SCB Client Round Completed',
-        ctcOffered: '21 LPA CTC',
+        status: 'rejected',
+        statusLabel: 'SCB Client Gate • Not Selected',
+        ctcOffered: '21 LPA CTC (Not Proceeded)',
         location: 'Bengaluru (Hybrid, RMZ Ecoworld, Bellandur)',
         rounds: [
             {
@@ -42,8 +42,8 @@ export const interviewRecords = [
                 date: 'Oct 8, 2026',
                 duration: '45-60 min',
                 platform: 'MS Teams / Webex',
-                status: 'completed',
-                notes: 'Comprehensive technical interview with Standard Chartered Bank client lead Britto Lawrence covering HDFS data integrity, Data Integrity vs Data Quality, shell scripting, PySpark, SCD Type 2 implementations, Apache Airflow execution internals, and SQL cross-join pair ranking.'
+                status: 'rejected',
+                notes: 'Technical evaluation with Standard Chartered Bank client lead Britto Lawrence. Candidacy was not selected because candidate was unable to answer HDFS block checksum data integrity and Airflow engine internals/CLI execution, could not produce shell scripting or PySpark code live, and implemented the requested SCD Type 2 logic in SQL instead of PySpark.'
             }
         ],
         keyTopics: [
@@ -62,14 +62,14 @@ export const interviewRecords = [
                 myAnswer: 'SELECT\n    CASE\n        WHEN a1.price > a2.price THEN a1.product\n        ELSE a2.product\n    END AS highest,\n    CASE\n        WHEN a1.price < a2.price THEN a1.product\n        ELSE a2.product\n    END AS lowest\nFROM A AS a1\nCROSS JOIN A AS a2\nWHERE a1.product <> a2.product\n  AND a1.price > a2.price; -- Prevents duplicate inverted pairs'
             },
             {
-                topic: 'SCD Type 2 Customer Record Evolution',
-                q: 'Write a SQL query to implement SCD (Slowly Changing Dimension) Type 2 updates for a Customer table when address changes for customerId = 1.',
-                myAnswer: '-- Step 1: Invalidate existing active record\nUPDATE Customer \nSET endDate = now() \nWHERE customerId = 1 AND endDate IS NULL;\n\n-- Step 2: Insert new record version\nINSERT INTO Customer (customerID, address, startDate, endDate) \nVALUES (1, "abcd", now(), NULL);'
+                topic: 'SCD Type 2 Customer Record Evolution (SQL vs PySpark)',
+                q: 'Write code to implement SCD (Slowly Changing Dimension) Type 2 updates for a Customer table when address changes for customerId = 1.',
+                myAnswer: 'Interview Reality: Panel asked to implement SCD Type 2 using PySpark code, but candidate was unable to write PySpark code live on the spot and instead implemented it in SQL:\n\n-- Step 1: Invalidate existing active record\nUPDATE Customer \nSET endDate = now() \nWHERE customerId = 1 AND endDate IS NULL;\n\n-- Step 2: Insert new record version\nINSERT INTO Customer (customerID, address, startDate, endDate) \nVALUES (1, "abcd", now(), NULL);\n\nTarget PySpark Solution: Join incoming staging delta with current dimension on surrogate/business key, identify updated records, union expired rows with updated active rows, or execute DeltaTable.merge() in PySpark.'
             },
             {
                 topic: 'Big Data Storage: HDFS Data Integrity',
                 q: 'How do you ensure data integrity in HDFS when moving or replicating data from one location to another?',
-                myAnswer: 'Answer: Checksum verification.\nHDFS computes CRC32/CRC32C checksums per block during writes. When transferring data (e.g. via DistCp), DistCp uses block-level checksum comparison (or -diff / -update flags) to ensure the destination bytes match source bytes exactly. We can also run `hdfs fsck` to audit block replica health.'
+                myAnswer: 'Interview Reality: Unable to answer during live interrogation; block checksum mechanism was a primary blocker.\n\nRetrospection / Target Answer: Checksum verification.\nHDFS computes CRC32/CRC32C checksums per block during writes. When transferring data (e.g. via DistCp), DistCp uses block-level checksum comparison (or -diff / -update flags) to ensure the destination bytes match source bytes exactly. We can also run `hdfs fsck` to audit block replica health.'
             },
             {
                 topic: 'Data Governance: Data Integrity vs. Data Quality',
@@ -79,7 +79,12 @@ export const interviewRecords = [
             {
                 topic: 'Apache Airflow Engine Internals & CLI Execution',
                 q: '1. Is Airflow asynchronous or synchronous? Can parallel execution be achieved?\n2. Are Airflow workers stateful or stateless?\n3. Can Airflow run multiple instances of the same task simultaneously?\n4. Can we execute specific tasks from an Airflow DAG directly instead of running the whole DAG?',
-                myAnswer: '1. Airflow is fundamentally asynchronous: the Scheduler evaluates DAG dependencies and places tasks in an executor queue. Parallelism is achieved via CeleryExecutor or KubernetesExecutor distributing tasks across multiple worker pods.\n2. Airflow workers are stateless; all DAG state, task execution metadata, and logs are persisted centrally in the metadata database (Postgres/MySQL) and remote object storage (GCS/S3).\n3. Yes, Airflow can run multiple instances of the same task across different execution dates (controlled by max_active_tis_per_dag and concurrency settings).\n4. Yes! Specific tasks can be executed directly from CLI via:\n   airflow tasks run <dag_id> <task_id> <logical_date>\n   or backfilled selectively using:\n   airflow dags backfill -t <task_regex> <dag_id> -s <start_date> -e <end_date>'
+                myAnswer: 'Interview Reality: Unable to answer Airflow engine internals or CLI execution commands live during the round.\n\nRetrospection / Target Answer:\n1. Airflow is fundamentally asynchronous: the Scheduler evaluates DAG dependencies and places tasks in an executor queue. Parallelism is achieved via CeleryExecutor or KubernetesExecutor distributing tasks across multiple worker pods.\n2. Airflow workers are stateless; all DAG state, task execution metadata, and logs are persisted centrally in the metadata database (Postgres/MySQL) and remote object storage (GCS/S3).\n3. Yes, Airflow can run multiple instances of the same task across different execution dates (controlled by max_active_tis_per_dag and concurrency settings).\n4. Yes! Specific tasks can be executed directly from CLI via:\n   airflow tasks run <dag_id> <task_id> <logical_date>\n   or backfilled selectively using:\n   airflow dags backfill -t <task_regex> <dag_id> -s <start_date> -e <end_date>'
+            },
+            {
+                topic: 'Live Shell Scripting & PySpark Coding Gate',
+                q: 'Write live shell scripts for log validation/data ingestion and PySpark DataFrame code for ETL pipelines.',
+                myAnswer: 'Interview Reality: Unable to write shell scripting code and PySpark code live during the interview session, which was a fatal gatekeeper for the technical evaluation.'
             },
             {
                 topic: 'SQL Join Cartesian Output Calculation (Round 1)',
@@ -92,7 +97,7 @@ export const interviewRecords = [
                 myAnswer: 'df.withColumn("new_column_name", expr). Explained driver vs executor memory allocation, inspecting Spark UI stages for shuffle spill, salting skewed join keys, and enabling Adaptive Query Execution (AQE).'
             }
         ],
-        notes: '21 LPA CTC agreed for hybrid Bellandur Bengaluru location (+23.5% over EY 17 LPA baseline). Round 2 client evaluation completed with Standard Chartered Bank engineering lead Britto Lawrence.'
+        notes: 'Agreed 21 LPA CTC for hybrid Bellandur Bengaluru location (+23.5% over EY 17 LPA baseline). Round 2 client evaluation completed with Standard Chartered Bank engineering lead Britto Lawrence. Candidacy was not selected. Key post-mortem gaps: unable to answer HDFS data integrity checksums, unable to answer Airflow engine internals/CLI execution, unable to write shell scripting code live, and unable to produce PySpark code for SCD Type 2 (reverting to SQL).'
     },
     {
         id: 'nagarro',
@@ -100,8 +105,8 @@ export const interviewRecords = [
         role: 'GCP Big Data Engineer',
         clientAccount: 'Global Digital Engineering Practice',
         date: 'Oct 5, 2026',
-        status: 'pending',
-        statusLabel: 'Round 1 Completed • Result Pending',
+        status: 'rejected',
+        statusLabel: 'Round 1 Completed • Not Selected',
         ctcOffered: 'Target 22 - 24 LPA',
         location: 'Gurugram / Remote (Pan India)',
         rounds: [
@@ -126,8 +131,8 @@ export const interviewRecords = [
                 date: 'Oct 5, 2026 (03:00 – 03:45 PM IST)',
                 duration: '45 min',
                 platform: 'MS Teams (Recorded)',
-                status: 'pending',
-                notes: 'Completed deep-dive on distributed computing, BigQuery storage engine, Spark skew optimization, and analytical SQL. Currently awaiting feedback.'
+                status: 'rejected',
+                notes: 'Completed deep-dive on distributed computing, BigQuery storage engine, Spark skew optimization, and analytical SQL. Candidacy was not advanced to Round 2.'
             }
         ],
         keyTopics: [
@@ -150,7 +155,7 @@ export const interviewRecords = [
                 myAnswer: 'Explained key salting techniques, Adaptive Query Execution (AQE skew join optimization), broadcast join thresholds, and tuning spark.sql.shuffle.partitions.'
             }
         ],
-        notes: 'Round 1 technical evaluation completed on Oct 5. Followed up with HR; official panel assessment and next round status pending.'
+        notes: 'Round 1 technical evaluation completed on Oct 5. HR follow-up confirmed candidacy was not selected to advance to Round 2.'
     },
     {
         id: 'impetus',
@@ -423,11 +428,74 @@ export const interviewRecords = [
         ],
         interviewQuestions: [
             {
-                topic: 'Eightfold.ai Automated Screening & Positioning Rubric',
+                topic: 'Eightfold.ai Automated Screening & AI Model Vocabulary Scoring',
                 q: 'Asynchronous video prompts evaluating algorithmic problem solving, enterprise software design, and behavioral delivery.',
-                myAnswer: 'Root-Cause Analysis: The February requisition was an "Associate Python Developer" role, but answers were delivered through a Big Data / PySpark / BigQuery lens. Eightfold automated natural language scoring vectors evaluated responses against backend software developer tokens (REST APIs, microservices, async event loops), resulting in a semantic score mismatch. Next application strictly targets dedicated Data Engineer tracks.'
+                myAnswer: 'Root-Cause & Core Lesson: Candidacy was lost primarily because responses lacked the exact target vocabulary identified and weighted by Eightfold\'s automated AI evaluation models. While the requisition was titled "Associate Python Developer", answers were framed through a Big Data / PySpark / BigQuery lens. Eightfold\'s automated NLP models scored video transcripts against backend software development tokens (REST microservices, async event loops, FastAPI/Django, concurrency). Missing the exact lexical terms expected by the AI scoring rubric caused the automated match score to fall below the human recruiter escalation threshold.'
             }
         ],
-        notes: 'Captive GCC life sciences innovation hub in Hyderabad offering 24-28 LPA Fixed (40-65% premium over EY 17 LPA baseline). Re-application strategy in November 2026 leverages 1st-degree employee referrals to bypass automated ATS filters, backed by 5 Databricks certifications + AWS Data Engineer certification.'
+        notes: 'Captive GCC life sciences innovation hub in Hyderabad offering 24-28 LPA Fixed (40-65% premium over EY 17 LPA baseline). Critical lesson: Asynchronous AI screening models evaluate against strict keyword and vocabulary vectors; missing target lexicon results in automated disqualification. Mandatory 6-month cooling-off window is cleared (8.5 months elapsed). Re-application strategy in November 2026 leverages 1st-degree employee referrals to bypass automated ATS filters, backed by 5 Databricks certifications + AWS Data Engineer certification.'
+    },
+    {
+        id: 'servicenow',
+        company: 'ServiceNow',
+        role: 'Software Engineer / Sr. Software Engineer (Core Platform)',
+        clientAccount: 'Core Platform Engineering Track',
+        date: 'Nov 18, 2023',
+        status: 'rejected',
+        statusLabel: 'Technical & HM Round • Not Selected',
+        ctcOffered: null,
+        location: 'Hyderabad / Bengaluru (On-site / Hybrid)',
+        rounds: [
+            {
+                name: 'Stage 1: Level 1 Coding Hackathon',
+                date: 'Sept 23, 2023 (02:00 – 04:00 PM IST)',
+                duration: '90 min',
+                platform: 'HackerRank Engage',
+                status: 'cleared',
+                notes: 'Cleared nationwide competitive programming challenge evaluating data structures, algorithmic complexity, and problem-solving to qualify for fast-track interview scheduling.'
+            },
+            {
+                name: 'Stage 2: Shortlist Notification',
+                date: 'October 2023',
+                duration: 'Email',
+                platform: 'Direct Outreach from ServiceNow Recruiting',
+                status: 'cleared',
+                notes: 'Official shortlist notification confirming qualification based on Level 1 leaderboard ranking.'
+            },
+            {
+                name: 'Stage 3: Technical Evaluation & HM Round',
+                date: 'Nov 18, 2023 (10:00 AM IST)',
+                duration: '60 min',
+                platform: 'Zoom',
+                status: 'rejected',
+                notes: 'Live technical round covering algorithmic coding, SQL schema queries, and relational data modeling. Formal rejection communication issued on Nov 18–19, 2023.'
+            }
+        ],
+        keyTopics: [
+            'Data Structures & Algorithms (DSA)',
+            'Min-Heap / Priority Queue (LeetCode 215)',
+            'QuickSelect Partitioning (Hoare)',
+            'Relational SQL & Schema Queries',
+            'Self-Joins & Manager Hierarchies',
+            'PySpark DataFrame Operations'
+        ],
+        interviewQuestions: [
+            {
+                topic: 'Algorithmic Problem: Find Kth Largest Element in an Array (LeetCode 215)',
+                q: 'Input: arr = [10, 40, 20, 30, 50, 60, 5, 4], k = 3\nTarget Answer: 40 (Sorted descending: [60, 50, 40, 30, 20, 10, 5, 4]; 1st = 60, 2nd = 50, 3rd = 40)\n\nProvide the optimal engineering approach and implementation.',
+                myAnswer: 'Execution Status: Unable to solve live on camera (primary blocker for the round).\nCandidate Lesson: Revised all medium-difficulty topics prior to this interview but skipped Heaps assuming they were unimportant; the very first question asked was from Min-Heap.\n\nOptimal Engineering Solutions:\n1. Approach A: Min-Heap (O(N log k) time, O(k) space)\nMaintain a min-heap containing only k elements. As you iterate through the stream of numbers, push each element into the min-heap. Whenever the heap size exceeds k, pop the smallest element. After traversing all N elements, the top of the min-heap holds the kth largest element.\n\n```python\nimport heapq\n\ndef find_kth_largest_heap(nums: list[int], k: int) -> int:\n    min_heap = []\n    for num in nums:\n        heapq.heappush(min_heap, num)\n        if len(min_heap) > k:\n            heapq.heappop(min_heap)\n    return min_heap[0]\n\n# Verification\narr = [10, 40, 20, 30, 50, 60, 5, 4]\nassert find_kth_largest_heap(arr, 3) == 40\n```\n\n2. Approach B: QuickSelect (Hoare\'s Selection Algorithm — O(N) average time, O(1) space)\nPartition the array around a random pivot identical to QuickSort. If the pivot index lands exactly on len(nums) - k (when targeting the kth largest in ascending partition), return that value. Otherwise, recurse solely into the partition holding the target index.'
+            },
+            {
+                topic: 'Relational SQL: Find Unique Set of Manager IDs',
+                q: 'Given Schema: Employee (EmpID, ManagerID)\nExtract all unique manager IDs representing valid managers.',
+                myAnswer: 'SQL Solution:\nSELECT DISTINCT ManagerID\nFROM Employee\nWHERE ManagerID IS NOT NULL;\n\nPySpark DataFrame Alternative:\nfrom pyspark.sql.functions import col\nunique_managers_df = employee_df.filter(col("ManagerID").isNotNull()).select("ManagerID").distinct()'
+            },
+            {
+                topic: 'Relational SQL: Find Departments and Their Managers',
+                q: 'Given Schema: Department (DeptID, DeptName, ManagerID) and Employee (EmpID, EmpName)\nRetrieve each department alongside its assigned manager, handling cases where a department might temporarily lack an assigned manager.',
+                myAnswer: 'SQL Solution (Handling Unassigned Managers via LEFT JOIN):\nSELECT \n    d.DeptID,\n    d.DeptName,\n    COALESCE(e.EmpName, "Unassigned") AS ManagerName,\n    d.ManagerID\nFROM Department d\nLEFT JOIN Employee e \n    ON d.ManagerID = e.EmpID;\n\nPure Department Table Scope:\nSELECT DISTINCT DeptID, ManagerID\nFROM Department\nWHERE ManagerID IS NOT NULL;'
+            }
+        ],
+        notes: 'Critical Lesson & Mentor Post-Mortem: Revised all medium-difficulty topics for this interview but skipped Heaps assuming they were unimportant—only for the very first question to be LeetCode #215 (Kth Largest Element via minHeap). Tier-1 product companies (unlike IT service integrators) enforce a strict DSA elimination gate where failing an elementary heap/partitioning problem is an immediate disqualifier that cannot be rescued by standard SQL queries. Also highlighted the contrast between asynchronous HackerRank contests (cleared on Sept 23) and high-pressure live Zoom whiteboard coding.'
     }
 ];

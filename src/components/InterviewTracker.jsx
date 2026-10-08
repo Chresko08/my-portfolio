@@ -187,12 +187,12 @@ const InterviewTracker = ({ viewMode, onLockDevice }) => {
                         </div>
 
                         <div style={{ padding: '12px 16px', background: 'var(--surface-color)', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
-                            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Pipeline Lead</div>
-                            <div style={{ fontSize: '1.02rem', fontWeight: 700, color: '#10b981', marginTop: '2px' }}>
-                                Tech Mahindra (21 LPA)
+                            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Active Target Pipeline</div>
+                            <div style={{ fontSize: '1.02rem', fontWeight: 700, color: 'var(--primary-color)', marginTop: '2px' }}>
+                                Amgen GCC (Nov 2026)
                             </div>
-                            <div style={{ fontSize: '0.75rem', color: '#f59e0b', marginTop: '2px' }}>
-                                Nagarro Pending • Amgen (Nov 2026)
+                            <div style={{ fontSize: '0.75rem', color: 'var(--accent-emerald)', marginTop: '2px' }}>
+                                Target: 24 - 28 LPA Fixed (Referral)
                             </div>
                         </div>
                     </div>
