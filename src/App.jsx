@@ -6,12 +6,18 @@ import Certificates from './components/Certificates';
 import Contact from './components/Contact';
 import BackToTop from './components/BackToTop';
 import InterviewPrep from './components/InterviewPrep';
-import InterviewTracker from './components/InterviewTracker';
+import CareerLineage from './components/CareerLineage';
+import PasswordModal from './components/PasswordModal';
+
+import encryptedLineage from './data/encryptedLineage.json';
+import { decryptLineagePayload } from './utils/crypto';
 
 function App() {
     const [theme, setTheme] = useState('dark');
     // viewMode: 'general' (public) or 'personal' (password-protected 'For Me')
     const [viewMode, setViewMode] = useState('general');
+    const [decryptedData, setDecryptedData] = useState(null);
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
     const toggleTheme = () => {
         const newTheme = theme === 'dark' ? 'light' : 'dark';
@@ -23,41 +29,103 @@ function App() {
         document.documentElement.setAttribute('data-theme', theme);
     }, [theme]);
 
-    // Check device persistence on initial mount
+    // Check session cache on initial mount
     useEffect(() => {
-        const isAuthenticated = localStorage.getItem('portfolioAuthenticated') === 'true';
-        const savedMode = localStorage.getItem('portfolioActiveMode');
-        if (isAuthenticated) {
-            setViewMode(savedMode || 'personal');
+        try {
+            const cached = sessionStorage.getItem('portfolioDecryptedData');
+            if (cached) {
+                const parsed = JSON.parse(cached);
+                if (parsed?.lineageItems?.length > 0) {
+                    setDecryptedData(parsed);
+                    const savedMode = localStorage.getItem('portfolioActiveMode');
+                    if (savedMode === 'personal') {
+                        setViewMode('personal');
+                    }
+                }
+            }
+        } catch (e) {
+            sessionStorage.removeItem('portfolioDecryptedData');
         }
     }, []);
 
-    const handleViewModeChange = (mode) => {
-        setViewMode(mode);
-        localStorage.setItem('portfolioActiveMode', mode);
-        if (mode === 'personal') {
-            localStorage.setItem('portfolioAuthenticated', 'true');
+    const handleAuthenticate = async (password, rememberDevice) => {
+        try {
+            const data = await decryptLineagePayload(password, encryptedLineage);
+            if (data && data.lineageItems) {
+                setDecryptedData(data);
+                setViewMode('personal');
+                localStorage.setItem('portfolioActiveMode', 'personal');
+                if (rememberDevice) {
+                    sessionStorage.setItem('portfolioDecryptedData', JSON.stringify(data));
+                    localStorage.setItem('portfolioAuthenticated', 'true');
+                }
+                return true;
+            }
+            return false;
+        } catch (err) {
+            console.error("Authentication / Decryption failed:", err);
+            return false;
         }
     };
 
     const handleLockDevice = () => {
+        setDecryptedData(null);
+        sessionStorage.removeItem('portfolioDecryptedData');
         localStorage.removeItem('portfolioAuthenticated');
         localStorage.removeItem('portfolioActiveMode');
         setViewMode('general');
     };
 
+    const handleViewModeChange = (mode) => {
+        if (mode === 'personal') {
+            if (decryptedData) {
+                setViewMode('personal');
+                localStorage.setItem('portfolioActiveMode', 'personal');
+            } else {
+                setIsPasswordModalOpen(true);
+            }
+        } else {
+            setViewMode('general');
+            localStorage.setItem('portfolioActiveMode', 'general');
+        }
+    };
+
     return (
         <div className="app">
-            <Navbar theme={theme} toggleTheme={toggleTheme} viewMode={viewMode} setViewMode={handleViewModeChange} />
+            <Navbar
+                theme={theme}
+                toggleTheme={toggleTheme}
+                viewMode={viewMode}
+                setViewMode={handleViewModeChange}
+                onOpenPasswordModal={() => setIsPasswordModalOpen(true)}
+                hasDecryptedData={!!decryptedData}
+            />
             <main>
                 <Hero />
-                <Experience viewMode={viewMode} />
-                <Certificates />
-                <InterviewTracker viewMode={viewMode} onLockDevice={handleLockDevice} />
+                {viewMode === 'personal' ? (
+                    <CareerLineage
+                        data={decryptedData}
+                        onLockDevice={handleLockDevice}
+                        onUnlockRequest={() => setIsPasswordModalOpen(true)}
+                    />
+                ) : (
+                    <>
+                        <Experience viewMode={viewMode} />
+                        <Certificates />
+                    </>
+                )}
                 <InterviewPrep viewMode={viewMode} />
                 <Contact viewMode={viewMode} />
             </main>
             <BackToTop />
+
+            {/* Zero-Knowledge Decryption Modal */}
+            <PasswordModal
+                isOpen={isPasswordModalOpen}
+                onClose={() => setIsPasswordModalOpen(false)}
+                onAuthenticate={handleAuthenticate}
+            />
+
             <footer>
                 <div className="container" style={{
                     textAlign: 'center',

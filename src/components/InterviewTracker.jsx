@@ -42,7 +42,7 @@ const statusConfig = {
 const InterviewTracker = ({ viewMode, onLockDevice }) => {
     if (viewMode !== 'personal') return null;
 
-    const [expandedCard, setExpandedCard] = useState(interviewRecords[0]?.id || null);
+    const [expandedCard, setExpandedCard] = useState(null);
     const [statusFilter, setStatusFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [copiedIndex, setCopiedIndex] = useState(null);
@@ -179,7 +179,7 @@ const InterviewTracker = ({ viewMode, onLockDevice }) => {
                         <div style={{ padding: '12px 16px', background: 'var(--surface-color)', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
                             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Current Baseline</div>
                             <div style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
-                                17 LPA Fixed
+                                {resignationDetails.currentCtc || 'Confidential'}
                             </div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
                                 Target: {resignationDetails.expectedCtc}
@@ -188,11 +188,11 @@ const InterviewTracker = ({ viewMode, onLockDevice }) => {
 
                         <div style={{ padding: '12px 16px', background: 'var(--surface-color)', borderRadius: '12px', border: '1px solid var(--card-border)' }}>
                             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Active Target Pipeline</div>
-                            <div style={{ fontSize: '1.02rem', fontWeight: 700, color: 'var(--primary-color)', marginTop: '2px' }}>
-                                Amgen GCC (Nov 2026)
+                            <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--primary-color)', marginTop: '2px' }}>
+                                {resignationDetails.upcomingPipeline || 'Confidential'}
                             </div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--accent-emerald)', marginTop: '2px' }}>
-                                Target: 24 - 28 LPA Fixed (Referral)
+                                Target: {resignationDetails.expectedCtc}
                             </div>
                         </div>
                     </div>

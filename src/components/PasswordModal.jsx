@@ -2,14 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiLock, FiUnlock, FiEye, FiEyeOff, FiX, FiCheck, FiAlertCircle } from 'react-icons/fi';
 
-const AUTH_PASSWORD = 'QWOPzxnm@1290';
-
-const PasswordModal = ({ isOpen, onClose, onSuccess }) => {
+const PasswordModal = ({ isOpen, onClose, onSuccess, onAuthenticate }) => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [rememberDevice, setRememberDevice] = useState(true);
     const [error, setError] = useState(false);
     const [shake, setShake] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const inputRef = useRef(null);
 
     useEffect(() => {
@@ -17,25 +16,38 @@ const PasswordModal = ({ isOpen, onClose, onSuccess }) => {
             setPassword('');
             setError(false);
             setShake(false);
+            setIsLoading(false);
             setTimeout(() => {
                 inputRef.current?.focus();
             }, 100);
         }
     }, [isOpen]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e?.preventDefault();
-        if (password === AUTH_PASSWORD) {
-            if (rememberDevice) {
-                localStorage.setItem('portfolioAuthenticated', 'true');
+        if (!password || isLoading) return;
+        setIsLoading(true);
+        setError(false);
+
+        try {
+            if (onAuthenticate) {
+                const success = await onAuthenticate(password, rememberDevice);
+                if (success) {
+                    setError(false);
+                    if (onSuccess) onSuccess();
+                    onClose();
+                } else {
+                    setError(true);
+                    setShake(true);
+                    setTimeout(() => setShake(false), 500);
+                }
             }
-            setError(false);
-            onSuccess();
-            onClose();
-        } else {
+        } catch (err) {
             setError(true);
             setShake(true);
             setTimeout(() => setShake(false), 500);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -264,20 +276,22 @@ const PasswordModal = ({ isOpen, onClose, onSuccess }) => {
                                 <button
                                     type="submit"
                                     className="btn-primary"
+                                    disabled={isLoading}
                                     style={{
                                         flex: 1.4,
                                         padding: '12px',
                                         borderRadius: '10px',
                                         fontSize: '0.92rem',
                                         fontWeight: 600,
-                                        cursor: 'pointer',
+                                        cursor: isLoading ? 'not-allowed' : 'pointer',
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        gap: '8px'
+                                        gap: '8px',
+                                        opacity: isLoading ? 0.7 : 1
                                     }}
                                 >
-                                    <FiUnlock size={16} /> Unlock Access
+                                    <FiUnlock size={16} /> {isLoading ? 'Decrypting...' : 'Unlock Access'}
                                 </button>
                             </div>
                         </form>

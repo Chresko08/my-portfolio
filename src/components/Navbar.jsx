@@ -4,7 +4,7 @@ import { FiMoon, FiSun, FiLock, FiUnlock, FiUser } from 'react-icons/fi';
 import Logo from './Logo';
 import PasswordModal from './PasswordModal';
 
-const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
+const Navbar = ({ theme, toggleTheme, viewMode, setViewMode, onOpenPasswordModal, hasDecryptedData }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState('hero');
@@ -14,7 +14,9 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 40);
 
-            const sections = ['hero', 'experience', 'certificates', 'interview-tracker', 'interview-prep', 'contact'];
+            const sections = viewMode === 'personal'
+                ? ['hero', 'career-lineage', 'interview-prep', 'contact']
+                : ['hero', 'experience', 'certificates', 'contact'];
             const scrollPosition = window.scrollY + 200;
 
             for (const section of sections) {
@@ -27,13 +29,14 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    }, [viewMode]);
 
     const handleModeChange = (mode) => {
         if (mode === 'personal') {
-            const isAuth = localStorage.getItem('portfolioAuthenticated') === 'true';
-            if (isAuth) {
+            if (hasDecryptedData) {
                 setViewMode('personal');
+            } else if (onOpenPasswordModal) {
+                onOpenPasswordModal();
             } else {
                 setIsPasswordModalOpen(true);
             }
@@ -58,14 +61,14 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
         transition: 'all 0.3s ease'
     };
 
-    const navItems = [
+    const navItems = viewMode === 'personal' ? [
+        { label: 'Career Lineage', href: '#career-lineage', id: 'career-lineage' },
+        { label: 'Interview Prep', href: '#interview-prep', id: 'interview-prep' },
+        { label: 'Contact', href: '#contact', id: 'contact' }
+    ] : [
         { label: 'Experience', href: '#experience', id: 'experience' },
         { label: 'Certificates', href: '#certificates', id: 'certificates' },
-        ...(viewMode === 'personal' ? [
-            { label: 'Interview Tracker', href: '#interview-tracker', id: 'interview-tracker' },
-            { label: 'Interview Prep', href: '#interview-prep', id: 'interview-prep' },
-        ] : []),
-        { label: 'Contact', href: '#contact', id: 'contact' },
+        { label: 'Contact', href: '#contact', id: 'contact' }
     ];
 
     return (
@@ -180,12 +183,14 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode }) => {
                 </div>
             </nav>
 
-            {/* Password Modal */}
-            <PasswordModal
-                isOpen={isPasswordModalOpen}
-                onClose={() => setIsPasswordModalOpen(false)}
-                onSuccess={handlePasswordSuccess}
-            />
+            {/* Password Modal (Fallback if not managed by parent App) */}
+            {!onOpenPasswordModal && (
+                <PasswordModal
+                    isOpen={isPasswordModalOpen}
+                    onClose={() => setIsPasswordModalOpen(false)}
+                    onSuccess={handlePasswordSuccess}
+                />
+            )}
         </>
     );
 };

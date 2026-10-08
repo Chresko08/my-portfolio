@@ -345,7 +345,7 @@ const InterviewPrep = ({ viewMode }) => {
                 }
             }
 
-            // 3. Multi-field tokenized search (all terms must match across q, a, codeSnippet, topics, tags)
+            // 3. Multi-field tokenized search (all terms must match across q, a, codeSnippet, topics, tags, qNo, id)
             if (terms.length > 0) {
                 const qText = (q.q || '').toLowerCase();
                 const aText = (q.a || '').toLowerCase();
@@ -353,8 +353,14 @@ const InterviewPrep = ({ viewMode }) => {
                 const tags = Array.isArray(q.tags) ? q.tags.map(t => t.toLowerCase()) : [];
                 const topics = Array.isArray(q.topics) ? q.topics.map(t => t.toLowerCase()) : [];
                 const topicTitles = topics.map(t => (topicMap[t]?.title || '').toLowerCase());
+                const qNoStr = String(q.qNo ?? '').toLowerCase();
+                const qNoHash = `#${qNoStr}`;
+                const qId = (q.id || '').toLowerCase();
 
                 const matchesAllTerms = terms.every(term => {
+                    const cleanTerm = term.replace(/^(#|q\.?)/i, '');
+                    if (qNoStr === cleanTerm || qNoHash === term || `q${qNoStr}` === term) return true;
+                    if (qId.includes(term)) return true;
                     if (qText.includes(term)) return true;
                     if (aText.includes(term)) return true;
                     if (codeText.includes(term)) return true;
