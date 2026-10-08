@@ -18,6 +18,10 @@ import { unixShellQuestions } from './questions/unixShell.js';
 import { cicdDevopsQuestions } from './questions/cicdDevops.js';
 import { dataGovernanceQuestions } from './questions/dataGovernance.js';
 import { pubsubKafkaQuestions } from './questions/pubsubKafka.js';
+import { dsaQuestions } from './questions/dsa.js';
+import { nosqlMongodbQuestions } from './questions/nosqlMongodb.js';
+import { excelAnalyticsQuestions } from './questions/excelAnalytics.js';
+import { dataVizBiQuestions } from './questions/dataVizBi.js';
 
 // Aggregated raw questions
 const allQuestionsUnsorted = [
@@ -37,13 +41,17 @@ const allQuestionsUnsorted = [
   ...unixShellQuestions,
   ...cicdDevopsQuestions,
   ...dataGovernanceQuestions,
-  ...pubsubKafkaQuestions
+  ...pubsubKafkaQuestions,
+  ...dsaQuestions,
+  ...nosqlMongodbQuestions,
+  ...excelAnalyticsQuestions,
+  ...dataVizBiQuestions
 ];
 
 // Export canonical questions sorted by qNo
 export const interviewQuestions = [...allQuestionsUnsorted].sort((a, b) => a.qNo - b.qNo);
 
-// Export canonical 17 topics metadata
+// Export canonical topics metadata
 export { interviewTopics } from './topics.js';
 
 // Export backward-compatible computed categories with questions matching each topic

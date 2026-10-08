@@ -117,5 +117,33 @@ export const interviewTopics = [
     icon: 'FiSend',
     description: 'Message brokers, topics, partitions, consumer groups, offset management, CDC via Debezium & streaming.',
     tags: ['kafka-partitions', 'pubsub-subscriptions', 'cdc', 'debezium', 'consumer-groups', 'offsets', 'message-broker']
+  },
+  {
+    id: 'dsa',
+    title: 'Data Structures & Algorithms',
+    icon: 'FiCode',
+    description: 'Arrays, strings, searching, sorting, recursion, hashing, two pointers, sliding window & dynamic programming.',
+    tags: ['dsa', 'arrays', 'strings', 'searching', 'sorting', 'recursion', 'hashing', 'dynamic-programming', 'two-pointers', 'sliding-window', 'leetcode']
+  },
+  {
+    id: 'nosql-mongodb',
+    title: 'NoSQL & MongoDB',
+    icon: 'FiDatabase',
+    description: 'Document data modeling, BSON, Aggregation Pipeline, indexing, sharding, replica sets & ACID transactions.',
+    tags: ['nosql', 'mongodb', 'aggregation-pipeline', 'document-store', 'indexing', 'sharding', 'replica-sets', 'bson', 'acid-transactions']
+  },
+  {
+    id: 'excel-analytics',
+    title: 'Excel & Analytics',
+    icon: 'FiFileText',
+    description: 'Formulas (SUMIFS/INDEX-MATCH), VLOOKUP/XLOOKUP, Pivot Tables, conditional formatting, filtering & data analysis.',
+    tags: ['excel', 'vlookup', 'xlookup', 'pivot-tables', 'formulas', 'data-analysis', 'conditional-formatting', 'sorting-filtering', 'spreadsheets']
+  },
+  {
+    id: 'data-viz-bi',
+    title: 'Data Visualization & BI',
+    icon: 'FiPieChart',
+    description: 'Power BI & Tableau architectures, DAX measures, data modeling, dashboard storytelling, RLS & refresh.',
+    tags: ['power-bi', 'tableau', 'dax', 'measures', 'dashboards', 'data-visualization', 'kpis', 'star-schema-bi', 'rls', 'lod-expressions']
   }
 ];

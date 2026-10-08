@@ -312,5 +312,62 @@ export const advancedSqlQuestions = [
       "ranking"
     ],
     "codeSnippet": "SELECT\n    CASE WHEN a1.price > a2.price THEN a1.product ELSE a2.product END AS highest,\n    CASE WHEN a1.price < a2.price THEN a1.product ELSE a2.product END AS lowest\nFROM A AS a1 CROSS JOIN A AS a2\nWHERE a1.product <> a2.product AND a1.price > a2.price;"
+  },
+  {
+    "id": "sql-triggers-mechanics-audit-logging",
+    "qNo": 149,
+    "q": "What are SQL Triggers? Explain the difference between Row-level and Statement-level triggers, BEFORE vs AFTER execution, and why enterprise data architectures often prefer CDC over Triggers.",
+    "a": "A **Trigger** is a stored procedural routine that automatically fires in response to specific DML events (`INSERT`, `UPDATE`, `DELETE`) on a specified table.\n\n### 1. Trigger Classifications\n- **Execution Timing (`BEFORE` vs `AFTER` vs `INSTEAD OF`):**\n  - `BEFORE`: Executes before the DML mutation reaches the data page. Ideal for input validation, sanitization, or populating default surrogate columns.\n  - `AFTER`: Fires after changes are written to the transaction log. Ideal for auditing, cascade updates, and maintaining summary tables.\n  - `INSTEAD OF`: Replaces the DML action. Commonly used on complex multi-table SQL Views to make them updateable.\n- **Granularity (`ROW` vs `STATEMENT` Level):**\n  - `FOR EACH ROW`: Fires individually for every single row affected by the query. Provides access to `:OLD` and `:NEW` pseudo-records.\n  - `FOR EACH STATEMENT`: Fires exactly once per DML statement regardless of whether 0 or 1,000,000 rows were modified. Ideal for coarse audit notifications or batch timestamps.\n\n### 2. Audit Trail Implementation Example\n```sql\n-- Create audit table\nCREATE TABLE employee_audit (\n    audit_id SERIAL PRIMARY KEY,\n    emp_id INT,\n    old_salary NUMERIC,\n    new_salary NUMERIC,\n    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n    changed_by VARCHAR(50)\n);\n\n-- Create trigger function (PostgreSQL syntax)\nCREATE OR REPLACE FUNCTION audit_salary_change()\nRETURNS TRIGGER AS $$\nBEGIN\n    IF NEW.salary <> OLD.salary THEN\n        INSERT INTO employee_audit(emp_id, old_salary, new_salary, changed_by)\n        VALUES (OLD.emp_id, OLD.salary, NEW.salary, CURRENT_USER);\n    END IF;\n    RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER trg_employee_salary_audit\nAFTER UPDATE ON employee\nFOR EACH ROW\nEXECUTE FUNCTION audit_salary_change();\n```\n\n### 3. Production Trade-Off: Triggers vs. CDC (Change Data Capture)\n- **Performance Overhead:** Triggers run synchronously inside the originating transaction. A bulk `INSERT` of 100k rows with a row-level trigger causes massive transaction log serialization, lock contention, and high latency.\n- **Modern Alternative (CDC):** Production enterprise data pipelines use asynchronous log-based CDC (e.g. Debezium, Oracle GoldenGate, AWS DMS) reading the database write-ahead log (WAL/redo log) with zero runtime transaction overhead on the OLTP database.",
+    "complexity": "Intermediate",
+    "topics": [
+      "advanced-sql",
+      "data-governance"
+    ],
+    "tags": [
+      "triggers",
+      "rdbms",
+      "row-triggers",
+      "audit-logging",
+      "cdc",
+      "wal-logs"
+    ],
+    "codeSnippet": "CREATE TRIGGER trg_audit_salary AFTER UPDATE ON employee\nFOR EACH ROW EXECUTE FUNCTION audit_salary_change();"
+  },
+  {
+    "id": "sql-correlated-subqueries-vs-exists-in",
+    "qNo": 150,
+    "q": "Explain Correlated Subqueries vs Non-Correlated Subqueries. Compare the query execution mechanics of `EXISTS`, `IN`, and `JOIN` for filtering large datasets.",
+    "a": "Understanding subquery execution is central to SQL query optimization.\n\n### 1. Correlated vs. Non-Correlated Subqueries\n- **Non-Correlated Subquery:** Independent of the outer query. It evaluates **once** before the outer query runs, and its scalar or tabular result is reused for all outer rows.\n  ```sql\n  -- Evaluates the inner AVG() once\n  SELECT emp_name, salary FROM employee \n  WHERE salary > (SELECT AVG(salary) FROM employee);\n  ```\n- **Correlated Subquery:** References columns from the outer query table (`e.dept_id`). It must conceptually evaluate **once per outer row** ($O(M \\times N)$ complexity if not optimized by the query planner):\n  ```sql\n  SELECT e.emp_name, e.salary, e.dept_id\n  FROM employee e\n  WHERE e.salary > (\n      SELECT AVG(sub.salary) FROM employee sub WHERE sub.dept_id = e.dept_id\n  );\n  ```\n\n### 2. `EXISTS` vs `IN` vs `JOIN` Performance\n- **`EXISTS` (Semi-Join):** Short-circuits immediately upon finding the first matching row (`true`), ignoring subsequent matches. It handles `NULL` values cleanly without unexpected negation behavior.\n- **`IN`:** Evaluates all values in the subquery list. If the subquery contains a `NULL` and you use `NOT IN`, the entire predicate evaluates to `UNKNOWN` (returning 0 rows!).\n- **`JOIN`:** Joins rows directly into the relational stream. Can duplicate outer rows if the right table has multiple matches, requiring a costly `DISTINCT`.\n\n### 3. Rule of Thumb for Performance\n- When filtering outer table based on presence in a massive inner table: Use **`EXISTS`** or an explicit **`INNER JOIN`** with index coverage on the foreign key.",
+    "complexity": "Intermediate",
+    "topics": [
+      "advanced-sql"
+    ],
+    "tags": [
+      "subqueries",
+      "correlated-subqueries",
+      "exists-vs-in",
+      "semi-join",
+      "query-optimization"
+    ],
+    "codeSnippet": "-- Efficient Semi-Join with EXISTS\nSELECT c.customer_name\nFROM customers c\nWHERE EXISTS (\n    SELECT 1 FROM orders o \n    WHERE o.customer_id = c.customer_id AND o.order_amount > 1000\n);"
+  },
+  {
+    "id": "sql-clauses-where-having-aggregate-group-concat",
+    "qNo": 151,
+    "q": "What is the logical execution order of SQL clauses? Explain `WHERE` vs `HAVING`, and demonstrate multi-row string aggregation (`STRING_AGG` / `GROUP_CONCAT`).",
+    "a": "A common interview screening question probes the logical phase order in which SQL engines evaluate query statements.\n\n### 1. Logical Execution Order of SQL Clauses\nAlthough written starting with `SELECT`, SQL executes in the following logical sequence:\n1. **`FROM` & `JOIN`**: Identify source tables and form Cartesian product / join constraints.\n2. **`WHERE`**: Filter rows before aggregation (cannot reference aggregate aliases).\n3. **`GROUP BY`**: Collapse rows sharing common key values into groups.\n4. **`HAVING`**: Filter grouped aggregations (e.g. `HAVING COUNT(*) > 1`).\n5. **`SELECT`**: Project requested columns and compute window/scalar functions.\n6. **`DISTINCT`**: Deduplicate identical output rows.\n7. **`ORDER BY`**: Sort final result sets.\n8. **`LIMIT` / `OFFSET`**: Truncate output rows for pagination.\n\n### 2. `WHERE` vs `HAVING` Comparison\n- `WHERE` filters individual rows **before** any grouping or aggregate computation occurs.\n- `HAVING` filters aggregated group records **after** `GROUP BY` has collapsed rows.\n\n### 3. Multi-Row String Aggregation (`STRING_AGG` / `GROUP_CONCAT`)\nAggregating child attributes into a single delimited string per parent record:\n```sql\n-- PostgreSQL / BigQuery / SQL Server syntax\nSELECT \n    d.department_name,\n    COUNT(e.emp_id) AS total_employees,\n    STRING_AGG(e.emp_name, ', ' ORDER BY e.salary DESC) AS employee_list\nFROM department d\nJOIN employee e ON d.dept_id = e.dept_id\nGROUP BY d.department_name\nHAVING COUNT(e.emp_id) >= 2;\n\n-- MySQL equivalent\n-- SELECT department_name, GROUP_CONCAT(emp_name SEPARATOR ', ') FROM ...\n```",
+    "complexity": "Basic",
+    "topics": [
+      "advanced-sql"
+    ],
+    "tags": [
+      "where-vs-having",
+      "sql-execution-order",
+      "group-by",
+      "string-agg",
+      "group-concat",
+      "aggregate-functions"
+    ],
+    "codeSnippet": "SELECT department_name, COUNT(emp_id) as headcount,\n       STRING_AGG(emp_name, ', ' ORDER BY salary DESC) as team\nFROM employee GROUP BY department_name HAVING COUNT(emp_id) >= 2;"
   }
 ];

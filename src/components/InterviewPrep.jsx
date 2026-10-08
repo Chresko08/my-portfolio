@@ -6,16 +6,17 @@ import {
     FiChevronLeft, FiChevronRight, FiCheckCircle, FiStar,
     FiCode, FiCopy, FiCheck, FiTag, FiChevronsDown, FiChevronsUp,
     FiRotateCcw, FiX,
-    // 17 Topic Track Icons
+    // Topic Track Icons
     FiDatabase, FiLayers, FiCpu, FiCloud, FiBox,
     FiServer, FiGrid, FiHardDrive, FiActivity, FiCompass,
-    FiBarChart2, FiTool, FiTerminal, FiGitBranch, FiShield, FiSend
+    FiBarChart2, FiTool, FiTerminal, FiGitBranch, FiShield, FiSend,
+    FiFileText, FiPieChart
 } from 'react-icons/fi';
 import { interviewTopics, interviewQuestions } from '../data/interviewData';
 
 const ITEMS_PER_PAGE = 10;
 
-// Dual lookup mapping for all 17 canonical topic tracks + All Topics fallback
+// Dual lookup mapping for all canonical topic tracks + All Topics fallback
 const TOPIC_ICON_MAP = {
     'all': FiBookOpen,
     'advanced-sql': FiDatabase,
@@ -34,7 +35,11 @@ const TOPIC_ICON_MAP = {
     'unix-shell': FiTerminal,
     'cicd-devops': FiGitBranch,
     'data-governance': FiShield,
-    'pubsub-kafka': FiSend
+    'pubsub-kafka': FiSend,
+    'dsa': FiCode,
+    'nosql-mongodb': FiDatabase,
+    'excel-analytics': FiFileText,
+    'data-viz-bi': FiPieChart
 };
 
 const getTopicIcon = (topicId) => TOPIC_ICON_MAP[topicId] || FiBookOpen;
@@ -110,6 +115,25 @@ const detectSnippetLanguage = (item) => {
         (Array.isArray(item.topics) && item.topics.includes('dbt'))
     ) {
         return 'dbt / Jinja';
+    }
+    if (
+        code.includes('db.') ||
+        code.includes('aggregate([') ||
+        code.includes('ObjectId(') ||
+        (Array.isArray(item.topics) && item.topics.includes('nosql-mongodb'))
+    ) {
+        return 'MongoDB / NoSQL';
+    }
+    if (
+        code.startsWith('=') ||
+        code.includes('CALCULATE(') ||
+        code.includes('USERELATIONSHIP') ||
+        code.includes('XLOOKUP(') ||
+        code.includes('SUMIFS(') ||
+        code.includes('FIXED') ||
+        (Array.isArray(item.topics) && (item.topics.includes('excel-analytics') || item.topics.includes('data-viz-bi')))
+    ) {
+        return 'Excel / DAX';
     }
     return 'Implementation';
 };

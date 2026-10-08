@@ -157,7 +157,8 @@ export const pythonQuestions = [
     "complexity": "Intermediate",
     "topics": [
       "python",
-      "distributed-systems"
+      "distributed-systems",
+      "dsa"
     ],
     "tags": [
       "heapq",
@@ -169,5 +170,79 @@ export const pythonQuestions = [
       "algorithms"
     ],
     "codeSnippet": "import heapq\ndef find_kth_largest(nums, k):\n    heap = []\n    for n in nums:\n        heapq.heappush(heap, n)\n        if len(heap) > k:\n            heapq.heappop(heap)\n    return heap[0]"
+  },
+  {
+    "id": "py-numpy-vectorization-broadcasting-memory",
+    "qNo": 152,
+    "q": "Why is NumPy drastically faster than native Python lists for numeric computations? Explain contiguous memory buffers, SIMD vectorization, and NumPy broadcasting rules.",
+    "a": "Data pipelines often encounter heavy mathematical transformations where raw Python loops choke under high volume.\n\n### 1. Memory Architecture: Python Lists vs NumPy Arrays\n- **Python Lists (`list`):** A list of pointers to scattered heap objects. Each integer in Python is an object (`PyObject`) with a reference count, type info, and 28+ bytes of memory overhead. Iterating over a list causes constant CPU cache misses (pointer dereferencing).\n- **NumPy `ndarray`:** Stores data in a **single contiguous block of C-memory** (`C_CONTIGUOUS`). All elements share a single uniform C data type (e.g. `int64`, 8 bytes), eliminating pointer indirection and maximizing CPU L1/L2 cache locality.\n\n### 2. SIMD Vectorization\nNumPy delegates computations to low-level compiled C/Fortran libraries (BLAS/LAPACK). This unlocks **Single Instruction, Multiple Data (SIMD)** CPU instructions (e.g. AVX-512), allowing the CPU to perform additions/multiplications across 8 to 16 numeric elements in a single CPU cycle rather than looping.\n\n### 3. Broadcasting Rules\nBroadcasting allows NumPy to perform arithmetic operations on arrays with differing shapes without copying data in memory:\n1. Compare shapes element-wise starting from the trailing (rightmost) dimensions.\n2. Two dimensions are compatible if **they are equal**, or **one of them is 1**.\n3. The array with dimension 1 is virtually stretched to match the larger dimension without memory allocation.",
+    "complexity": "Intermediate",
+    "topics": [
+      "python"
+    ],
+    "tags": [
+      "numpy",
+      "vectorization",
+      "broadcasting",
+      "memory-locality",
+      "simd",
+      "c-buffers"
+    ],
+    "codeSnippet": "import numpy as np\n# Broadcasting: (3, 1) + (1, 4) -> (3, 4) without allocating intermediate copies\na = np.array([[10], [20], [30]])\nb = np.array([1, 2, 3, 4])\nresult = a + b"
+  },
+  {
+    "id": "py-pandas-loc-iloc-vectorize-apply-merges",
+    "qNo": 153,
+    "q": "Pandas Data Wrangling: Explain `.loc` vs `.iloc`, the performance penalty of `.apply()` vs vectorization, and compare `merge()`, `join()`, and `concat()`.",
+    "a": "Pandas is the core operational library for analytical scripting and exploratory data science.\n\n### 1. `.loc` vs `.iloc` Indexing\n- **`.loc` (Label-based):** Selects rows and columns by their index/column **labels**. Slicing with `.loc['a':'c']` is inclusive of the endpoint `'c'`.\n- **`.iloc` (Integer position-based):** Selects by 0-indexed physical position (`0, 1, ...`). Slicing with `.iloc[0:3]` is exclusive of index 3 (standard Python slice behavior).\n\n### 2. The Performance Penalty of `.apply()`\n- `.apply(lambda x: ...)` is essentially a glorified Python `for` loop executing at Python interpreter speed, serializing every row through Python function call overhead.\n- **Optimized Alternatives:**\n  1. **Built-in Vectorized Operations:** `df['c'] = df['a'] + df['b']` (compiled C speed).\n  2. **NumPy Vectorization (`np.where`):** `df['status'] = np.where(df['age'] >= 18, 'Adult', 'Minor')` (~50-100x faster than `.apply()`).\n\n### 3. Combining Datasets: `merge` vs `join` vs `concat`\n- **`pd.merge(df1, df2, on='key', how='inner')`:** Relational SQL-style joins on arbitrary column keys.\n- **`df1.join(df2, on='key')`:** Specialized join combining DataFrames primarily on their **Index**.\n- **`pd.concat([df1, df2], axis=0)`:** Stacks datasets vertically (`axis=0`, union all) or horizontally (`axis=1`, column bind) without relational key matching.",
+    "complexity": "Basic",
+    "topics": [
+      "python"
+    ],
+    "tags": [
+      "pandas",
+      "loc-vs-iloc",
+      "apply-vs-vectorize",
+      "merge-join-concat",
+      "data-wrangling"
+    ],
+    "codeSnippet": "import pandas as pd\nimport numpy as np\n# Vectorized conditional evaluation without slow .apply()\ndf['category'] = np.where(df['amount'] > 1000, 'Enterprise', 'Retail')"
+  },
+  {
+    "id": "py-matplotlib-visual-analytics-subplots",
+    "qNo": 154,
+    "q": "Explain the Matplotlib Figure vs Axes object hierarchy. How do you construct multi-panel subplots and visualize data distributions?",
+    "a": "Understanding the object-oriented API of Matplotlib is critical for building reproducible analytics reports and pipeline health charts.\n\n### 1. Object Hierarchy: Figure vs Axes\n- **Figure:** The overall canvas/window containing all drawing elements, titles, legends, and subplots.\n- **Axes (Plot Area):** The actual bounded plotting region where data curves, scatter points, bar charts, and axis ticks live. A single Figure can contain multiple Axes objects (e.g., a 2x2 grid of subplots).\n\n### 2. Best Practice: Object-Oriented Subplot Pattern\nAvoid using the legacy state-machine `plt.subplot()` API in production scripts. Prefer the explicit OO pattern:\n```python\nimport matplotlib.pyplot as plt\nimport numpy as np\n\n# Generate sample pipeline metrics\ndates = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']\nrecords_processed = [120000, 145000, 132000, 160000, 155000]\nlatency_ms = [42, 38, 45, 36, 40]\n\n# Instantiate Figure with 1 row, 2 columns\nfig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(12, 5))\n\n# Panel 1: Throughput bar chart\nax1.bar(dates, records_processed, color='#3b82f6')\nax1.set_title('ETL Pipeline Daily Volume')\nax1.set_ylabel('Records Ingested')\nax1.grid(axis='y', linestyle='--', alpha=0.7)\n\n# Panel 2: Latency trend line\nax2.plot(dates, latency_ms, marker='o', color='#10b981', linewidth=2)\nax2.set_title('End-to-End Processing Latency')\nax2.set_ylabel('Latency (ms)')\nax2.grid(True, linestyle='--', alpha=0.7)\n\nplt.tight_layout()\nplt.savefig('pipeline_health.png', dpi=300)\nplt.close(fig)\n```",
+    "complexity": "Basic",
+    "topics": [
+      "python"
+    ],
+    "tags": [
+      "matplotlib",
+      "data-visualization",
+      "figure-axes",
+      "subplots",
+      "visual-analytics"
+    ],
+    "codeSnippet": "fig, ax = plt.subplots(figsize=(8, 4))\nax.hist(df['latency'], bins=30, color='#6366f1')\nax.set_title('Distribution of Query Latency')\nplt.tight_layout()"
+  },
+  {
+    "id": "py-lists-dicts-hashmap-args-kwargs",
+    "qNo": 155,
+    "q": "Explain Python List vs. Dictionary internal data structures. How do Python Hash Tables handle collisions, and what is the mechanics of `*args` and `**kwargs`?",
+    "a": "This fundamental question evaluates understanding of Python runtime internals, memory allocations, and variable unpacking.\n\n### 1. Internal Implementations: Lists vs. Dicts\n- **List (`PyListObject`):** A dynamically resizable array of memory pointers. Random access by index (`lst[i]`) is $O(1)$. Appending (`lst.append()`) is amortized $O(1)$ due to overallocation growth patterns ($0, 4, 8, 16, 25, 35\\dots$). Searching (`x in lst`) is $O(N)$ linear scan.\n- **Dictionary (`PyDictObject`):** A compact hash table using open addressing with quadratic pseudo-random probing. Lookups (`d[k]`), insertions, and deletions are average $O(1)$.\n\n### 2. Hash Table Collision Resolution in Python\nPython dictionaries evaluate `hash(key)`. When two keys evaluate to the same table index (collision):\n- CPython uses **Open Addressing with Perturbation Probing**:\n  `probe = ((5 * probe) + 1 + perturb) & mask`\n- The perturbation value incorporates high-order hash bits, systematically scattering probes across unused slots to prevent primary clustering.\n\n### 3. Function Argument Unpacking: `*args` and `**kwargs`\n- **`*args` (Positional Unpacking):** Collects extra positional arguments into an immutable **tuple**.\n- **`**kwargs` (Keyword Unpacking):** Collects extra named arguments into a mutable **dictionary**.\n- Commonly used in custom ETL decorators, Airflow custom operators, and PySpark wrapper utilities.",
+    "complexity": "Basic",
+    "topics": [
+      "python",
+      "dsa"
+    ],
+    "tags": [
+      "lists-dicts",
+      "hashmap-internals",
+      "args-kwargs",
+      "collision-resolution",
+      "open-addressing"
+    ],
+    "codeSnippet": "def etl_hook(step_name, *args, **kwargs):\n    print(f'Executing {step_name} with {len(args)} args and options: {kwargs}')\n\netl_hook('ingest', 'source.csv', batch_size=1000, retry=True)"
   }
 ];
