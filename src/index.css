@@ -493,3 +493,31 @@ button {
     font-size: 1.85rem;
   }
 }
+
+/* Career Lineage Responsive Detail Modal & Mobile Bottom Sheet */
+.lineage-modal-dialog {
+  border-radius: 16px;
+  margin: 20px;
+}
+
+@media (max-width: 768px) {
+  .lineage-modal-dialog {
+    margin: 0 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+  }
+
+  .lineage-modal-drag-handle {
+    display: flex !important;
+  }
+}

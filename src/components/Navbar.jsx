@@ -2,13 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMoon, FiSun, FiLock, FiUnlock, FiUser } from 'react-icons/fi';
 import Logo from './Logo';
-import PasswordModal from './PasswordModal';
 
 const Navbar = ({ theme, toggleTheme, viewMode, setViewMode, onOpenPasswordModal, hasDecryptedData }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState('hero');
-    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
     
     useEffect(() => {
         const handleScroll = () => {
@@ -37,16 +35,10 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode, onOpenPasswordModal
                 setViewMode('personal');
             } else if (onOpenPasswordModal) {
                 onOpenPasswordModal();
-            } else {
-                setIsPasswordModalOpen(true);
             }
         } else {
             setViewMode('general');
         }
-    };
-
-    const handlePasswordSuccess = () => {
-        setViewMode('personal');
     };
 
     const navStyles = {
@@ -182,15 +174,6 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode, onOpenPasswordModal
                     </div>
                 </div>
             </nav>
-
-            {/* Password Modal (Fallback if not managed by parent App) */}
-            {!onOpenPasswordModal && (
-                <PasswordModal
-                    isOpen={isPasswordModalOpen}
-                    onClose={() => setIsPasswordModalOpen(false)}
-                    onSuccess={handlePasswordSuccess}
-                />
-            )}
         </>
     );
 };

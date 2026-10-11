@@ -18,6 +18,7 @@ A modern, fast, and interactive developer portfolio and high-yield technical kno
 - [Key Highlights](#-key-highlights)
 - [Zero-Knowledge Data Privacy Architecture](#-zero-knowledge-data-privacy-architecture)
 - [17-Topic Interview Preparation Engine](#-17-topic-interview-preparation-engine)
+- [Chronological Career Lineage Architecture (2004 – 2026)](#-chronological-career-lineage-architecture-2004--2026)
 - [Tech Stack](#-tech-stack)
 - [Project Architecture & Structure](#-project-architecture--structure)
 - [Component Breakdown](#-component-breakdown)
@@ -124,6 +125,54 @@ The **Interview Preparation** section has been architected as an interactive eng
 - **Search by Number or Text:** Instant search filter supporting question numbers (e.g., `#2`, `Q4`) as well as keywords in questions, answers, and tags.
 - **Complexity Filtering:** Quick toggles for *All*, *Basic*, *Intermediate*, and *Complex* questions.
 - **Study State Persistence:** Question completion and bookmarks persist across sessions via `localStorage`.
+
+---
+
+## 💼 Chronological Career Lineage Architecture (2004 – 2026)
+
+The portfolio structures 22+ years of academic and professional progression into an interactive reverse-chronological DAG (Directed Acyclic Graph):
+
+```mermaid
+flowchart TD
+    subgraph Era1 ["Era 1: 2024 – 2026 • Transition, Interviews & Senior DE"]
+        Cog["Oct 11, 2026: Cognizant — Lead Data Engineer (ETL) Interview (MS Teams)"]
+        Interviews["Sept – Oct 2026: Technical Loops (Tech Mahindra, Nagarro, Impetus, HCLTech, V4C AI, Deloitte, Micro1, Amgen)"]
+        Resign["Aug 22, 2026: Career Resignation from EY (Serving 90-Day Notice, LWD: Nov 19, 2026)"]
+        DBCerts["Aug 2 – 17, 2026: Databricks 5x Certification Blitz (Professional, Associate, Spark Dev, Analyst, GenAI)"]
+        EYAICerts["April 2025: EY Enterprise AI Accreditations (AI in Industry, AI Now 2.0)"]
+        EYRole["Nov 11, 2024 – Present: EY Consultant - Data Engineer (Amex Campus, Gurgaon • BigQuery ODL)"]
+        TCSRole["Sept 23 – Nov 8, 2024: TCS Systems Engineer (Indore Delivery Center)"]
+    end
+
+    subgraph Era2 ["Era 2: 2021 – 2024 • Infosys Enterprise Data Engineering"]
+        AWSCert["Sept 9, 2023: AWS Certified Cloud Practitioner (Score: 780/1000)"]
+        SNInterview["Sept – Nov 2023: ServiceNow Software Engineer Track (HackerRank Cleared)"]
+        BofALoan["Apr 2023 – Aug 2024: Bank of America Loan Syndication Regulatory Reporting"]
+        BofAOMNI["Mar 2022 – Mar 2023: Bank of America Project OMNI (Teradata to Hadoop Migration)"]
+        HCSC["Oct 2021 – Jan 2022: Health Care Service Corp (HCSC) Cloud Migration to Azure"]
+        InfTraining["Aug – Oct 2021: Infosys Big Data Foundation Training & Onboarding"]
+    end
+
+    subgraph Era3 ["Era 3: 2017 – 2021 • College Capstone & Infosys Hiring"]
+        InfDSE["Feb – May 2021: Infosys DSE Technical Evaluation & Offer"]
+        InfIntern["Feb – May 2021: Infosys Winternship LAMP Stack (81.6% Distinction)"]
+        GoogleKS["Nov 17, 2020: Google Kick Start 2020 Global Coding Competition"]
+        InfCampus["Sept 30, 2020: Infosys Campus Selection & Technical Panel"]
+        DevCerts["2019 – 2021: Udemy Full Stack PHP, SoloLearn (Python 3, HTML, SQL, C++), NIELIT BCC"]
+        BTech["2017 – 2021: B.Tech in CSE — UCEM Prayagraj / AKTU (First Division, 6.9 CGPA, Sem 8 SGPA 9.42)"]
+    end
+
+    subgraph Era4 ["Era 4: 2004 – 2017 • Schooling & Academic Foundations"]
+        ISC["2017: Class 12th (ISC Science) — Bishop Johnson School, Prayagraj"]
+        ICSE["2014: Class 10th (ICSE Distinction) — Bishop Johnson School, Prayagraj"]
+        Inception["2004: Primary School Inception — Bishop Johnson School, Prayagraj"]
+    end
+
+    Cog --> Interviews --> Resign --> DBCerts --> EYAICerts --> EYRole --> TCSRole
+    TCSRole --> AWSCert --> SNInterview --> BofALoan --> BofAOMNI --> HCSC --> InfTraining
+    InfTraining --> InfDSE --> InfIntern --> GoogleKS --> InfCampus --> DevCerts --> BTech
+    BTech --> ISC --> ICSE --> Inception
+```
 
 ---
 

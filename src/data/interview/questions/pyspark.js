@@ -216,5 +216,27 @@ export const pysparkQuestions = [
       "dimensional-modeling"
     ],
     "codeSnippet": "delta_target.alias('target').merge(\n    source=stg_df.alias('source'),\n    condition='target.customer_id = source.customer_id AND target.is_current = true'\n).whenMatchedUpdate(\n    condition='target.address != source.address',\n    set={'end_date': 'current_timestamp()', 'is_current': 'false'}\n).whenNotMatchedInsert(\n    values={'customer_id': 'source.customer_id', 'is_current': 'true'}\n).execute()"
+  },
+  {
+    "id": "pyspark-large-scale-join-optimization-500m-2b",
+    "qNo": 154,
+    "q": "How do you optimize a large-scale distributed join between a 500 Million record Client table and a 2 Billion record Payment table? Detail partitioning, Bucket Map Joins, key salting, and runtime pruning.",
+    "a": "A high-stakes architectural question frequently evaluated in Principal and Lead Data Engineer technical loops.\n\n### 1. The Core Bottleneck: Shuffle & Disk Spilling\nJoining 500M rows with 2B rows via standard Sort-Merge Join (SMJ) requires shuffling 2.5 Billion rows across cluster network interfaces, creating severe I/O serialization, shuffle service bottlenecks, and executor OutOfMemory (OOM) failures.\n\n### 2. Architectural Optimization Strategies\n\n#### A. Pre-Bucketing & Bucket Map Join (BMJ) / Co-Partitioning\n- If both tables are stored in Hive/Iceberg/Delta Lake, pre-bucket both tables on `client_id` using an identical number of buckets (e.g. 512 buckets):\n  ```sql\n  CREATE TABLE clients (...) CLUSTERED BY (client_id) INTO 512 BUCKETS STORED AS PARQUET;\n  CREATE TABLE payments (...) CLUSTERED BY (client_id) INTO 512 BUCKETS STORED AS PARQUET;\n  ```\n- When joined, Spark detects co-partitioning and executes a **Bucket Map Join**: Executor $i$ joins bucket $i$ of `clients` with bucket $i$ of `payments` locally without **any network shuffle whatsoever**!\n\n#### B. Salting for Data Skew Mitigation\n- If a few enterprise clients (e.g. Amazon, Walmart) generate 100M payment records each, their hash partitions will bottleneck on a single core.\n- **Salting Implementation in PySpark:**\n  ```python\n  from pyspark.sql import functions as F\n\n  # 1. Salt the massive 2B Payments table with random integer (0 to 19)\n  SALT_FACTOR = 20\n  payments_salted = payments_df.withColumn(\n      'salt', F.floor(F.rand() * SALT_FACTOR)\n  ).withColumn(\n      'salted_key', F.concat_ws('_', F.col('client_id'), F.col('salt'))\n  )\n\n  # 2. Replicate the 500M Clients table across all 20 salt values using explode\n  clients_exploded = clients_df.withColumn(\n      'salt_array', F.array([F.lit(i) for i in range(SALT_FACTOR)])\n  ).withColumn(\n      'salt', F.explode('salt_array')\n  ).withColumn(\n      'salted_key', F.concat_ws('_', F.col('client_id'), F.col('salt'))\n  )\n\n  # 3. Join on the evenly distributed salted key\n  result_df = payments_salted.join(clients_exploded, on='salted_key', how='inner')\n  ```\n- In Spark 3+, enable **Adaptive Query Execution (AQE)** (`spark.sql.adaptive.skewJoin.enabled = true`), which automatically splits skewed shuffle partitions at runtime.\n\n#### C. Runtime Dynamic Partition Pruning (DPP) & Bloom Filters\n- Modern Lakehouse platforms (Databricks Photon, Apache Iceberg, Snowflake) generate dynamic Bloom filters from the filtered Client table. If you query payments for US clients, the Bloom filter prunes 90% of Parquet data files in the 2B Payment table before reading bytes from cloud storage (S3/GCS).\n\n#### D. Column Projection & Early Pushdown\n- Never execute `SELECT *`. Select only `client_id` and required aggregations (`SUM(amount)`). Push all date and transaction status filters before the join.",
+    "complexity": "Complex",
+    "topics": [
+      "pyspark",
+      "distributed-systems",
+      "advanced-sql"
+    ],
+    "tags": [
+      "large-scale-joins",
+      "bucket-map-join",
+      "salting",
+      "skew-mitigation",
+      "shuffle-tuning",
+      "bloom-filter",
+      "aqe"
+    ],
+    "codeSnippet": "-- PySpark Skew Salting:\npayments_salted = payments.withColumn('salt', floor(rand() * 20))\nclients_replicated = clients.withColumn('salt', explode(array([lit(i) for i in range(20)])))\njoined = payments_salted.join(clients_replicated, on=['client_id', 'salt'])"
   }
 ];

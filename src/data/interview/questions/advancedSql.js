@@ -369,5 +369,44 @@ export const advancedSqlQuestions = [
       "aggregate-functions"
     ],
     "codeSnippet": "SELECT department_name, COUNT(emp_id) as headcount,\n       STRING_AGG(emp_name, ', ' ORDER BY salary DESC) as team\nFROM employee GROUP BY department_name HAVING COUNT(emp_id) >= 2;"
+  },
+  {
+    "id": "sql-left-semi-vs-left-anti-join",
+    "qNo": 152,
+    "q": "Explain Left Semi-Join vs. Left Anti-Join. How do query engines (PostgreSQL, BigQuery, PySpark) execute them, and why are they superior to `IN` / `NOT IN` subqueries?",
+    "a": "A high-yield relational and big data optimization concept evaluated in Senior and Lead Data Engineer interviews.\n\n### 1. Architectural Definitions\n- **Left Semi-Join:** Returns rows from the left table where **at least one match** exists in the right table. Unlike an `INNER JOIN`, it **never duplicates left-table rows** regardless of how many matches exist in the right table. Only left-table columns are projected.\n  - SQL equivalent: `SELECT * FROM A WHERE EXISTS (SELECT 1 FROM B WHERE A.id = B.id)`\n  - PySpark: `df_a.join(df_b, on='id', how='left_semi')`\n- **Left Anti-Join:** Returns rows from the left table where **no match** exists in the right table.\n  - SQL equivalent: `SELECT * FROM A WHERE NOT EXISTS (SELECT 1 FROM B WHERE A.id = B.id)` or `SELECT A.* FROM A LEFT JOIN B ON A.id = B.id WHERE B.id IS NULL`\n  - PySpark: `df_a.join(df_b, on='id', how='left_anti')`\n\n### 2. Execution Engine Advantages\n1. **Early Short-Circuiting:** As soon as the join operator finds the first matching row in the hash table, it returns the left row and stops scanning the right partition. It does not inflate memory or generate Cartesian product rows.\n2. **Eliminates Costly `DISTINCT`:** An `INNER JOIN` against a 1-to-many relationship requires a downstream `DISTINCT` or `GROUP BY` to eliminate duplicate parent rows. Semi-join natively preserves parent uniqueness with zero post-processing.\n3. **Safe Against NULLs:** `NOT IN (SELECT id FROM B)` completely breaks if table B contains even a single `NULL` value (evaluates to `UNKNOWN`, returning 0 rows). Left anti-join safely treats `NULL = NULL` as non-matching without collapsing the result set.",
+    "complexity": "Intermediate",
+    "topics": [
+      "advanced-sql",
+      "pyspark"
+    ],
+    "tags": [
+      "left-semi-join",
+      "left-anti-join",
+      "join-optimization",
+      "null-handling",
+      "short-circuit",
+      "hash-join"
+    ],
+    "codeSnippet": "-- PySpark:\ndf_semi = df_a.join(df_b, on='client_id', how='left_semi')\ndf_anti = df_a.join(df_b, on='client_id', how='left_anti')"
+  },
+  {
+    "id": "sql-window-ranking-row-number-rank-dense-rank",
+    "qNo": 153,
+    "q": "Compare SQL Window Ranking Functions: `ROW_NUMBER()`, `RANK()`, and `DENSE_RANK()`. How do they handle duplicate values and NULLs? Provide an exact output comparison table.",
+    "a": "A foundational SQL interview benchmark evaluated across core data engineering and analytics roles.\n\n### 1. Functional Differences\n- **`ROW_NUMBER()`:** Assigns a unique, strictly incrementing integer (1, 2, 3...) to each row in the partition. If multiple rows share identical sort values, distinct row numbers are assigned deterministically (or non-deterministically without secondary sort keys).\n- **`RANK()`:** Assigns identical rank numbers to rows with equal values, but **skips subsequent ranks** equal to the number of duplicates (e.g. 1, 1, 3, 4).\n- **`DENSE_RANK()`:** Assigns identical rank numbers to rows with equal values **without skipping any rank numbers** (e.g. 1, 1, 2, 3).\n\n### 2. Live Evaluation Example\nGiven input table with values: `[1, 2, 3, NULL, NULL, 3, 3, 1]`:\n```sql\nSELECT\n    val,\n    ROW_NUMBER() OVER (ORDER BY val ASC NULLS LAST) AS row_num,\n    RANK()       OVER (ORDER BY val ASC NULLS LAST) AS rnk,\n    DENSE_RANK() OVER (ORDER BY val ASC NULLS LAST) AS dense_rnk\nFROM sample_table;\n```\n\n### 3. Result Output Matrix\n```text\nval  | ROW_NUMBER() | RANK() | DENSE_RANK()\n-----+--------------+--------+-------------\n1    | 1            | 1      | 1\n1    | 2            | 1      | 1\n2    | 3            | 3      | 2\n3    | 4            | 4      | 3\n3    | 5            | 4      | 3\n3    | 6            | 4      | 3\nNULL | 7            | 7      | 4\nNULL | 8            | 8      | 4\n```\n*Key Takeaway:* Notice how `RANK()` jumps from 1 to 3, and from 4 to 7 due to ties. In contrast, `DENSE_RANK()` advances smoothly from 1 to 2 to 3 to 4 without skipping numbers.",
+    "complexity": "Basic",
+    "topics": [
+      "advanced-sql"
+    ],
+    "tags": [
+      "window-functions",
+      "row-number",
+      "rank",
+      "dense-rank",
+      "ties-and-nulls",
+      "analytical-sql"
+    ],
+    "codeSnippet": "SELECT val,\n       ROW_NUMBER() OVER(ORDER BY val ASC NULLS LAST) as rn,\n       RANK() OVER(ORDER BY val ASC NULLS LAST) as rk,\n       DENSE_RANK() OVER(ORDER BY val ASC NULLS LAST) as drk\nFROM table2;"
   }
 ];
