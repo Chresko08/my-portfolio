@@ -378,6 +378,30 @@ const LineageDetailModal = ({ item, onClose }) => {
                             </div>
                         )}
 
+                        {/* Key Topics Evaluated */}
+                        {item.keyTopics && item.keyTopics.length > 0 && (
+                            <div style={{ marginBottom: '22px' }}>
+                                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                    Key Topics & Technical Competencies Evaluated:
+                                </div>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                    {item.keyTopics.map((topic, tIdx) => (
+                                        <span key={tIdx} style={{
+                                            fontSize: '0.78rem',
+                                            padding: '4px 10px',
+                                            borderRadius: '6px',
+                                            background: 'var(--surface-color)',
+                                            border: '1px solid var(--card-border)',
+                                            color: 'var(--text-secondary)',
+                                            fontWeight: 500
+                                        }}>
+                                            {topic}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {/* Interview Rounds & Notes */}
                         {item.rounds && item.rounds.length > 0 && (
                             <div style={{ marginBottom: '22px' }}>
