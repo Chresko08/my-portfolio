@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import {
     FiBriefcase, FiAward, FiBookOpen, FiCalendar, FiMapPin,
     FiSearch, FiLock, FiFlag, FiExternalLink, FiCode,
-    FiDatabase, FiCheckCircle
+    FiDatabase, FiCheckCircle, FiChevronDown, FiChevronUp,
+    FiCopy, FiCheck, FiRefreshCw
 } from 'react-icons/fi';
 import LineageDetailModal from './LineageDetailModal';
 
@@ -54,6 +55,20 @@ const CareerLineage = ({ data, onLockDevice, onUnlockRequest }) => {
     const [selectedEra, setSelectedEra] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [activeModalItem, setActiveModalItem] = useState(null);
+    const [expandedCardIds, setExpandedCardIds] = useState([]);
+    const [copiedIndex, setCopiedIndex] = useState(null);
+
+    const toggleCardExpansion = (id) => {
+        setExpandedCardIds(prev =>
+            prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+        );
+    };
+
+    const handleCopy = (text, idx) => {
+        navigator.clipboard.writeText(text);
+        setCopiedIndex(idx);
+        setTimeout(() => setCopiedIndex(null), 2000);
+    };
 
     // Filtered items
     const filteredItems = useMemo(() => {
@@ -161,7 +176,37 @@ const CareerLineage = ({ data, onLockDevice, onUnlockRequest }) => {
                             <span>🔒</span> Private View • For Me
                         </div>
 
-                        {/* Unobtrusive Header Lock Device Button */}
+                        {/* Unobtrusive Header Controls */}
+                        <button
+                            onClick={() => {
+                                sessionStorage.removeItem('portfolioDecryptedData');
+                                if (onUnlockRequest) {
+                                    onUnlockRequest();
+                                } else {
+                                    window.location.reload();
+                                }
+                            }}
+                            title="Force reload & decrypt latest private data"
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                padding: '6px 14px',
+                                borderRadius: '9999px',
+                                background: 'var(--surface-color)',
+                                border: '1px solid var(--card-border)',
+                                color: 'var(--text-muted)',
+                                fontSize: '0.8rem',
+                                fontWeight: 500,
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--primary-color)'; e.currentTarget.style.borderColor = 'var(--primary-color)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--card-border)'; }}
+                        >
+                            <FiRefreshCw size={12} /> Reload Latest Data
+                        </button>
+
                         <button
                             onClick={handleLock}
                             title="Lock private view on this device"
@@ -509,7 +554,134 @@ const CareerLineage = ({ data, onLockDevice, onUnlockRequest }) => {
                                             </p>
                                         )}
 
-                                        {/* Metrics Badges Row & Action Trigger Button */}
+                                        {/* Evaluation Rounds Audit Preview (for interview items) */}
+                                        {item.rounds && item.rounds.length > 0 && (
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
+                                                {item.rounds.map((rnd, rIdx) => {
+                                                    const isCleared = rnd.status === 'cleared';
+                                                    const isRejected = rnd.status === 'rejected';
+                                                    const statusColor = isCleared ? '#10b981' : isRejected ? '#ef4444' : '#f59e0b';
+                                                    const statusBg = isCleared ? 'rgba(16, 185, 129, 0.12)' : isRejected ? 'rgba(239, 68, 68, 0.12)' : 'rgba(245, 158, 11, 0.12)';
+                                                    const statusBorder = isCleared ? 'rgba(16, 185, 129, 0.3)' : isRejected ? 'rgba(239, 68, 68, 0.3)' : 'rgba(245, 158, 11, 0.3)';
+
+                                                    return (
+                                                        <span key={rIdx} style={{
+                                                            fontSize: '0.74rem',
+                                                            padding: '4px 10px',
+                                                            borderRadius: '6px',
+                                                            background: statusBg,
+                                                            border: `1px solid ${statusBorder}`,
+                                                            color: statusColor,
+                                                            fontWeight: 600,
+                                                            display: 'inline-flex',
+                                                            alignItems: 'center',
+                                                            gap: '5px'
+                                                        }}>
+                                                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: statusColor }} />
+                                                            {rnd.name.split(':')[0] || rnd.name}: {rnd.status.toUpperCase()} ({rnd.date.split('(')[0].trim()})
+                                                        </span>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+
+                                        {/* Key Topics Badges (for interview items) */}
+                                        {item.keyTopics && item.keyTopics.length > 0 && (
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '10px' }}>
+                                                {item.keyTopics.slice(0, 5).map((t, tIdx) => (
+                                                    <span key={tIdx} style={{
+                                                        fontSize: '0.72rem',
+                                                        padding: '3px 8px',
+                                                        borderRadius: '5px',
+                                                        background: 'var(--surface-color)',
+                                                        border: '1px solid var(--card-border)',
+                                                        color: 'var(--text-muted)'
+                                                    }}>
+                                                        {t}
+                                                    </span>
+                                                ))}
+                                                {item.keyTopics.length > 5 && (
+                                                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', alignSelf: 'center' }}>
+                                                        +{item.keyTopics.length - 5} more topics
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* Inline Expandable Interview Questions Accordion */}
+                                        {item.interviewQuestions && item.interviewQuestions.length > 0 && expandedCardIds.includes(item.id) && (
+                                            <div
+                                                onClick={(e) => e.stopPropagation()}
+                                                style={{
+                                                    marginTop: '18px',
+                                                    paddingTop: '16px',
+                                                    borderTop: '1px solid var(--card-border)',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    gap: '12px'
+                                                }}
+                                            >
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                                                    <span style={{ fontSize: '0.84rem', fontWeight: 700, color: 'var(--primary-color)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                                        Live Interview Questions & Solutions ({item.interviewQuestions.length}):
+                                                    </span>
+                                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                                        Complete technical audit
+                                                    </span>
+                                                </div>
+
+                                                {item.interviewQuestions.map((iq, qIdx) => (
+                                                    <div key={qIdx} style={{
+                                                        padding: '14px',
+                                                        borderRadius: '8px',
+                                                        background: 'var(--surface-color)',
+                                                        border: '1px solid var(--card-border)'
+                                                    }}>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                                                            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary-color)' }}>
+                                                                {iq.topic || `Question ${qIdx + 1}`}
+                                                            </span>
+                                                            <button
+                                                                onClick={() => handleCopy(iq.q + '\n\n' + (iq.myAnswer || ''), `${item.id}-card-${qIdx}`)}
+                                                                style={{
+                                                                    background: 'transparent',
+                                                                    border: 'none',
+                                                                    color: copiedIndex === `${item.id}-card-${qIdx}` ? '#10b981' : 'var(--text-muted)',
+                                                                    cursor: 'pointer',
+                                                                    display: 'inline-flex',
+                                                                    alignItems: 'center',
+                                                                    gap: '4px',
+                                                                    fontSize: '0.74rem'
+                                                                }}
+                                                            >
+                                                                {copiedIndex === `${item.id}-card-${qIdx}` ? <FiCheck size={11} /> : <FiCopy size={11} />}
+                                                                {copiedIndex === `${item.id}-card-${qIdx}` ? 'Copied' : 'Copy'}
+                                                            </button>
+                                                        </div>
+                                                        <div style={{ fontWeight: 600, fontSize: '0.88rem', color: 'var(--text-primary)', marginBottom: '8px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                                                            {iq.q}
+                                                        </div>
+                                                        {iq.myAnswer && (
+                                                            <div style={{
+                                                                fontSize: '0.84rem',
+                                                                color: 'var(--text-secondary)',
+                                                                background: 'rgba(0,0,0,0.22)',
+                                                                padding: '12px',
+                                                                borderRadius: '6px',
+                                                                whiteSpace: 'pre-wrap',
+                                                                wordBreak: 'break-word',
+                                                                lineHeight: 1.6,
+                                                                borderLeft: '3px solid var(--primary-color)'
+                                                            }}>
+                                                                {iq.myAnswer}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {/* Metrics Badges Row & Action Trigger Buttons */}
                                         <div style={{
                                             display: 'flex',
                                             alignItems: 'center',
@@ -536,58 +708,87 @@ const CareerLineage = ({ data, onLockDevice, onUnlockRequest }) => {
                                                 ))}
                                             </div>
 
-                                            {/* Action Button that triggers Detail Modal */}
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setActiveModalItem(item);
-                                                }}
-                                                className="btn-secondary"
-                                                style={{
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center',
-                                                    gap: '6px',
-                                                    padding: '6px 14px',
-                                                    borderRadius: '8px',
-                                                    fontSize: '0.8rem',
-                                                    fontWeight: 600,
-                                                    color: 'var(--primary-color)',
-                                                    background: 'var(--surface-color)',
-                                                    border: '1px solid var(--card-border)',
-                                                    cursor: 'pointer',
-                                                    transition: 'all 0.2s ease'
-                                                }}
-                                                onMouseEnter={(e) => {
-                                                    e.currentTarget.style.borderColor = 'var(--primary-color)';
-                                                    e.currentTarget.style.background = 'var(--badge-bg)';
-                                                }}
-                                                onMouseLeave={(e) => {
-                                                    e.currentTarget.style.borderColor = 'var(--card-border)';
-                                                    e.currentTarget.style.background = 'var(--surface-color)';
-                                                }}
-                                            >
-                                                {item.project ? (
-                                                    <>
-                                                        <FiDatabase size={13} />
-                                                        <span>View Architecture Deep Dive</span>
-                                                    </>
-                                                ) : item.interviewQuestions ? (
-                                                    <>
-                                                        <FiCode size={13} />
-                                                        <span>View Interview Q&As ({item.interviewQuestions.length})</span>
-                                                    </>
-                                                ) : item.capstoneProject ? (
-                                                    <>
-                                                        <FiBookOpen size={13} />
-                                                        <span>View Project & Records</span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <FiExternalLink size={13} />
-                                                        <span>View Details & Highlights</span>
-                                                    </>
+                                            {/* Action Buttons Row */}
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                                {item.interviewQuestions && (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            toggleCardExpansion(item.id);
+                                                        }}
+                                                        className="btn-secondary"
+                                                        style={{
+                                                            display: 'inline-flex',
+                                                            alignItems: 'center',
+                                                            gap: '6px',
+                                                            padding: '6px 12px',
+                                                            borderRadius: '8px',
+                                                            fontSize: '0.78rem',
+                                                            fontWeight: 600,
+                                                            color: 'var(--text-primary)',
+                                                            background: expandedCardIds.includes(item.id) ? 'var(--badge-bg)' : 'var(--surface-color)',
+                                                            border: '1px solid var(--card-border)',
+                                                            cursor: 'pointer',
+                                                            transition: 'all 0.2s ease'
+                                                        }}
+                                                    >
+                                                        {expandedCardIds.includes(item.id) ? <FiChevronUp size={13} /> : <FiChevronDown size={13} />}
+                                                        <span>{expandedCardIds.includes(item.id) ? 'Hide Q&As' : `Inline Q&As (${item.interviewQuestions.length})`}</span>
+                                                    </button>
                                                 )}
-                                            </button>
+
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setActiveModalItem(item);
+                                                    }}
+                                                    className="btn-secondary"
+                                                    style={{
+                                                        display: 'inline-flex',
+                                                        alignItems: 'center',
+                                                        gap: '6px',
+                                                        padding: '6px 14px',
+                                                        borderRadius: '8px',
+                                                        fontSize: '0.8rem',
+                                                        fontWeight: 600,
+                                                        color: 'var(--primary-color)',
+                                                        background: 'var(--surface-color)',
+                                                        border: '1px solid var(--card-border)',
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.2s ease'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.currentTarget.style.borderColor = 'var(--primary-color)';
+                                                        e.currentTarget.style.background = 'var(--badge-bg)';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.currentTarget.style.borderColor = 'var(--card-border)';
+                                                        e.currentTarget.style.background = 'var(--surface-color)';
+                                                    }}
+                                                >
+                                                    {item.project ? (
+                                                        <>
+                                                            <FiDatabase size={13} />
+                                                            <span>View Architecture Deep Dive</span>
+                                                        </>
+                                                    ) : item.interviewQuestions ? (
+                                                        <>
+                                                            <FiCode size={13} />
+                                                            <span>Full Audit Modal</span>
+                                                        </>
+                                                    ) : item.capstoneProject ? (
+                                                        <>
+                                                            <FiBookOpen size={13} />
+                                                            <span>View Project & Records</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <FiExternalLink size={13} />
+                                                            <span>View Details & Highlights</span>
+                                                        </>
+                                                    )}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </motion.div>

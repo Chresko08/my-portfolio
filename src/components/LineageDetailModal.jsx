@@ -485,18 +485,19 @@ const LineageDetailModal = ({ item, onClose }) => {
                                                     {copiedIndex === `${item.id}-${qIdx}` ? 'Copied' : 'Copy Question & Answer'}
                                                 </button>
                                             </div>
-                                            <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)', marginBottom: '8px', whiteSpace: 'pre-line' }}>
+                                            <div style={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)', marginBottom: '8px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                                                 {iq.q}
                                             </div>
                                             {iq.myAnswer && (
                                                 <div style={{
-                                                    fontSize: '0.85rem',
+                                                    fontSize: '0.86rem',
                                                     color: 'var(--text-secondary)',
-                                                    background: 'rgba(0,0,0,0.18)',
-                                                    padding: '12px',
+                                                    background: 'rgba(0,0,0,0.22)',
+                                                    padding: '14px',
                                                     borderRadius: '8px',
-                                                    whiteSpace: 'pre-line',
-                                                    lineHeight: 1.55,
+                                                    whiteSpace: 'pre-wrap',
+                                                    wordBreak: 'break-word',
+                                                    lineHeight: 1.6,
                                                     borderLeft: '3px solid var(--primary-color)'
                                                 }}>
                                                     {iq.myAnswer}

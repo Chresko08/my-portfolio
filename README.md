@@ -135,8 +135,10 @@ The portfolio structures 22+ years of academic and professional progression into
 ```mermaid
 flowchart TD
     subgraph Era1 ["Era 1: 2024 – 2026 • Transition, Interviews & Senior DE"]
-        Cog["Oct 11, 2026: Cognizant — Lead Data Engineer (ETL) Interview (MS Teams)"]
-        Interviews["Sept – Oct 2026: Technical Loops (Tech Mahindra, Nagarro, Impetus, HCLTech, V4C AI, Deloitte, Micro1, Amgen)"]
+        HCL["Oct 31, 2026: HCLTech — Specialist Data Engineer (Selected • 24 LPA Fixed Offer)"]
+        DGL["Oct 23, 2026: DGLiger — PySpark Developer (Round 2 PM Architecture & SQL)"]
+        Cof["Oct 10, 2026: Coforge — Lead Data Engineer (ETL) Interview (MS Teams)"]
+        Interviews["Sept – Oct 2026: Technical Loops (Tech Mahindra, Nagarro, Impetus, V4C AI, Deloitte, Micro1, Amgen)"]
         Resign["Aug 22, 2026: Career Resignation from EY (Serving 90-Day Notice, LWD: Nov 19, 2026)"]
         DBCerts["Aug 2 – 17, 2026: Databricks 5x Certification Blitz (Professional, Associate, Spark Dev, Analyst, GenAI)"]
         EYAICerts["April 2025: EY Enterprise AI Accreditations (AI in Industry, AI Now 2.0)"]

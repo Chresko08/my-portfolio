@@ -51,23 +51,33 @@ function App() {
         document.documentElement.setAttribute('data-theme', theme);
     }, [theme]);
 
-    // Check session cache on initial mount
+    // Check session cache on initial mount with automatic cache-invalidation on data updates
     useEffect(() => {
-        try {
-            const cached = sessionStorage.getItem('portfolioDecryptedData');
-            if (cached) {
-                const parsed = JSON.parse(cached);
-                if (parsed?.lineageItems?.length > 0) {
-                    setDecryptedData(parsed);
-                    const savedMode = localStorage.getItem('portfolioActiveMode');
-                    if (savedMode === 'personal') {
-                        setViewMode('personal');
+        const validateCache = async () => {
+            try {
+                const cached = sessionStorage.getItem('portfolioDecryptedData');
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    const { default: encryptedLineage } = await import('./data/encryptedLineage.json');
+                    // Invalidate cache if encryptedLineage was updated with newer data
+                    if (encryptedLineage?.encryptedAt && parsed?.encryptedAt && parsed.encryptedAt !== encryptedLineage.encryptedAt) {
+                        sessionStorage.removeItem('portfolioDecryptedData');
+                        setDecryptedData(null);
+                        return;
+                    }
+                    if (parsed?.lineageItems?.length > 0) {
+                        setDecryptedData(parsed);
+                        const savedMode = localStorage.getItem('portfolioActiveMode');
+                        if (savedMode === 'personal') {
+                            setViewMode('personal');
+                        }
                     }
                 }
+            } catch (e) {
+                sessionStorage.removeItem('portfolioDecryptedData');
             }
-        } catch (e) {
-            sessionStorage.removeItem('portfolioDecryptedData');
-        }
+        };
+        validateCache();
     }, []);
 
     const handleAuthenticate = async (password, rememberDevice) => {

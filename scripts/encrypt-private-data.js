@@ -59,11 +59,12 @@ async function runEncryption() {
         process.exit(1);
     }
 
+    const timestamp = new Date().toISOString();
     const payload = JSON.stringify({
         careerParameters,
         lineageEras,
         lineageItems,
-        encryptedAt: new Date().toISOString()
+        encryptedAt: timestamp
     });
 
     const salt = crypto.randomBytes(16);
@@ -99,7 +100,8 @@ async function runEncryption() {
         salt: salt.toString('base64'),
         iv: iv.toString('base64'),
         ciphertext: combinedCiphertextAndTag.toString('base64'),
-        itemCount: lineageItems.length
+        itemCount: lineageItems.length,
+        encryptedAt: timestamp
     };
 
     fs.writeFileSync(outputEncryptedPath, JSON.stringify(encryptedOutput, null, 2), 'utf8');
