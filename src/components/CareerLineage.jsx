@@ -46,7 +46,7 @@ const TYPE_CONFIG = {
     }
 };
 
-const CareerLineage = ({ data, onLockDevice, onUnlockRequest }) => {
+const CareerLineage = ({ data, onLockDevice, onUnlockRequest, onRefreshData }) => {
     const lineageEras = data?.lineageEras || [
         { id: 'all', label: 'Complete Lineage (2004 – 2026)', range: '2004 – 2026' }
     ];
@@ -115,7 +115,11 @@ const CareerLineage = ({ data, onLockDevice, onUnlockRequest }) => {
             if (onLockDevice) {
                 onLockDevice();
             } else {
+                sessionStorage.removeItem('portfolioDecryptedData');
+                localStorage.removeItem('portfolioDecryptedData');
+                localStorage.removeItem('portfolioRememberedToken');
                 localStorage.removeItem('portfolioAuthenticated');
+                localStorage.removeItem('portfolioActiveMode');
                 window.location.reload();
             }
         }
@@ -179,11 +183,16 @@ const CareerLineage = ({ data, onLockDevice, onUnlockRequest }) => {
                         {/* Unobtrusive Header Controls */}
                         <button
                             onClick={() => {
-                                sessionStorage.removeItem('portfolioDecryptedData');
-                                if (onUnlockRequest) {
-                                    onUnlockRequest();
+                                if (onRefreshData) {
+                                    onRefreshData();
                                 } else {
-                                    window.location.reload();
+                                    sessionStorage.removeItem('portfolioDecryptedData');
+                                    localStorage.removeItem('portfolioDecryptedData');
+                                    if (onUnlockRequest) {
+                                        onUnlockRequest();
+                                    } else {
+                                        window.location.reload();
+                                    }
                                 }
                             }}
                             title="Force reload & decrypt latest private data"

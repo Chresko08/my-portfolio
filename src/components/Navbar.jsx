@@ -132,7 +132,7 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode, onOpenPasswordModal
                                         border: 'none', cursor: 'pointer', transition: 'all 0.2s ease'
                                     }}
                                 >
-                                    {viewMode === 'personal' ? <FiUnlock size={13} /> : <FiLock size={13} />} For Me
+                                    {viewMode === 'personal' || hasDecryptedData ? <FiUnlock size={13} /> : <FiLock size={13} />} For Me
                                 </button>
                             </div>
 

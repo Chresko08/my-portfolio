@@ -136,7 +136,7 @@ The portfolio structures 22+ years of academic and professional progression into
 flowchart TD
     subgraph Era1 ["Era 1: 2024 – 2026 • Transition, Interviews & Senior DE"]
         HCL["Oct 31, 2026: HCLTech — Specialist Data Engineer (Selected • 24 LPA Fixed Offer)"]
-        DGL["Oct 23, 2026: DGLiger — PySpark Developer (Round 2 PM Architecture & SQL)"]
+        DGL["Oct 23, 2026: DGLiger (Airtel Client) — PySpark Developer (Round 2 • Not Selected)"]
         Cof["Oct 10, 2026: Coforge — Lead Data Engineer (ETL) Interview (MS Teams)"]
         Interviews["Sept – Oct 2026: Technical Loops (Tech Mahindra, Nagarro, Impetus, V4C AI, Deloitte, Micro1, Amgen)"]
         Resign["Aug 22, 2026: Career Resignation from EY (Serving 90-Day Notice, LWD: Nov 19, 2026)"]

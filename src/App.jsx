@@ -34,6 +34,19 @@ const SectionLoader = () => (
     </div>
 );
 
+const STORAGE_KEYS = {
+    DECRYPTED_DATA: 'portfolioDecryptedData',
+    REMEMBERED_TOKEN: 'portfolioRememberedToken',
+    AUTHENTICATED: 'portfolioAuthenticated',
+    ACTIVE_MODE: 'portfolioActiveMode'
+};
+
+const encodeToken = (str) =>
+    btoa(Array.from(new TextEncoder().encode(str), (b) => String.fromCharCode(b)).join(''));
+
+const decodeToken = (b64) =>
+    new TextDecoder().decode(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)));
+
 function App() {
     const [theme, setTheme] = useState('dark');
     // viewMode: 'general' (public) or 'personal' (password-protected 'For Me')
@@ -51,33 +64,83 @@ function App() {
         document.documentElement.setAttribute('data-theme', theme);
     }, [theme]);
 
-    // Check session cache on initial mount with automatic cache-invalidation on data updates
+    const clearStoredAuth = () => {
+        sessionStorage.removeItem(STORAGE_KEYS.DECRYPTED_DATA);
+        localStorage.removeItem(STORAGE_KEYS.DECRYPTED_DATA);
+        localStorage.removeItem(STORAGE_KEYS.REMEMBERED_TOKEN);
+        localStorage.removeItem(STORAGE_KEYS.AUTHENTICATED);
+        localStorage.removeItem(STORAGE_KEYS.ACTIVE_MODE);
+    };
+
+    const decryptWithRememberedToken = async () => {
+        const token = localStorage.getItem(STORAGE_KEYS.REMEMBERED_TOKEN);
+        if (!token) return null;
+
+        try {
+            const password = decodeToken(token);
+            const [{ default: encryptedLineage }, { decryptLineagePayload }] = await Promise.all([
+                import('./data/encryptedLineage.json'),
+                import('./utils/crypto')
+            ]);
+            const data = await decryptLineagePayload(password, encryptedLineage);
+            if (data && data.lineageItems) {
+                const serialized = JSON.stringify(data);
+                sessionStorage.setItem(STORAGE_KEYS.DECRYPTED_DATA, serialized);
+                localStorage.setItem(STORAGE_KEYS.DECRYPTED_DATA, serialized);
+                localStorage.setItem(STORAGE_KEYS.AUTHENTICATED, 'true');
+                return data;
+            }
+        } catch (err) {
+            // Remembered token failed (e.g., password changed) -> clear stale auth
+            clearStoredAuth();
+        }
+        return null;
+    };
+
+    // Restore remembered authentication and decrypted data across browser sessions
     useEffect(() => {
-        const validateCache = async () => {
+        const restoreAccess = async () => {
             try {
-                const cached = sessionStorage.getItem('portfolioDecryptedData');
-                if (cached) {
-                    const parsed = JSON.parse(cached);
-                    const { default: encryptedLineage } = await import('./data/encryptedLineage.json');
-                    // Invalidate cache if encryptedLineage was updated with newer data
-                    if (encryptedLineage?.encryptedAt && parsed?.encryptedAt && parsed.encryptedAt !== encryptedLineage.encryptedAt) {
-                        sessionStorage.removeItem('portfolioDecryptedData');
-                        setDecryptedData(null);
-                        return;
-                    }
-                    if (parsed?.lineageItems?.length > 0) {
+                const { default: encryptedLineage } = await import('./data/encryptedLineage.json');
+                const savedMode = localStorage.getItem(STORAGE_KEYS.ACTIVE_MODE);
+                const isRememberedAuth = localStorage.getItem(STORAGE_KEYS.AUTHENTICATED) === 'true';
+
+                const cachedRaw =
+                    sessionStorage.getItem(STORAGE_KEYS.DECRYPTED_DATA) ||
+                    localStorage.getItem(STORAGE_KEYS.DECRYPTED_DATA);
+
+                if (cachedRaw) {
+                    const parsed = JSON.parse(cachedRaw);
+                    const isFresh =
+                        !encryptedLineage?.encryptedAt ||
+                        parsed?.encryptedAt === encryptedLineage.encryptedAt;
+
+                    if (isFresh && parsed?.lineageItems?.length > 0) {
                         setDecryptedData(parsed);
-                        const savedMode = localStorage.getItem('portfolioActiveMode');
-                        if (savedMode === 'personal') {
+                        if (savedMode === 'personal' || (isRememberedAuth && savedMode !== 'general')) {
                             setViewMode('personal');
                         }
+                        return;
+                    }
+                    // Stale cache -> clear data caches before silent re-decryption
+                    sessionStorage.removeItem(STORAGE_KEYS.DECRYPTED_DATA);
+                    localStorage.removeItem(STORAGE_KEYS.DECRYPTED_DATA);
+                }
+
+                // Silently re-decrypt latest encrypted payload if device is remembered
+                const freshData = await decryptWithRememberedToken();
+                if (freshData) {
+                    setDecryptedData(freshData);
+                    if (savedMode === 'personal' || (isRememberedAuth && savedMode !== 'general')) {
+                        setViewMode('personal');
                     }
                 }
             } catch (e) {
-                sessionStorage.removeItem('portfolioDecryptedData');
+                sessionStorage.removeItem(STORAGE_KEYS.DECRYPTED_DATA);
+                localStorage.removeItem(STORAGE_KEYS.DECRYPTED_DATA);
             }
         };
-        validateCache();
+        restoreAccess();
     }, []);
 
     const handleAuthenticate = async (password, rememberDevice) => {
@@ -89,12 +152,20 @@ function App() {
             ]);
             const data = await decryptLineagePayload(password, encryptedLineage);
             if (data && data.lineageItems) {
+                const serialized = JSON.stringify(data);
                 setDecryptedData(data);
                 setViewMode('personal');
-                localStorage.setItem('portfolioActiveMode', 'personal');
+                sessionStorage.setItem(STORAGE_KEYS.DECRYPTED_DATA, serialized);
+                localStorage.setItem(STORAGE_KEYS.ACTIVE_MODE, 'personal');
+
                 if (rememberDevice) {
-                    sessionStorage.setItem('portfolioDecryptedData', JSON.stringify(data));
-                    localStorage.setItem('portfolioAuthenticated', 'true');
+                    localStorage.setItem(STORAGE_KEYS.DECRYPTED_DATA, serialized);
+                    localStorage.setItem(STORAGE_KEYS.REMEMBERED_TOKEN, encodeToken(password));
+                    localStorage.setItem(STORAGE_KEYS.AUTHENTICATED, 'true');
+                } else {
+                    localStorage.removeItem(STORAGE_KEYS.DECRYPTED_DATA);
+                    localStorage.removeItem(STORAGE_KEYS.REMEMBERED_TOKEN);
+                    localStorage.removeItem(STORAGE_KEYS.AUTHENTICATED);
                 }
                 return true;
             }
@@ -107,23 +178,40 @@ function App() {
 
     const handleLockDevice = () => {
         setDecryptedData(null);
-        sessionStorage.removeItem('portfolioDecryptedData');
-        localStorage.removeItem('portfolioAuthenticated');
-        localStorage.removeItem('portfolioActiveMode');
+        clearStoredAuth();
         setViewMode('general');
     };
 
-    const handleViewModeChange = (mode) => {
+    const handleRefreshData = async () => {
+        sessionStorage.removeItem(STORAGE_KEYS.DECRYPTED_DATA);
+        localStorage.removeItem(STORAGE_KEYS.DECRYPTED_DATA);
+        const freshData = await decryptWithRememberedToken();
+        if (freshData) {
+            setDecryptedData(freshData);
+        } else {
+            setDecryptedData(null);
+            setIsPasswordModalOpen(true);
+        }
+    };
+
+    const handleViewModeChange = async (mode) => {
         if (mode === 'personal') {
             if (decryptedData) {
                 setViewMode('personal');
-                localStorage.setItem('portfolioActiveMode', 'personal');
+                localStorage.setItem(STORAGE_KEYS.ACTIVE_MODE, 'personal');
             } else {
-                setIsPasswordModalOpen(true);
+                const freshData = await decryptWithRememberedToken();
+                if (freshData) {
+                    setDecryptedData(freshData);
+                    setViewMode('personal');
+                    localStorage.setItem(STORAGE_KEYS.ACTIVE_MODE, 'personal');
+                } else {
+                    setIsPasswordModalOpen(true);
+                }
             }
         } else {
             setViewMode('general');
-            localStorage.setItem('portfolioActiveMode', 'general');
+            localStorage.setItem(STORAGE_KEYS.ACTIVE_MODE, 'general');
         }
     };
 
@@ -134,7 +222,7 @@ function App() {
                 toggleTheme={toggleTheme}
                 viewMode={viewMode}
                 setViewMode={handleViewModeChange}
-                onOpenPasswordModal={() => setIsPasswordModalOpen(true)}
+                onOpenPasswordModal={() => handleViewModeChange('personal')}
                 hasDecryptedData={!!decryptedData}
             />
             <main>
@@ -144,7 +232,8 @@ function App() {
                         <CareerLineage
                             data={decryptedData}
                             onLockDevice={handleLockDevice}
-                            onUnlockRequest={() => setIsPasswordModalOpen(true)}
+                            onUnlockRequest={() => handleViewModeChange('personal')}
+                            onRefreshData={handleRefreshData}
                         />
                     </Suspense>
                 ) : (
