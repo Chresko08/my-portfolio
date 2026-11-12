@@ -135,6 +135,7 @@ The portfolio structures 22+ years of academic and professional progression into
 ```mermaid
 flowchart TD
     subgraph Era1 ["Era 1: 2024 – 2026 • Transition, Interviews & Senior DE"]
+        EXL["Nov 13, 2026: EXL Service — Data & AI Engineer (Round 1 • Not Selected)"]
         HCL["Oct 31, 2026: HCLTech — Specialist Data Engineer (Selected • 24 LPA Fixed Offer)"]
         DGL["Oct 23, 2026: DGLiger (Airtel Client) — PySpark Developer (Round 2 • Not Selected)"]
         Cof["Oct 10, 2026: Coforge — Lead Data Engineer (ETL) Interview (MS Teams)"]
@@ -170,7 +171,7 @@ flowchart TD
         Inception["2004: Primary School Inception — Bishop Johnson School, Prayagraj"]
     end
 
-    Cog --> Interviews --> Resign --> DBCerts --> EYAICerts --> EYRole --> TCSRole
+    EXL --> HCL --> DGL --> Cof --> Interviews --> Resign --> DBCerts --> EYAICerts --> EYRole --> TCSRole
     TCSRole --> AWSCert --> SNInterview --> BofALoan --> BofAOMNI --> HCSC --> InfTraining
     InfTraining --> InfDSE --> InfIntern --> GoogleKS --> InfCampus --> DevCerts --> BTech
     BTech --> ISC --> ICSE --> Inception
