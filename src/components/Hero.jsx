@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiArrowDown, FiMail, FiCheckCircle, FiLinkedin, FiGithub, FiExternalLink } from 'react-icons/fi';
+import { FiArrowDown, FiMail, FiCheckCircle, FiLinkedin, FiGithub, FiExternalLink, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { SiLeetcode } from 'react-icons/si';
 
 const SPRING_TRANSITION = { type: 'spring', stiffness: 400, damping: 30 };
 
 const Hero = ({ viewMode = 'general' }) => {
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [showAllSkillsMobile, setShowAllSkillsMobile] = useState(false);
 
     const skills = [
         { category: 'Compute & Processing', name: 'GCP BigQuery' },
@@ -278,43 +279,73 @@ const Hero = ({ viewMode = 'general' }) => {
                             style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}
                         >
                             <AnimatePresence>
-                                {filteredSkills.map((skill) => (
-                                    <motion.div
-                                        key={skill.name}
-                                        layout
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ type: 'spring', stiffness: 450, damping: 30 }}
-                                        style={{
-                                            padding: '9px 16px',
-                                            background: 'var(--surface-card)',
-                                            backdropFilter: 'blur(16px)',
-                                            WebkitBackdropFilter: 'blur(16px)',
-                                            border: '1px solid var(--card-border)',
-                                            boxShadow: 'var(--card-highlight)',
-                                            color: 'var(--text-primary)',
-                                            borderRadius: 'var(--radius-inner)',
-                                            fontSize: '0.88rem',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '8px',
-                                            fontWeight: 500,
-                                            letterSpacing: '-0.01em',
-                                            userSelect: 'none'
-                                        }}
-                                        whileHover={{
-                                            y: -2,
-                                            borderColor: 'var(--primary-color)'
-                                        }}
-                                        whileTap={{ scale: 0.96 }}
-                                    >
-                                        <FiCheckCircle size={15} style={{ color: 'var(--primary-color)', flexShrink: 0 }} />
-                                        <span>{skill.name}</span>
-                                    </motion.div>
-                                ))}
+                                {filteredSkills.map((skill, sIdx) => {
+                                    const isHiddenOnMobile = selectedCategory === 'All' && sIdx >= 6 && !showAllSkillsMobile;
+                                    return (
+                                        <motion.div
+                                            key={skill.name}
+                                            layout
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.9 }}
+                                            transition={{ type: 'spring', stiffness: 450, damping: 30 }}
+                                            className={`skill-chip ${isHiddenOnMobile ? 'mobile-hidden-skill' : ''}`}
+                                            style={{
+                                                padding: '9px 16px',
+                                                background: 'var(--surface-card)',
+                                                backdropFilter: 'blur(16px)',
+                                                WebkitBackdropFilter: 'blur(16px)',
+                                                border: '1px solid var(--card-border)',
+                                                boxShadow: 'var(--card-highlight)',
+                                                color: 'var(--text-primary)',
+                                                borderRadius: 'var(--radius-inner)',
+                                                fontSize: '0.88rem',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '8px',
+                                                fontWeight: 500,
+                                                letterSpacing: '-0.01em',
+                                                userSelect: 'none'
+                                            }}
+                                            whileHover={{
+                                                y: -2,
+                                                borderColor: 'var(--primary-color)'
+                                            }}
+                                            whileTap={{ scale: 0.96 }}
+                                        >
+                                            <FiCheckCircle size={15} style={{ color: 'var(--primary-color)', flexShrink: 0 }} />
+                                            <span>{skill.name}</span>
+                                        </motion.div>
+                                    );
+                                })}
                             </AnimatePresence>
                         </motion.div>
+
+                        {/* Mobile Toggle to Show All / Fewer Skills */}
+                        {selectedCategory === 'All' && filteredSkills.length > 6 && (
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+                                <button
+                                    onClick={() => setShowAllSkillsMobile(!showAllSkillsMobile)}
+                                    className="skills-mobile-toggle"
+                                    style={{
+                                        display: 'none',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                        padding: '7px 18px',
+                                        borderRadius: '9999px',
+                                        fontSize: '0.82rem',
+                                        fontWeight: 600,
+                                        color: 'var(--primary-color)',
+                                        background: 'var(--badge-bg)',
+                                        border: '1px solid var(--badge-border)',
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    <span>{showAllSkillsMobile ? 'Show Fewer Skills' : `View All ${filteredSkills.length} Skills`}</span>
+                                    {showAllSkillsMobile ? <FiChevronUp size={13} /> : <FiChevronDown size={13} />}
+                                </button>
+                            </div>
+                        )}
                     </motion.div>
                 )}
 

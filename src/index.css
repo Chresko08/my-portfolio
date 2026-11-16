@@ -674,6 +674,40 @@ button:active, a.btn-primary:active, a.btn-secondary:active, .pill-badge:active,
   .stat-number {
     font-size: 1.85rem;
   }
+
+  /* Core Technical Competencies Mobile Optimization */
+  .mobile-hidden-skill {
+    display: none !important;
+  }
+  .skills-mobile-toggle {
+    display: inline-flex !important;
+  }
+  .skill-chip {
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+    gap: 6px !important;
+  }
+
+  /* Work Experience Mobile Highlights Collapsible */
+  .mobile-collapsed-highlight {
+    display: none !important;
+  }
+  .mobile-highlights-toggle {
+    display: inline-flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .skills-mobile-toggle,
+  .mobile-highlights-toggle {
+    display: none !important;
+  }
+  .mobile-collapsed-highlight {
+    display: flex !important;
+  }
+  .mobile-hidden-skill {
+    display: flex !important;
+  }
 }
 
 @keyframes menuSpring {

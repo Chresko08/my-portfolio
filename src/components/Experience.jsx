@@ -7,10 +7,18 @@ const SPRING_TRANSITION = { type: 'spring', stiffness: 380, damping: 30 };
 const Experience = ({ viewMode }) => {
     // Array to manage which project "Deep Dives" are expanded
     const [expandedProjects, setExpandedProjects] = useState([]);
+    // Array to manage which role highlights are expanded on mobile
+    const [expandedMobileRoles, setExpandedMobileRoles] = useState([]);
 
     const toggleProject = (id) => {
         setExpandedProjects(prev =>
             prev.includes(id) ? prev.filter(pId => pId !== id) : [...prev, id]
+        );
+    };
+
+    const toggleMobileRole = (id) => {
+        setExpandedMobileRoles(prev =>
+            prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]
         );
     };
 
@@ -272,14 +280,55 @@ const Experience = ({ viewMode }) => {
                                     </div>
 
                                     {/* Highlights list */}
-                                    <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 18px 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                        {exp.highlights.map((h, hIdx) => (
-                                            <li key={hIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55 }}>
-                                                <FiCheck style={{ color: 'var(--accent-emerald)', marginTop: '4px', flexShrink: 0 }} size={15} />
-                                                <span>{h}</span>
-                                            </li>
-                                        ))}
+                                    <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 12px 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        {exp.highlights.map((h, hIdx) => {
+                                            const isHiddenOnMobile = hIdx > 0 && !expandedMobileRoles.includes(exp.id);
+                                            return (
+                                                <li
+                                                    key={hIdx}
+                                                    className={isHiddenOnMobile ? 'mobile-collapsed-highlight' : ''}
+                                                    style={{
+                                                        display: 'flex',
+                                                        alignItems: 'flex-start',
+                                                        gap: '10px',
+                                                        color: 'var(--text-secondary)',
+                                                        fontSize: '0.92rem',
+                                                        lineHeight: 1.55
+                                                    }}
+                                                >
+                                                    <FiCheck style={{ color: 'var(--accent-emerald)', marginTop: '4px', flexShrink: 0 }} size={15} />
+                                                    <span>{h}</span>
+                                                </li>
+                                            );
+                                        })}
                                     </ul>
+
+                                    {/* Mobile Toggle to Read More / Less Highlights */}
+                                    {exp.highlights.length > 1 && (
+                                        <div style={{ marginBottom: '16px' }}>
+                                            <button
+                                                onClick={() => toggleMobileRole(exp.id)}
+                                                className="mobile-highlights-toggle"
+                                                style={{
+                                                    display: 'none',
+                                                    alignItems: 'center',
+                                                    gap: '6px',
+                                                    padding: '6px 14px',
+                                                    borderRadius: '9999px',
+                                                    fontSize: '0.78rem',
+                                                    fontWeight: 600,
+                                                    color: 'var(--primary-color)',
+                                                    background: 'var(--badge-bg)',
+                                                    border: '1px solid var(--badge-border)',
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.2s ease'
+                                                }}
+                                            >
+                                                <span>{expandedMobileRoles.includes(exp.id) ? 'Show Less' : `View All ${exp.highlights.length} Achievements`}</span>
+                                                {expandedMobileRoles.includes(exp.id) ? <FiChevronUp size={12} /> : <FiChevronDown size={12} />}
+                                            </button>
+                                        </div>
+                                    )}
 
                                     {/* Project Deep Dive (Personal / For Me mode only) */}
                                     {exp.project && viewMode === 'personal' && (
