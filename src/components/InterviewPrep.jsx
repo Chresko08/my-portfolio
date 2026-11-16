@@ -568,9 +568,33 @@ const InterviewPrep = ({ viewMode }) => {
                     <h2 className="section-heading">
                         Interview <span className="gradient-text">Preparation</span>
                     </h2>
-                    <p style={{ color: 'var(--text-secondary)', marginTop: '10px', fontSize: '1rem', maxWidth: '820px', margin: '10px auto 22px auto', lineHeight: '1.6' }}>
+                    <p style={{ color: 'var(--text-secondary)', marginTop: '10px', fontSize: '1rem', maxWidth: '820px', margin: '10px auto 16px auto', lineHeight: '1.6' }}>
                         A comprehensive, 17-topic technical mastery curriculum for Senior Data Engineering interviews. Featuring real-world distributed architectures, lakehouse internals, query tuning, streaming patterns, and system design trade-offs.
                     </p>
+
+                    {/* Master Interview Questions Repository Link */}
+                    <a
+                        href="#all-questions"
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '8px 20px',
+                            background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(99, 102, 241, 0.12))',
+                            border: '1px solid rgba(99, 102, 241, 0.35)',
+                            borderRadius: '30px',
+                            color: 'var(--primary-color)',
+                            fontSize: '0.88rem',
+                            fontWeight: '600',
+                            textDecoration: 'none',
+                            marginBottom: '20px',
+                            transition: 'all 0.2s ease',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        <span>✨ Looking for all questions asked across 12 real company interviews?</span>
+                        <span style={{ textDecoration: 'underline' }}>View Master Repository ➔</span>
+                    </a>
 
                     {/* Stats Counter Bar */}
                     <div className="stats-counter-bar" style={{

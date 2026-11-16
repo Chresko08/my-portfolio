@@ -10,6 +10,7 @@ import BackToTop from './components/BackToTop';
 const InterviewPrep = lazy(() => import('./components/InterviewPrep'));
 const CareerLineage = lazy(() => import('./components/CareerLineage'));
 const PasswordModal = lazy(() => import('./components/PasswordModal'));
+const AllInterviewQuestions = lazy(() => import('./components/AllInterviewQuestions'));
 
 // Lightweight section loader fallback
 const SectionLoader = () => (
@@ -53,6 +54,24 @@ function App() {
     const [viewMode, setViewMode] = useState('general');
     const [decryptedData, setDecryptedData] = useState(null);
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+    // currentRoute: 'home' or 'all-questions'
+    const [currentRoute, setCurrentRoute] = useState(() => {
+        return window.location.hash === '#all-questions' ? 'all-questions' : 'home';
+    });
+
+    useEffect(() => {
+        const handleHashChange = () => {
+            if (window.location.hash === '#all-questions') {
+                setCurrentRoute('all-questions');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                setCurrentRoute('home');
+            }
+        };
+
+        window.addEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('hashchange', handleHashChange);
+    }, []);
 
     const toggleTheme = () => {
         const newTheme = theme === 'dark' ? 'light' : 'dark';
@@ -215,6 +234,18 @@ function App() {
         }
     };
 
+    const navigateToHome = () => {
+        window.location.hash = '';
+        setCurrentRoute('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const navigateToAllQuestions = () => {
+        window.location.hash = '#all-questions';
+        setCurrentRoute('all-questions');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     return (
         <div className="app">
             <Navbar
@@ -224,28 +255,43 @@ function App() {
                 setViewMode={handleViewModeChange}
                 onOpenPasswordModal={() => handleViewModeChange('personal')}
                 hasDecryptedData={!!decryptedData}
+                currentRoute={currentRoute}
+                onNavigateHome={navigateToHome}
+                onNavigateAllQuestions={navigateToAllQuestions}
             />
             <main>
-                <Hero />
-                {viewMode === 'personal' ? (
+                {currentRoute === 'all-questions' ? (
                     <Suspense fallback={<SectionLoader />}>
-                        <CareerLineage
-                            data={decryptedData}
-                            onLockDevice={handleLockDevice}
-                            onUnlockRequest={() => handleViewModeChange('personal')}
-                            onRefreshData={handleRefreshData}
+                        <AllInterviewQuestions
+                            onBack={navigateToHome}
+                            isAdmin={!!decryptedData}
+                            onOpenPasswordModal={() => setIsPasswordModalOpen(true)}
                         />
                     </Suspense>
                 ) : (
                     <>
-                        <Experience viewMode={viewMode} />
-                        <Certificates />
+                        <Hero />
+                        {viewMode === 'personal' ? (
+                            <Suspense fallback={<SectionLoader />}>
+                                <CareerLineage
+                                    data={decryptedData}
+                                    onLockDevice={handleLockDevice}
+                                    onUnlockRequest={() => handleViewModeChange('personal')}
+                                    onRefreshData={handleRefreshData}
+                                />
+                            </Suspense>
+                        ) : (
+                            <>
+                                <Experience viewMode={viewMode} />
+                                <Certificates />
+                            </>
+                        )}
+                        <Suspense fallback={<SectionLoader />}>
+                            <InterviewPrep viewMode={viewMode} />
+                        </Suspense>
+                        <Contact viewMode={viewMode} />
                     </>
                 )}
-                <Suspense fallback={<SectionLoader />}>
-                    <InterviewPrep viewMode={viewMode} />
-                </Suspense>
-                <Contact viewMode={viewMode} />
             </main>
             <BackToTop />
 

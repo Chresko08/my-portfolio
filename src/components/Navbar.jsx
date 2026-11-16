@@ -3,12 +3,27 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiMoon, FiSun, FiLock, FiUnlock, FiUser } from 'react-icons/fi';
 import Logo from './Logo';
 
-const Navbar = ({ theme, toggleTheme, viewMode, setViewMode, onOpenPasswordModal, hasDecryptedData }) => {
+const Navbar = ({
+    theme,
+    toggleTheme,
+    viewMode,
+    setViewMode,
+    onOpenPasswordModal,
+    hasDecryptedData,
+    currentRoute = 'home',
+    onNavigateHome,
+    onNavigateAllQuestions
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState('hero');
     
     useEffect(() => {
+        if (currentRoute === 'all-questions') {
+            setActiveSection('all-questions');
+            return;
+        }
+
         const handleScroll = () => {
             setScrolled(window.scrollY > 40);
 
@@ -27,9 +42,12 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode, onOpenPasswordModal
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [viewMode]);
+    }, [viewMode, currentRoute]);
 
     const handleModeChange = (mode) => {
+        if (currentRoute === 'all-questions' && onNavigateHome) {
+            onNavigateHome();
+        }
         if (mode === 'personal') {
             if (hasDecryptedData) {
                 setViewMode('personal');
@@ -38,6 +56,43 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode, onOpenPasswordModal
             }
         } else {
             setViewMode('general');
+        }
+    };
+
+    const handleNavLinkClick = (e, item) => {
+        setIsOpen(false);
+        if (item.id === 'all-questions') {
+            e.preventDefault();
+            if (onNavigateAllQuestions) {
+                onNavigateAllQuestions();
+            } else {
+                window.location.hash = '#all-questions';
+            }
+            return;
+        }
+
+        if (currentRoute === 'all-questions') {
+            e.preventDefault();
+            if (onNavigateHome) {
+                onNavigateHome();
+                setTimeout(() => {
+                    const targetEl = document.querySelector(item.href);
+                    if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
+                }, 50);
+            } else {
+                window.location.hash = item.href;
+            }
+        }
+    };
+
+    const handleBrandClick = (e) => {
+        if (currentRoute === 'all-questions') {
+            e.preventDefault();
+            if (onNavigateHome) {
+                onNavigateHome();
+            } else {
+                window.location.hash = '';
+            }
         }
     };
 
@@ -56,10 +111,12 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode, onOpenPasswordModal
     const navItems = viewMode === 'personal' ? [
         { label: 'Career Lineage', href: '#career-lineage', id: 'career-lineage' },
         { label: 'Interview Prep', href: '#interview-prep', id: 'interview-prep' },
+        { label: 'All Questions', href: '#all-questions', id: 'all-questions' },
         { label: 'Contact', href: '#contact', id: 'contact' }
     ] : [
         { label: 'Experience', href: '#experience', id: 'experience' },
         { label: 'Certificates', href: '#certificates', id: 'certificates' },
+        { label: 'All Questions', href: '#all-questions', id: 'all-questions' },
         { label: 'Contact', href: '#contact', id: 'contact' }
     ];
 
@@ -67,7 +124,7 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode, onOpenPasswordModal
         <>
             <nav style={navStyles}>
                 <div className="container navbar-container">
-                    <a href="#hero" className="nav-brand" style={{ display: 'flex', alignItems: 'center' }}>
+                    <a href="#hero" onClick={handleBrandClick} className="nav-brand" style={{ display: 'flex', alignItems: 'center' }}>
                         <Logo />
                     </a>
 
@@ -91,7 +148,7 @@ const Navbar = ({ theme, toggleTheme, viewMode, setViewMode, onOpenPasswordModal
                                 <a
                                     key={item.id}
                                     href={item.href}
-                                    onClick={() => setIsOpen(false)}
+                                    onClick={(e) => handleNavLinkClick(e, item)}
                                     className={`nav-link ${isActive ? 'active' : ''}`}
                                 >
                                     {item.label}
