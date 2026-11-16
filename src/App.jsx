@@ -270,7 +270,7 @@ function App() {
                     </Suspense>
                 ) : (
                     <>
-                        <Hero />
+                        <Hero viewMode={viewMode} />
                         {viewMode === 'personal' ? (
                             <Suspense fallback={<SectionLoader />}>
                                 <CareerLineage

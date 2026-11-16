@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMoon, FiSun, FiLock, FiUnlock, FiUser } from 'react-icons/fi';
 import Logo from './Logo';
@@ -17,6 +17,34 @@ const Navbar = ({
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState('hero');
+    const navRef = useRef(null);
+
+    // Click outside and Escape key handler to close mobile menu
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const handleClickOutside = (event) => {
+            if (navRef.current && !navRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('touchstart', handleClickOutside, { passive: true });
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('touchstart', handleClickOutside);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isOpen]);
     
     useEffect(() => {
         if (currentRoute === 'all-questions') {
@@ -25,12 +53,12 @@ const Navbar = ({
         }
 
         const handleScroll = () => {
-            setScrolled(window.scrollY > 40);
+            setScrolled(window.scrollY > 30);
 
             const sections = viewMode === 'personal'
                 ? ['hero', 'career-lineage', 'interview-prep', 'contact']
                 : ['hero', 'experience', 'certificates', 'contact'];
-            const scrollPosition = window.scrollY + 200;
+            const scrollPosition = window.scrollY + 180;
 
             for (const section of sections) {
                 const element = document.getElementById(section);
@@ -40,7 +68,7 @@ const Navbar = ({
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, [viewMode, currentRoute]);
 
@@ -96,18 +124,6 @@ const Navbar = ({
         }
     };
 
-    const navStyles = {
-        position: 'fixed',
-        top: 0,
-        width: '100%',
-        padding: scrolled ? '12px 0' : '20px 0',
-        background: scrolled ? 'var(--nav-bg)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(10px)' : 'none',
-        boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.05)' : 'none',
-        zIndex: 1000,
-        transition: 'all 0.3s ease'
-    };
-
     const navItems = viewMode === 'personal' ? [
         { label: 'Career Lineage', href: '#career-lineage', id: 'career-lineage' },
         { label: 'Interview Prep', href: '#interview-prep', id: 'interview-prep' },
@@ -121,117 +137,269 @@ const Navbar = ({
     ];
 
     return (
-        <>
-            <nav style={navStyles}>
-                <div className="container navbar-container">
-                    <a href="#hero" onClick={handleBrandClick} className="nav-brand" style={{ display: 'flex', alignItems: 'center' }}>
-                        <Logo />
-                    </a>
+        <nav
+            ref={navRef}
+            style={{
+                position: 'fixed',
+                top: 0,
+                width: '100%',
+                zIndex: 1000,
+                padding: scrolled ? '10px 0' : '18px 0',
+                background: scrolled ? 'var(--nav-bg)' : 'transparent',
+                backdropFilter: scrolled ? 'blur(25px) saturate(190%)' : 'none',
+                WebkitBackdropFilter: scrolled ? 'blur(25px) saturate(190%)' : 'none',
+                borderBottom: scrolled ? '1px solid var(--card-border)' : '1px solid transparent',
+                boxShadow: scrolled ? 'var(--card-highlight), 0 10px 30px rgba(0, 0, 0, 0.15)' : 'none',
+                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+            }}
+        >
+            <div className="container navbar-container">
+                {/* Brand / Logo */}
+                <a
+                    href="#hero"
+                    onClick={handleBrandClick}
+                    className="nav-brand"
+                    style={{ display: 'flex', alignItems: 'center' }}
+                    aria-label="Home"
+                >
+                    <Logo />
+                </a>
 
-                    {/* Mobile hamburger button */}
+                {/* Mobile Header Controls (Theme Toggle & Hamburger) */}
+                <div className="mobile-header-actions">
+                    <motion.button
+                        onClick={toggleTheme}
+                        whileTap={{ scale: 0.9 }}
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+                        className="mobile-theme-btn"
+                        style={{
+                            background: 'var(--surface-card)',
+                            backdropFilter: 'blur(16px)',
+                            WebkitBackdropFilter: 'blur(16px)',
+                            color: 'var(--text-primary)',
+                            fontSize: '0.95rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '50%',
+                            border: '1px solid var(--card-border)',
+                            boxShadow: 'var(--card-highlight)',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        <AnimatePresence mode="wait" initial={false}>
+                            <motion.div
+                                key={theme}
+                                initial={{ y: -8, opacity: 0, rotate: -40 }}
+                                animate={{ y: 0, opacity: 1, rotate: 0 }}
+                                exit={{ y: 8, opacity: 0, rotate: 40 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                                style={{ display: 'flex' }}
+                            >
+                                {theme === 'dark' ? <FiSun style={{ color: '#ff9f0a' }} /> : <FiMoon style={{ color: '#0071e3' }} />}
+                            </motion.div>
+                        </AnimatePresence>
+                    </motion.button>
+
                     <div
                         className="hamburger"
                         onClick={() => setIsOpen(!isOpen)}
                         role="button"
                         tabIndex={0}
+                        aria-label="Toggle Navigation Menu"
                     >
-                        <span style={{ transform: isOpen ? 'rotate(45deg) translate(6px, 6px)' : 'none' }}></span>
+                        <span style={{ transform: isOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none' }}></span>
                         <span style={{ opacity: isOpen ? 0 : 1 }}></span>
                         <span style={{ transform: isOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none' }}></span>
                     </div>
+                </div>
 
-                    {/* Desktop and Mobile navigation links */}
-                    <div className={`nav-links ${isOpen ? 'open' : ''}`}>
-                        {navItems.map((item) => {
-                            const isActive = activeSection === item.id;
-                            return (
-                                <a
-                                    key={item.id}
-                                    href={item.href}
-                                    onClick={(e) => handleNavLinkClick(e, item)}
-                                    className={`nav-link ${isActive ? 'active' : ''}`}
-                                >
-                                    {item.label}
-                                </a>
-                            );
-                        })}
+                {/* Navigation Links & Action Controls */}
+                <div className={`nav-links ${isOpen ? 'open' : ''}`}>
+                    {navItems.map((item) => {
+                        const isActive = activeSection === item.id;
+                        return (
+                            <a
+                                key={item.id}
+                                href={item.href}
+                                onClick={(e) => handleNavLinkClick(e, item)}
+                                className={`nav-link ${isActive ? 'active' : ''}`}
+                            >
+                                {item.label}
+                            </a>
+                        );
+                    })}
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                            
-                            {/* View Mode Toggle: General vs For Me */}
-                            <div style={{
-                                display: 'flex',
-                                background: 'var(--surface-color)',
-                                borderRadius: '10px',
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'center' }}>
+                        
+                        {/* Apple Fluid Segmented Control (General vs For Me) */}
+                        <div
+                            style={{
+                                display: 'inline-flex',
+                                position: 'relative',
+                                background: 'var(--segmented-bg)',
+                                backdropFilter: 'blur(16px)',
+                                WebkitBackdropFilter: 'blur(16px)',
+                                borderRadius: '9999px',
                                 border: '1px solid var(--card-border)',
                                 padding: '3px',
-                                gap: '3px'
-                            }}>
-                                <button
-                                    onClick={() => handleModeChange('general')}
-                                    style={{
-                                        display: 'flex', alignItems: 'center', gap: '6px',
-                                        padding: '6px 14px', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600,
-                                        background: viewMode === 'general' ? 'var(--badge-bg)' : 'transparent',
-                                        color: viewMode === 'general' ? 'var(--primary-color)' : 'var(--text-secondary)',
-                                        border: 'none', cursor: 'pointer', transition: 'all 0.2s ease'
-                                    }}
-                                >
-                                    <FiUser size={13} /> General
-                                </button>
-                                <button
-                                    onClick={() => handleModeChange('personal')}
-                                    style={{
-                                        display: 'flex', alignItems: 'center', gap: '6px',
-                                        padding: '6px 14px', borderRadius: '8px', fontSize: '0.82rem', fontWeight: 600,
-                                        background: viewMode === 'personal' ? 'var(--badge-bg)' : 'transparent',
-                                        color: viewMode === 'personal' ? 'var(--primary-color)' : 'var(--text-secondary)',
-                                        border: 'none', cursor: 'pointer', transition: 'all 0.2s ease'
-                                    }}
-                                >
-                                    {viewMode === 'personal' || hasDecryptedData ? <FiUnlock size={13} /> : <FiLock size={13} />} For Me
-                                </button>
-                            </div>
-
-                            {/* Theme Toggle */}
-                            <motion.button
-                                onClick={toggleTheme}
-                                whileTap={{ scale: 0.9 }}
-                                whileHover={{ scale: 1.05 }}
-                                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+                                gap: '2px'
+                            }}
+                        >
+                            {/* General Mode Button */}
+                            <button
+                                onClick={() => handleModeChange('general')}
                                 style={{
-                                    background: 'var(--surface-color)',
-                                    color: 'var(--text-primary)',
-                                    fontSize: '1rem',
+                                    position: 'relative',
+                                    zIndex: 1,
                                     display: 'flex',
                                     alignItems: 'center',
-                                    justifyContent: 'center',
-                                    width: '34px',
-                                    height: '34px',
-                                    borderRadius: '50%',
-                                    border: '1px solid var(--card-border)',
+                                    gap: '6px',
+                                    padding: '5px 13px',
+                                    borderRadius: '9999px',
+                                    fontSize: '0.82rem',
+                                    fontWeight: viewMode === 'general' ? 600 : 500,
+                                    color: viewMode === 'general' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                                    background: 'transparent',
+                                    border: 'none',
                                     cursor: 'pointer',
-                                    transition: 'all 0.25s ease'
+                                    transition: 'color 0.2s ease'
                                 }}
                             >
-                                <AnimatePresence mode="wait" initial={false}>
+                                {viewMode === 'general' && (
                                     <motion.div
-                                        key={theme}
-                                        initial={{ y: -10, opacity: 0, rotate: -45 }}
-                                        animate={{ y: 0, opacity: 1, rotate: 0 }}
-                                        exit={{ y: 10, opacity: 0, rotate: 45 }}
-                                        transition={{ duration: 0.2 }}
-                                        style={{ display: 'flex' }}
-                                    >
-                                        {theme === 'dark' ? <FiSun style={{ color: '#f59e0b' }} /> : <FiMoon style={{ color: 'var(--primary-color)' }} />}
-                                    </motion.div>
-                                </AnimatePresence>
-                            </motion.button>
+                                        layoutId="activeSegmentedPill"
+                                        transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            right: 0,
+                                            bottom: 0,
+                                            borderRadius: '9999px',
+                                            background: 'var(--segmented-active)',
+                                            boxShadow: '0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.15)',
+                                            zIndex: -1
+                                        }}
+                                    />
+                                )}
+                                <FiUser size={13} /> General
+                            </button>
+
+                            {/* Personal Mode Button */}
+                            <button
+                                onClick={() => handleModeChange('personal')}
+                                style={{
+                                    position: 'relative',
+                                    zIndex: 1,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    padding: '5px 13px',
+                                    borderRadius: '9999px',
+                                    fontSize: '0.82rem',
+                                    fontWeight: viewMode === 'personal' ? 600 : 500,
+                                    color: viewMode === 'personal' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    transition: 'color 0.2s ease'
+                                }}
+                            >
+                                {viewMode === 'personal' && (
+                                    <motion.div
+                                        layoutId="activeSegmentedPill"
+                                        transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            right: 0,
+                                            bottom: 0,
+                                            borderRadius: '9999px',
+                                            background: 'var(--segmented-active)',
+                                            boxShadow: '0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.15)',
+                                            zIndex: -1
+                                        }}
+                                    />
+                                )}
+                                {viewMode === 'personal' || hasDecryptedData ? <FiUnlock size={13} /> : <FiLock size={13} />} For Me
+                            </button>
                         </div>
+
+                        {/* Apple Theme Toggle (Fluid Spring Rotate) */}
+                        <motion.button
+                            onClick={toggleTheme}
+                            className="desktop-theme-toggle"
+                            whileTap={{ scale: 0.9 }}
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+                            style={{
+                                background: 'var(--surface-card)',
+                                backdropFilter: 'blur(16px)',
+                                WebkitBackdropFilter: 'blur(16px)',
+                                color: 'var(--text-primary)',
+                                fontSize: '0.95rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '36px',
+                                height: '36px',
+                                borderRadius: '50%',
+                                border: '1px solid var(--card-border)',
+                                boxShadow: 'var(--card-highlight)',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            <AnimatePresence mode="wait" initial={false}>
+                                <motion.div
+                                    key={theme}
+                                    initial={{ y: -8, opacity: 0, rotate: -40 }}
+                                    animate={{ y: 0, opacity: 1, rotate: 0 }}
+                                    exit={{ y: 8, opacity: 0, rotate: 40 }}
+                                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                                    style={{ display: 'flex' }}
+                                >
+                                    {theme === 'dark' ? <FiSun style={{ color: '#ff9f0a' }} /> : <FiMoon style={{ color: '#0071e3' }} />}
+                                </motion.div>
+                            </AnimatePresence>
+                        </motion.button>
                     </div>
                 </div>
-            </nav>
-        </>
+            </div>
+
+            {/* Mobile Backdrop Overlay (Clicking outside collapses menu) */}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        className="mobile-backdrop"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        onClick={() => setIsOpen(false)}
+                        style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            height: '100vh',
+                            background: 'rgba(0, 0, 0, 0.45)',
+                            backdropFilter: 'blur(6px)',
+                            WebkitBackdropFilter: 'blur(6px)',
+                            zIndex: -1
+                        }}
+                        aria-hidden="true"
+                    />
+                )}
+            </AnimatePresence>
+        </nav>
     );
 };
 

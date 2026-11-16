@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMail, FiCopy, FiCheck } from 'react-icons/fi';
 
+const SPRING_TRANSITION = { type: 'spring', stiffness: 380, damping: 28 };
+
 const Contact = ({ viewMode }) => {
     const [copied, setCopied] = useState(false);
     const emailAddress = 'shubhamsrivastava08@gmail.com';
@@ -13,184 +15,243 @@ const Contact = ({ viewMode }) => {
     };
 
     return (
-        <section id="contact" className="section" style={{ paddingBottom: '120px' }}>
-            <div className="container" style={{ maxWidth: viewMode === 'general' ? '600px' : '1000px', transition: 'max-width 0.3s ease' }}>
-                <div className="section-title-wrap" style={{ textAlign: 'center', marginBottom: '60px' }}>
-                    <span className="section-subtitle">Get In Touch</span>
+        <section id="contact" className="section" style={{ paddingBottom: '120px', paddingTop: '80px' }}>
+            <div className="container" style={{ maxWidth: viewMode === 'general' ? '640px' : '1040px', transition: 'max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+                <div className="section-title-wrap">
+                    <span className="section-subtitle">Initiate Conversation</span>
                     <h2 className="section-heading">
-                        Contact <span className="gradient-text">Me</span>
+                        Get In <span className="gradient-text">Touch</span>
                     </h2>
                 </div>
 
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: viewMode === 'general' ? '1fr' : 'repeat(auto-fit, minmax(320px, 1fr))',
-                    gap: '40px',
+                    gap: '32px',
                     alignItems: 'start'
                 }}>
                     
-                    {/* Left Column: Form */}
+                    {/* Left Column: Direct Contact & Message Form */}
                     <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={SPRING_TRANSITION}
                         viewport={{ once: true }}
                         className="glass-card"
-                        style={{ padding: '40px', position: 'relative' }}
+                        style={{ padding: '36px', position: 'relative' }}
                     >
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px', color: 'var(--text-primary)' }}>Reach Out Directly</h3>
-                        <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '0.95rem', lineHeight: '1.5' }}>
-                            You can directly copy my email address below, or use the contact form to send a message.
+                        <h3 style={{ fontSize: '1.35rem', fontWeight: 700, marginBottom: '6px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                            Reach Out Directly
+                        </h3>
+                        <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '0.92rem', lineHeight: '1.55' }}>
+                            Copy my direct email below or send a quick message to discuss cloud lakehouse roles, data architectures, or consulting engagements.
                         </p>
 
+                        {/* Apple Email Copy Capsule */}
                         <div 
                             style={{ 
-                                display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
-                                background: 'var(--bg-color)', padding: '16px 20px', borderRadius: '12px', 
-                                border: '1px solid var(--primary-color)', marginBottom: '32px'
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                flexWrap: 'wrap',
+                                gap: '12px',
+                                background: 'var(--surface-color)',
+                                padding: '14px 18px',
+                                borderRadius: 'var(--radius-button)', 
+                                border: '1px solid var(--card-border)',
+                                boxShadow: 'var(--card-highlight)',
+                                marginBottom: '28px'
                             }}
                         >
-                            <span style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-primary)', userSelect: 'all' }}>
+                            <span style={{ fontSize: '0.98rem', fontWeight: 600, color: 'var(--text-primary)', userSelect: 'all', letterSpacing: '-0.01em' }}>
                                 {emailAddress}
                             </span>
-                            <button
+                            <motion.button
                                 type="button"
                                 onClick={handleCopyEmail}
+                                whileTap={{ scale: 0.94 }}
                                 style={{
-                                    background: copied ? 'var(--accent-emerald)' : 'var(--surface-color)', 
-                                    border: '1px solid', borderColor: copied ? 'var(--accent-emerald)' : 'var(--card-border)', 
-                                    padding: '8px 14px', borderRadius: '8px', cursor: 'pointer', 
-                                    display: 'flex', alignItems: 'center', gap: '8px', 
-                                    color: copied ? 'var(--bg-color)' : 'var(--text-primary)',
-                                    fontWeight: 500, transition: 'all 0.2s ease'
+                                    background: copied ? 'var(--accent-emerald)' : 'var(--badge-bg)',
+                                    color: copied ? '#ffffff' : 'var(--primary-color)',
+                                    border: '1px solid',
+                                    borderColor: copied ? 'var(--accent-emerald)' : 'var(--badge-border)',
+                                    padding: '6px 14px',
+                                    borderRadius: '9999px',
+                                    fontSize: '0.82rem',
+                                    fontWeight: 600,
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    transition: 'background 0.2s ease, color 0.2s ease'
                                 }}
                             >
-                                {copied ? <><FiCheck /> Copied!</> : <><FiCopy /> Copy Email</>}
-                            </button>
+                                {copied ? <FiCheck size={14} /> : <FiCopy size={13} />}
+                                {copied ? 'Copied' : 'Copy'}
+                            </motion.button>
                         </div>
-                        
-                        <form
-                            action={`https://formsubmit.co/${emailAddress}`}
-                            method="POST"
-                            style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
-                        >
-                            <input type="hidden" name="_subject" value="New Contact Message from Portfolio" />
-                            <input type="hidden" name="_captcha" value="false" />
-                            <input type="hidden" name="_template" value="box" />
-                            <input type="text" name="_honey" style={{ display: 'none' }} />
 
+                        {/* Contact Form */}
+                        <form 
+                            action="https://formspree.io/f/mqaeveqe" 
+                            method="POST"
+                            style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}
+                        >
                             <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Name (Optional)</label>
+                                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.86rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                                    Your Name
+                                </label>
                                 <input
                                     type="text"
                                     name="name"
+                                    required
+                                    placeholder="Jane Doe"
                                     style={{
-                                        width: '100%', padding: '12px 16px',
-                                        background: 'var(--surface-color)', border: '1px solid var(--card-border)',
-                                        borderRadius: '8px', color: 'var(--text-primary)', fontSize: '1rem',
-                                        outline: 'none'
+                                        width: '100%',
+                                        padding: '12px 16px',
+                                        background: 'var(--surface-color)',
+                                        border: '1px solid var(--card-border)',
+                                        borderRadius: 'var(--radius-button)',
+                                        color: 'var(--text-primary)',
+                                        fontSize: '0.94rem',
+                                        outline: 'none',
+                                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+                                    }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = 'var(--primary-color)';
+                                        e.target.style.boxShadow = '0 0 0 3px var(--badge-bg)';
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = 'var(--card-border)';
+                                        e.target.style.boxShadow = 'none';
                                     }}
                                 />
                             </div>
 
                             <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Email</label>
+                                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.86rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                                    Your Email
+                                </label>
                                 <input
                                     type="email"
                                     name="email"
                                     required
+                                    placeholder="jane@company.com"
                                     style={{
-                                        width: '100%', padding: '12px 16px',
-                                        background: 'var(--surface-color)', border: '1px solid var(--card-border)',
-                                        borderRadius: '8px', color: 'var(--text-primary)', fontSize: '1rem',
-                                        outline: 'none'
+                                        width: '100%',
+                                        padding: '12px 16px',
+                                        background: 'var(--surface-color)',
+                                        border: '1px solid var(--card-border)',
+                                        borderRadius: 'var(--radius-button)',
+                                        color: 'var(--text-primary)',
+                                        fontSize: '0.94rem',
+                                        outline: 'none',
+                                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+                                    }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = 'var(--primary-color)';
+                                        e.target.style.boxShadow = '0 0 0 3px var(--badge-bg)';
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = 'var(--card-border)';
+                                        e.target.style.boxShadow = 'none';
                                     }}
                                 />
                             </div>
 
                             <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Message</label>
+                                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.86rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                                    Message
+                                </label>
                                 <textarea
                                     name="message"
                                     required
                                     rows="4"
+                                    placeholder="Let's connect regarding a Senior Data Engineer role..."
                                     style={{
-                                        width: '100%', padding: '12px 16px',
-                                        background: 'var(--surface-color)', border: '1px solid var(--card-border)',
-                                        borderRadius: '8px', color: 'var(--text-primary)', fontSize: '1rem',
-                                        outline: 'none', resize: 'vertical'
+                                        width: '100%',
+                                        padding: '12px 16px',
+                                        background: 'var(--surface-color)',
+                                        border: '1px solid var(--card-border)',
+                                        borderRadius: 'var(--radius-button)',
+                                        color: 'var(--text-primary)',
+                                        fontSize: '0.94rem',
+                                        outline: 'none',
+                                        resize: 'vertical',
+                                        transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+                                    }}
+                                    onFocus={(e) => {
+                                        e.target.style.borderColor = 'var(--primary-color)';
+                                        e.target.style.boxShadow = '0 0 0 3px var(--badge-bg)';
+                                    }}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = 'var(--card-border)';
+                                        e.target.style.boxShadow = 'none';
                                     }}
                                 ></textarea>
                             </div>
 
-                            <div style={{ display: 'flex', gap: '15px' }}>
-                                <button
-                                    type="submit"
-                                    className="btn-primary"
-                                    style={{
-                                        flex: 1, padding: '14px', border: 'none',
-                                        borderRadius: '8px', fontSize: '1rem', fontWeight: 600,
-                                        cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px'
-                                    }}
-                                >
-                                    <FiMail size={18} />
-                                    Send
-                                </button>
-                                
-                            </div>
+                            <motion.button
+                                type="submit"
+                                className="btn-primary"
+                                whileTap={{ scale: 0.96 }}
+                                transition={SPRING_TRANSITION}
+                                style={{
+                                    width: '100%',
+                                    padding: '13px',
+                                    justifyContent: 'center',
+                                    fontSize: '0.94rem',
+                                    marginTop: '6px'
+                                }}
+                            >
+                                <FiMail size={16} />
+                                <span>Send Message</span>
+                            </motion.button>
                         </form>
                     </motion.div>
 
-                    {/* Right Column: Recruiter Quick Facts */}
+                    {/* Right Column: Recruiter Quick Facts (Personal / For Me Mode) */}
                     <AnimatePresence>
                         {viewMode !== 'general' && (
                             <motion.div
-                                initial={{ opacity: 0, x: 20, width: 0 }}
-                                animate={{ opacity: 1, x: 0, width: 'auto' }}
-                                exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                                transition={{ duration: 0.4 }}
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={SPRING_TRANSITION}
                                 className="glass-card"
-                                style={{ padding: '40px', background: 'linear-gradient(135deg, rgba(139,92,246,0.05), rgba(14,165,233,0.05))', border: '1px solid var(--primary-color)' }}
+                                style={{ padding: '36px' }}
                             >
-                                <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: '24px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <span style={{ fontSize: '1.4rem' }}>📋</span> Candidate Snapshot
+                                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '20px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span>📋</span> Candidate Snapshot
                                 </h3>
-                                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: 1.5 }}>
-                                    Quick operational details for technical recruiters and hiring managers.
+                                <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '20px', lineHeight: 1.5 }}>
+                                    Operational credentials for technical recruiters and hiring managers.
                                 </p>
                                 
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--card-border)', paddingBottom: '8px' }}>
-                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Total Experience</span>
-                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>5 Years</strong>
+                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Total Experience</span>
+                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.92rem' }}>5+ Years</strong>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--card-border)', paddingBottom: '8px' }}>
-                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Current CTC</span>
-                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>17LPA (Fixed) + 20% (Variable)</strong>
+                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Current CTC</span>
+                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.92rem' }}>17 LPA Fixed + 20% Variable</strong>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--card-border)', paddingBottom: '8px' }}>
-                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Expected CTC</span>
-                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>20LPA (Fixed)</strong>
+                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Expected CTC</span>
+                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.92rem' }}>20 - 26 LPA</strong>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--card-border)', paddingBottom: '8px' }}>
-                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Offers in Hand</span>
-                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>No</strong>
+                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Notice Period</span>
+                                        <strong style={{ color: 'var(--accent-emerald)', fontSize: '0.92rem' }}>Serving (LWD: 19th Nov 2026)</strong>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--card-border)', paddingBottom: '8px' }}>
-                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Notice Period</span>
-                                        <strong style={{ color: 'var(--accent-purple)', fontSize: '0.95rem' }}>Serving (LWD: 19th Nov 2026)</strong>
+                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Current Location</span>
+                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.92rem' }}>Gurugram / NCR</strong>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--card-border)', paddingBottom: '8px' }}>
-                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Base Location</span>
-                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>Gurugram</strong>
-                                    </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--card-border)', paddingBottom: '8px' }}>
-                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Preferred Location</span>
-                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>Pan India</strong>
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingTop: '4px' }}>
-                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Reason for Change</span>
-                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>Career progression & favorable role preferences</strong>
+                                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Work Mode</span>
+                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.92rem' }}>Hybrid / Remote</strong>
                                     </div>
                                 </div>
                             </motion.div>

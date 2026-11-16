@@ -174,6 +174,20 @@ export default function AllInterviewQuestions({
                         border-bottom: 2px solid #222;
                         padding-bottom: 12px;
                     }
+                    .print-only-footer {
+                        display: flex !important;
+                        position: fixed;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        border-top: 1px solid #ddd;
+                        padding-top: 6px;
+                        font-size: 8pt;
+                        color: #555;
+                        justify-content: space-between;
+                        align-items: center;
+                        background: #fff;
+                    }
                     .topic-card {
                         border: none !important;
                         background: transparent !important;
@@ -199,13 +213,14 @@ export default function AllInterviewQuestions({
                         font-weight: 700 !important;
                     }
                 }
-                .print-only-header {
+                .print-only-header, .print-only-footer {
                     display: none;
                 }
                 .topic-chip {
                     cursor: pointer;
                     transition: all 0.2s ease;
                     user-select: none;
+                    flex-shrink: 0;
                 }
                 .topic-chip:hover {
                     transform: translateY(-2px);
@@ -216,19 +231,49 @@ export default function AllInterviewQuestions({
                 .question-item:hover {
                     border-color: rgba(97, 175, 239, 0.4);
                 }
+                .topic-chips-wrapper {
+                    -webkit-overflow-scrolling: touch;
+                }
+                @media (max-width: 768px) {
+                    .all-questions-page {
+                        padding-top: 75px !important;
+                    }
+                    .questions-sticky-bar {
+                        top: 60px !important;
+                        padding: 12px !important;
+                        margin-bottom: 18px !important;
+                    }
+                    .questions-sticky-bar input {
+                        font-size: 16px !important; /* Prevents iOS auto-zoom */
+                    }
+                    .topic-card {
+                        padding: 16px 14px !important;
+                    }
+                }
             `}</style>
 
             <div className="container" style={{ maxWidth: '1080px', margin: '0 auto', padding: '0 20px' }}>
 
                 {/* Print Header (Visible only when printed or exported to PDF) */}
                 <div className="print-only-header">
-                    <h1 style={{ fontSize: '20pt', margin: '0 0 6px', fontWeight: '800' }}>Master Interview Questions Compilation</h1>
-                    <p style={{ margin: '0 0 4px', fontSize: '10pt', color: '#555' }}>
-                        Curated from 12 real enterprise interview rounds & technical reference repository • {totalQuestionsCount} Questions across 7 Core Domains
-                    </p>
-                    <p style={{ margin: 0, fontSize: '9pt', color: '#777' }}>
-                        Candidate Portfolio: Shubham Srivastava • Generated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                    </p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #111', paddingBottom: '12px', marginBottom: '14px' }}>
+                        <div>
+                            <h1 style={{ fontSize: '20pt', margin: '0 0 6px', fontWeight: '800', color: '#111' }}>Master Interview Questions Compilation</h1>
+                            <p style={{ margin: '0 0 4px', fontSize: '10pt', color: '#444' }}>
+                                Curated from 12 real enterprise interview rounds & technical reference repository • {totalQuestionsCount} Questions across 7 Core Domains
+                            </p>
+                            <p style={{ margin: 0, fontSize: '9pt', color: '#666' }}>
+                                Candidate: <strong>Shubham Srivastava</strong> (Senior Data & Cloud Platform Engineer) • Generated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                            </p>
+                        </div>
+                        <div style={{ textAlign: 'right', minWidth: '240px' }}>
+                            <div style={{ fontSize: '8pt', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#666', fontWeight: 600 }}>Interactive Portfolio & Solutions</div>
+                            <a href="https://chresko08.github.io/my-portfolio/" target="_blank" rel="noopener noreferrer" style={{ fontSize: '10pt', fontWeight: 700, color: '#0071e3', textDecoration: 'underline' }}>
+                                https://chresko08.github.io/my-portfolio/
+                            </a>
+                            <div style={{ fontSize: '8pt', color: '#777', marginTop: '2px' }}>Live Career Lineage & System Architecture</div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Top Navigation & Back Action */}
@@ -240,7 +285,7 @@ export default function AllInterviewQuestions({
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '8px',
-                                background: 'var(--card-bg)',
+                                background: 'var(--surface-color)',
                                 border: '1px solid var(--card-border)',
                                 color: 'var(--text-primary)',
                                 padding: '8px 16px',
@@ -278,7 +323,7 @@ export default function AllInterviewQuestions({
                                     display: 'inline-flex',
                                     alignItems: 'center',
                                     gap: '6px',
-                                    background: 'var(--card-bg)',
+                                    background: 'var(--surface-color)',
                                     border: '1px solid var(--card-border)',
                                     color: 'var(--text-muted)',
                                     padding: '6px 14px',
@@ -359,7 +404,7 @@ export default function AllInterviewQuestions({
                         alignItems: 'center',
                         gap: '20px',
                         padding: '8px 24px',
-                        background: 'var(--card-bg)',
+                        background: 'var(--surface-card)',
                         border: '1px solid var(--card-border)',
                         borderRadius: '30px',
                         fontSize: '0.88rem',
@@ -403,20 +448,21 @@ export default function AllInterviewQuestions({
                 </AnimatePresence>
 
                 {/* Sticky Action Toolbar (Search, Export to PDF, Copy) */}
-                <div className="no-print" style={{
+                <div className="questions-sticky-bar no-print" style={{
                     position: 'sticky',
                     top: '70px',
                     zIndex: 50,
-                    background: 'var(--nav-bg, rgba(13, 17, 23, 0.95))',
-                    backdropFilter: 'blur(12px)',
+                    background: 'var(--nav-bg)',
+                    backdropFilter: 'blur(25px) saturate(190%)',
+                    WebkitBackdropFilter: 'blur(25px) saturate(190%)',
                     padding: '16px',
-                    borderRadius: '16px',
+                    borderRadius: 'var(--radius-card)',
                     border: '1px solid var(--card-border)',
-                    marginBottom: '28px',
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+                    boxShadow: 'var(--card-highlight), 0 12px 36px rgba(0,0,0,0.25)',
+                    marginBottom: '28px'
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                        {/* Search Input */}
+                        {/* Search Input (Apple Spotlight Style) */}
                         <div style={{ flex: '1 1 260px', position: 'relative' }}>
                             <FiSearch size={16} style={{
                                 position: 'absolute',
@@ -429,64 +475,58 @@ export default function AllInterviewQuestions({
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search questions across all topics (e.g. OOM, window, join, spark-submit)..."
+                                placeholder="Search questions (e.g. OOM, window, join, spark-submit)..."
                                 style={{
                                     width: '100%',
-                                    padding: '10px 14px 10px 38px',
-                                    background: 'var(--bg-primary, #0d1117)',
+                                    padding: '11px 16px 11px 40px',
+                                    background: 'var(--surface-color)',
                                     border: '1px solid var(--card-border)',
-                                    borderRadius: '10px',
+                                    borderRadius: 'var(--radius-button)',
                                     color: 'var(--text-primary)',
                                     fontSize: '0.9rem',
-                                    outline: 'none'
+                                    outline: 'none',
+                                    transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = 'var(--primary-color)';
+                                    e.target.style.boxShadow = '0 0 0 3px var(--badge-bg)';
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = 'var(--card-border)';
+                                    e.target.style.boxShadow = 'none';
                                 }}
                             />
                         </div>
 
                         {/* Export to PDF Button */}
-                        <button
+                        <motion.button
                             onClick={handleExportPDF}
+                            whileTap={{ scale: 0.96 }}
+                            className="btn-primary"
                             style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '7px',
-                                background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-                                color: '#ffffff',
-                                border: 'none',
-                                padding: '10px 16px',
-                                borderRadius: '10px',
-                                fontSize: '0.88rem',
-                                fontWeight: '600',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease',
-                                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
+                                padding: '10px 18px',
+                                fontSize: '0.86rem'
                             }}
                             title="Export clean formatted questions to PDF"
                         >
-                            <FiPrinter size={15} /> Export to PDF
-                        </button>
+                            <FiPrinter size={15} />
+                            <span>Export to PDF</span>
+                        </motion.button>
 
                         {/* Copy Questions Button */}
-                        <button
+                        <motion.button
                             onClick={handleCopyAll}
+                            whileTap={{ scale: 0.96 }}
+                            className="btn-secondary"
                             style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '7px',
-                                background: 'var(--card-bg)',
-                                color: 'var(--text-primary)',
-                                border: '1px solid var(--card-border)',
-                                padding: '10px 16px',
-                                borderRadius: '10px',
-                                fontSize: '0.88rem',
-                                fontWeight: '500',
-                                cursor: 'pointer'
+                                padding: '10px 18px',
+                                fontSize: '0.86rem'
                             }}
                             title="Copy questions to clipboard"
                         >
-                            {copied ? <FiCheck size={15} color="#10b981" /> : <FiCopy size={15} />}
-                            {copied ? 'Copied!' : 'Copy Questions'}
-                        </button>
+                            {copied ? <FiCheck size={15} color="#30d158" /> : <FiCopy size={14} />}
+                            <span>{copied ? 'Copied!' : 'Copy Questions'}</span>
+                        </motion.button>
                     </div>
 
                     {/* Topic Filter Chips */}
@@ -507,7 +547,7 @@ export default function AllInterviewQuestions({
                                 alignItems: 'center',
                                 gap: '6px',
                                 padding: '6px 14px',
-                                borderRadius: '20px',
+                                borderRadius: '9999px',
                                 fontSize: '0.82rem',
                                 fontWeight: '600',
                                 whiteSpace: 'nowrap',
@@ -522,7 +562,7 @@ export default function AllInterviewQuestions({
                                 padding: '1px 6px',
                                 borderRadius: '10px',
                                 fontSize: '0.72rem',
-                                background: selectedTopicId === 'all' ? 'rgba(255,255,255,0.25)' : 'var(--card-bg)'
+                                background: selectedTopicId === 'all' ? 'rgba(255,255,255,0.25)' : 'var(--surface-color)'
                             }}>{totalQuestionsCount}</span>
                         </button>
 
@@ -540,7 +580,7 @@ export default function AllInterviewQuestions({
                                         alignItems: 'center',
                                         gap: '6px',
                                         padding: '6px 14px',
-                                        borderRadius: '20px',
+                                        borderRadius: '9999px',
                                         fontSize: '0.82rem',
                                         fontWeight: '600',
                                         whiteSpace: 'nowrap',
@@ -556,7 +596,7 @@ export default function AllInterviewQuestions({
                                         padding: '1px 6px',
                                         borderRadius: '10px',
                                         fontSize: '0.72rem',
-                                        background: isSelected ? 'rgba(255,255,255,0.25)' : 'var(--card-bg)'
+                                        background: isSelected ? 'rgba(255,255,255,0.25)' : 'var(--surface-color)'
                                     }}>{count}</span>
                                 </button>
                             );
@@ -570,7 +610,7 @@ export default function AllInterviewQuestions({
                         <div style={{
                             textAlign: 'center',
                             padding: '60px 20px',
-                            background: 'var(--card-bg)',
+                            background: 'var(--surface-card)',
                             borderRadius: '16px',
                             border: '1px solid var(--card-border)'
                         }}>
@@ -591,7 +631,7 @@ export default function AllInterviewQuestions({
                                     transition={{ duration: 0.25, delay: topicIdx * 0.04 }}
                                     className="topic-card"
                                     style={{
-                                        background: 'var(--card-bg)',
+                                        background: 'var(--surface-color)',
                                         border: '1px solid var(--card-border)',
                                         borderRadius: '16px',
                                         padding: '24px 28px',
@@ -638,7 +678,7 @@ export default function AllInterviewQuestions({
                                                         fontWeight: '600',
                                                         padding: '2px 8px',
                                                         borderRadius: '12px',
-                                                        background: 'var(--bg-primary)',
+                                                        background: 'var(--surface-color)',
                                                         border: '1px solid var(--card-border)',
                                                         color: 'var(--text-muted)'
                                                     }}>
@@ -682,7 +722,7 @@ export default function AllInterviewQuestions({
                                         <div className="no-print" style={{
                                             marginBottom: '20px',
                                             padding: '16px',
-                                            background: 'var(--bg-primary)',
+                                            background: 'var(--surface-color)',
                                             border: '1px dashed rgba(16, 185, 129, 0.5)',
                                             borderRadius: '10px'
                                         }}>
@@ -694,7 +734,7 @@ export default function AllInterviewQuestions({
                                                 style={{
                                                     width: '100%',
                                                     padding: '10px 12px',
-                                                    background: 'var(--card-bg)',
+                                                    background: 'var(--surface-color)',
                                                     border: '1px solid var(--card-border)',
                                                     borderRadius: '8px',
                                                     color: 'var(--text-primary)',
@@ -778,7 +818,7 @@ export default function AllInterviewQuestions({
                                                                     style={{
                                                                         width: '100%',
                                                                         padding: '8px 10px',
-                                                                        background: 'var(--card-bg)',
+                                                                        background: 'var(--surface-color)',
                                                                         border: '1px solid var(--primary-color)',
                                                                         borderRadius: '6px',
                                                                         color: 'var(--text-primary)',
@@ -874,6 +914,14 @@ export default function AllInterviewQuestions({
                             );
                         })
                     )}
+                </div>
+
+                {/* Print Footer (Visible only when printed or exported to PDF) */}
+                <div className="print-only-footer">
+                    <span>Candidate: <strong>Shubham Srivastava</strong> — Senior Data & Cloud Platform Engineer</span>
+                    <span>
+                        Live Portfolio & Interactive Verification: <a href="https://chresko08.github.io/my-portfolio/" target="_blank" rel="noopener noreferrer" style={{ color: '#0071e3', textDecoration: 'underline', fontWeight: 600 }}>https://chresko08.github.io/my-portfolio/</a>
+                    </span>
                 </div>
             </div>
         </section>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiBriefcase, FiCalendar, FiChevronDown, FiChevronUp, FiExternalLink, FiAward, FiCheck } from 'react-icons/fi';
+import { FiCalendar, FiChevronDown, FiChevronUp, FiCheck, FiBriefcase } from 'react-icons/fi';
+
+const SPRING_TRANSITION = { type: 'spring', stiffness: 380, damping: 30 };
 
 const Experience = ({ viewMode }) => {
     // Array to manage which project "Deep Dives" are expanded
@@ -16,8 +18,8 @@ const Experience = ({ viewMode }) => {
         {
             id: 'ey-amex',
             company: 'EY',
-            role: 'Consultant - Data Engineer',
-            client: 'Client: American Express',
+            role: 'Consultant — Data Engineer',
+            client: 'American Express',
             date: 'Nov 2024 – Present',
             metrics: ['+20% Data Reliability', '500+ Automated Rules', 'GCP BigQuery & Composer'],
             description: 'Architecting and orchestrating highly scalable data pipelines using GCP BigQuery to integrate disparate external architectures, ensuring strict data localization and regulatory compliance.',
@@ -52,7 +54,7 @@ const Experience = ({ viewMode }) => {
             id: 'inf-bofa-loan',
             company: 'Infosys',
             role: 'Lead ETL Developer',
-            client: 'Client: Bank of America',
+            client: 'Bank of America',
             date: 'Apr 2023 – Aug 2024',
             metrics: ['Zero-Defect Compliance', 'REST API Integration', 'CI/CD Orchestration'],
             description: 'Led the ETL development and deployment for regulatory reporting pipelines processing millions of financial records.',
@@ -64,19 +66,19 @@ const Experience = ({ viewMode }) => {
                 'Orchestrated automated job scheduling and dependency management using Autosys, ensuring high availability and fault-tolerant execution of critical regulatory reporting workloads.'
             ],
             project: {
-                title: 'My Project Loan Syndication Master Reference',
+                title: 'Loan Syndication Master Reference',
                 impact: '60% Efficiency Increase',
                 tags: ['Oracle SQL', 'Unix Shell', 'Autosys', 'REST API', 'JSON/AWK'],
                 deepDive: (
                     <div className="deep-dive-content">
                         <h4>The Business Catalyst & Architectural Context</h4>
-                        <p>I operated as the lead ETL developer for Bank of America\'s loan syndication regulatory reporting pipelines. This was a highly structured Agile environment enforcing rigorous SDLC protocols, JIRA-driven sprint planning, and strict release management. The architecture was a traditional, high-volume RDBMS stack processing millions of financial records. We utilized Oracle as the primary data warehouse, Unix shell scripting for data manipulation, and Autosys for enterprise workload orchestration.</p>
+                        <p>I operated as the lead ETL developer for Bank of America's loan syndication regulatory reporting pipelines. This was a highly structured Agile environment enforcing rigorous SDLC protocols, JIRA-driven sprint planning, and strict release management. The architecture was a traditional, high-volume RDBMS stack processing millions of financial records. We utilized Oracle as the primary data warehouse, Unix shell scripting for data manipulation, and Autosys for enterprise workload orchestration.</p>
                         
                         <h4>My Core Engineering Responsibilities</h4>
                         <ul>
                             <li><strong>Multi-Layered ETL Architecture:</strong> I engineered the end-to-end data flow using a rigid, tiered architecture. I wrote Unix shell scripts containing parameterized Oracle SQL to extract data from upstream sources, load it into a Staging layer, apply business rules to push it to a Curated layer, and finally aggregate the metrics into a Materialized layer for downstream regulatory reporting. I prioritized code readability and deterministic execution over complex query logic to guarantee zero-defect compliance.</li>
                             <li><strong>Data Quality (DQ) API Integration:</strong> I led the migration of our legacy, SQL-based DQ checks to a newly developed centralized UI portal. To achieve this, I engineered shell scripts to execute REST API calls to the portal via curl. I used awk to parse the JSON responses. If the portal returned a failure status, I programmed the scripts to execute a hard-stop on the pipeline and trigger automated email alerts. Because the portal was in its infancy, I acted as a critical feedback loop, driving cross-team architectural improvements regarding connection stability, refresh schedules, and data retention policies.</li>
-                            <li><strong>Release Management & CI/CD Orchestration:</strong> I owned the monthly production deployments for my team. I enforced a strict deployment dependency sequence: Unix (scripts) -{'>'} Oracle (schema/logic) -{'>'} Autosys (JIL files/orchestration). I coordinated directly with onshore and offshore production support teams. Before providing sign-off to proceed to the next layer in the deployment sequence, I executed rigorous Post-Implementation Verification (PIV) and sanity checks, maintaining the authority to trigger immediate rollbacks if data parity or code presence failed.</li>
+                            <li><strong>Release Management & CI/CD Orchestration:</strong> I owned the monthly production deployments for my team. I enforced a strict deployment dependency sequence: Unix (scripts) -&gt; Oracle (schema/logic) -&gt; Autosys (JIL files/orchestration). I coordinated directly with onshore and offshore production support teams. Before providing sign-off to proceed to the next layer in the deployment sequence, I executed rigorous Post-Implementation Verification (PIV) and sanity checks, maintaining the authority to trigger immediate rollbacks if data parity or code presence failed.</li>
                             <li><strong>Mentorship & Agile Leadership:</strong> As the sole senior developer on the team, I mentored three junior engineers. I onboarded them into the BofA ecosystem, teaching them the end-to-end SDLC, JIL file syntax for Autosys, Oracle SQL development standards, and the exact protocols for production deployment and monitoring.</li>
                         </ul>
                     </div>
@@ -87,7 +89,7 @@ const Experience = ({ viewMode }) => {
             id: 'inf-bofa-omni',
             company: 'Infosys',
             role: 'Big Data Engineer',
-            client: 'Client: Bank of America',
+            client: 'Bank of America',
             date: 'Mar 2022 – Mar 2023',
             metrics: ['60% Automation Speedup', '25% Cost Reduction', 'Teradata → Hadoop'],
             description: 'Operated as the primary Big Data Engineer on a high-stakes POC to replace Teradata with Hadoop.',
@@ -99,7 +101,7 @@ const Experience = ({ viewMode }) => {
                 'Mentored junior engineers and documented tuning strategies including dynamic partition thresholds and parallel execution parameters, successfully meeting stringent SLA targets before the strategic reprioritization of Project OMNI.'
             ],
             project: {
-                title: 'Project OMNI - Teradata to Hadoop Migration',
+                title: 'Project OMNI — Teradata to Hadoop Migration',
                 impact: 'Reduced query times from 45m to <10m',
                 tags: ['Hadoop', 'Hive/HDFS', 'Tez', 'DataStage', 'Kerberos'],
                 deepDive: (
@@ -122,7 +124,7 @@ const Experience = ({ viewMode }) => {
             id: 'inf-hcsc',
             company: 'Infosys',
             role: 'Big Data Engineer',
-            client: 'Client: Health Care Service Corporation (HCSC)',
+            client: 'Health Care Service Corporation (HCSC)',
             date: 'Nov 2021 – Feb 2022',
             metrics: ['Zero Data Loss', 'Schema Preservation', 'Azure Synapse'],
             description: 'Engineered robust data pipelines and audit frameworks during a massive on-premise CDP to Azure cloud migration.',
@@ -143,7 +145,6 @@ const Experience = ({ viewMode }) => {
                         <p>The target architecture was built around Azure Synapse Analytics. The data flow operated in a decoupled compute-and-storage model. Legacy data (heterogeneous formats including JSON, CSV, ORC, Avro, and Parquet) landed in Azure Data Lake Storage (ADLS Gen2). From there, PySpark and Scala scripts executed the necessary transformations before loading the finalized datasets into Synapse Dedicated SQL Pools for downstream consumption.</p>
                         
                         <h4>My Core Engineering Responsibilities</h4>
-                        <p>Because this was an accelerated "lift-and-shift" migration, the engineering friction was not in writing new business logic, but in safely transplanting massive, highly interdependent legacy systems without breaking the execution order.</p>
                         <ul>
                             <li><strong>Dependency Mapping & Pipeline Orchestration:</strong> My primary challenge was reverse-engineering the execution dependencies of the existing on-premise workloads. I configured and deployed Azure Synapse Pipelines to orchestrate the Spark scripts. I had to map out the exact sequence of data extraction from ADLS, ensure the Spark transformations successfully completed, and orchestrate the final load into the Synapse Dedicated SQL Pools. Misunderstanding a single dependency in this Directed Acyclic Graph (DAG) would result in incomplete data loads or schema failures.</li>
                             <li><strong>Audit Controls & Data Fidelity:</strong> Migrating healthcare data requires mathematical proof that the source and target match perfectly. I utilized Unix shell scripts running directly on the legacy Hive edge nodes. These scripts queried the on-premise Hive tables to capture baseline audit controls—extracting exact row counts, partition sizes, and structural metadata. This baseline was strictly required to validate the success of the Azure migration.</li>
@@ -173,36 +174,37 @@ const Experience = ({ viewMode }) => {
     ];
 
     return (
-        <section id="experience" className="section" style={{ paddingTop: '80px', paddingBottom: '60px' }}>
+        <section id="experience" className="section" style={{ paddingTop: '80px', paddingBottom: '70px' }}>
             <div className="container">
-                <div className="section-title-wrap" style={{ marginBottom: '40px' }}>
-                    <span className="section-subtitle">Career Pathway & Featured Projects</span>
+                <div className="section-title-wrap">
+                    <span className="section-subtitle">Career Pathway & Engineering Impact</span>
                     <h2 className="section-heading">
                         Work <span className="gradient-text">Experience</span>
                     </h2>
                 </div>
 
                 {/* Timeline Container */}
-                <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative' }}>
-                    {/* Glowing vertical line */}
+                <div style={{ maxWidth: '920px', margin: '0 auto', position: 'relative' }}>
+                    {/* Apple Subtle Timeline Hairline */}
                     <div style={{
                         position: 'absolute',
-                        left: '16px',
-                        top: '10px',
-                        bottom: '10px',
+                        left: '18px',
+                        top: '12px',
+                        bottom: '12px',
                         width: '2px',
                         background: 'linear-gradient(to bottom, var(--primary-color), var(--accent-purple), transparent)',
-                        borderRadius: '2px',
-                        opacity: 0.5
+                        borderRadius: '9999px',
+                        opacity: 0.35
                     }} />
 
-                    {experiences.map((exp, expIdx) => (
-                        <div key={exp.id} style={{ marginBottom: '40px' }}>
+                    {experiences.map((exp) => (
+                        <div key={exp.id} style={{ marginBottom: '36px' }}>
                             <motion.div
-                                initial={{ opacity: 0, y: 15 }}
+                                className="timeline-item"
+                                initial={{ opacity: 0, y: 16 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.4, delay: 0.05 }}
-                                viewport={{ once: true, margin: "-50px" }}
+                                transition={SPRING_TRANSITION}
+                                viewport={{ once: true, margin: "-40px" }}
                                 style={{
                                     position: 'relative',
                                     paddingLeft: '48px'
@@ -211,19 +213,19 @@ const Experience = ({ viewMode }) => {
                                 {/* Timeline Dot */}
                                 <div style={{
                                     position: 'absolute',
-                                    left: '9px',
-                                    top: '24px',
+                                    left: '11px',
+                                    top: '26px',
                                     width: '16px',
                                     height: '16px',
                                     borderRadius: '50%',
-                                    background: 'var(--surface-card)',
+                                    background: 'var(--bg-color)',
                                     border: '3px solid var(--primary-color)',
                                     zIndex: 2,
-                                    boxShadow: '0 0 10px rgba(99, 102, 241, 0.4)'
+                                    boxShadow: '0 0 12px rgba(41, 151, 255, 0.45)'
                                 }}></div>
                                 
                                 {/* Experience Glass Card */}
-                                <div className="glass-card" style={{ padding: '24px' }}>
+                                <div className="glass-card" style={{ padding: '28px' }}>
                                     {/* Header Row */}
                                     <div style={{
                                         display: 'flex',
@@ -231,16 +233,22 @@ const Experience = ({ viewMode }) => {
                                         alignItems: 'flex-start',
                                         flexWrap: 'wrap',
                                         gap: '12px',
-                                        marginBottom: '12px'
+                                        marginBottom: '16px'
                                     }}>
                                         <div>
-                                            <h4 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '4px', color: 'var(--primary-color)' }}>
+                                            <h3 style={{
+                                                fontSize: '1.3rem',
+                                                fontWeight: 700,
+                                                marginBottom: '6px',
+                                                color: 'var(--text-primary)',
+                                                letterSpacing: '-0.02em'
+                                            }}>
                                                 {exp.role}
-                                            </h4>
+                                            </h3>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                                                <strong style={{ color: 'var(--text-primary)' }}>{exp.company}</strong>
-                                                <span>•</span>
-                                                <span style={{ fontWeight: 500 }}>{exp.client}</span>
+                                                <strong style={{ color: 'var(--primary-color)', fontWeight: 600 }}>{exp.company}</strong>
+                                                <span style={{ opacity: 0.4 }}>•</span>
+                                                <span style={{ fontWeight: 500 }}>Client: {exp.client}</span>
                                             </div>
                                         </div>
 
@@ -249,13 +257,13 @@ const Experience = ({ viewMode }) => {
                                                 display: 'inline-flex',
                                                 alignItems: 'center',
                                                 gap: '6px',
-                                                padding: '4px 12px',
+                                                padding: '5px 12px',
                                                 borderRadius: '9999px',
                                                 fontSize: '0.8rem',
-                                                fontWeight: 600,
-                                                background: 'var(--badge-bg)',
-                                                border: '1px solid var(--badge-border)',
-                                                color: 'var(--text-primary)'
+                                                fontWeight: 500,
+                                                background: 'var(--surface-color)',
+                                                border: '1px solid var(--card-border)',
+                                                color: 'var(--text-secondary)'
                                             }}>
                                                 <FiCalendar size={12} style={{ color: 'var(--primary-color)' }} />
                                                 {exp.date}
@@ -264,64 +272,66 @@ const Experience = ({ viewMode }) => {
                                     </div>
 
                                     {/* Highlights list */}
-                                    <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 16px 0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 18px 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                         {exp.highlights.map((h, hIdx) => (
-                                            <li key={hIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.5 }}>
-                                                <FiCheck style={{ color: 'var(--accent-emerald)', marginTop: '4px', flexShrink: 0 }} size={14} />
+                                            <li key={hIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.55 }}>
+                                                <FiCheck style={{ color: 'var(--accent-emerald)', marginTop: '4px', flexShrink: 0 }} size={15} />
                                                 <span>{h}</span>
                                             </li>
                                         ))}
                                     </ul>
 
-                                    {/* Project Deep Dive (only visible in personal / For Me view) */}
+                                    {/* Project Deep Dive (Personal / For Me mode only) */}
                                     {exp.project && viewMode === 'personal' && (
-                                        <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--card-border)' }}>
+                                        <div style={{ marginTop: '20px', paddingTop: '18px', borderTop: '1px solid var(--card-border)' }}>
                                             <div style={{
                                                 background: 'var(--surface-color)',
                                                 border: '1px solid var(--card-border)',
-                                                borderRadius: '8px',
+                                                borderRadius: 'var(--radius-inner)',
                                                 overflow: 'hidden'
                                             }}>
                                                 <div style={{ padding: '16px' }}>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
-                                                        <h6 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
+                                                        <h4 style={{ fontSize: '1rem', fontWeight: 600, margin: 0, color: 'var(--text-primary)' }}>
                                                             {exp.project.title}
-                                                        </h6>
+                                                        </h4>
                                                     </div>
 
-                                                    <button
+                                                    <motion.button
                                                         onClick={() => toggleProject(exp.id)}
                                                         className="btn-secondary"
-                                                        style={{ padding: '6px 14px', fontSize: '0.85rem', width: '100%', justifyContent: 'center', border: '1px solid var(--card-border)' }}
+                                                        whileTap={{ scale: 0.97 }}
+                                                        transition={SPRING_TRANSITION}
+                                                        style={{ padding: '8px 16px', fontSize: '0.84rem', width: '100%', justifyContent: 'center' }}
                                                     >
                                                         <span>{expandedProjects.includes(exp.id) ? 'Close Deep Dive' : 'Read Master Reference Deep Dive'}</span>
                                                         {expandedProjects.includes(exp.id) ? <FiChevronUp /> : <FiChevronDown />}
-                                                    </button>
+                                                    </motion.button>
                                                 </div>
 
-                                                {/* Deep Dive Content (Expandable) */}
+                                                {/* Deep Dive Content (Expandable Spring Transition) */}
                                                 <AnimatePresence>
                                                     {expandedProjects.includes(exp.id) && (
                                                         <motion.div
                                                             initial={{ height: 0, opacity: 0 }}
                                                             animate={{ height: 'auto', opacity: 1 }}
                                                             exit={{ height: 0, opacity: 0 }}
-                                                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                            transition={SPRING_TRANSITION}
                                                             style={{ overflow: 'hidden' }}
                                                         >
                                                             <div style={{
                                                                 padding: '20px',
-                                                                background: 'rgba(0,0,0,0.02)',
+                                                                background: 'var(--bg-secondary)',
                                                                 borderTop: '1px solid var(--card-border)'
                                                             }}>
                                                                 <style dangerouslySetInnerHTML={{__html: `
-                                                                    .deep-dive-content h4 { font-size: 1rem; color: var(--primary-color); margin-top: 16px; margin-bottom: 8px; font-weight: 600; }
+                                                                    .deep-dive-content h4 { font-size: 0.98rem; color: var(--primary-color); margin-top: 16px; margin-bottom: 8px; font-weight: 600; }
                                                                     .deep-dive-content h4:first-child { margin-top: 0; }
                                                                     .deep-dive-content p { color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; font-size: 0.9rem; }
                                                                     .deep-dive-content ul { list-style-type: none; padding-left: 0; margin-bottom: 12px; }
                                                                     .deep-dive-content li { position: relative; padding-left: 16px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px; font-size: 0.9rem; }
-                                                                    .deep-dive-content li::before { content: "▹"; position: absolute; left: 0; color: var(--accent-purple); font-weight: bold; }
-                                                                    .deep-dive-content code { background: var(--bg-color); padding: 2px 4px; border-radius: 4px; font-size: 0.85em; font-family: monospace; border: 1px solid var(--card-border); color: var(--text-primary); }
+                                                                    .deep-dive-content li::before { content: "▹"; position: absolute; left: 0; color: var(--primary-color); font-weight: bold; }
+                                                                    .deep-dive-content code { background: var(--surface-color); padding: 2px 5px; border-radius: 4px; font-size: 0.85em; font-family: var(--font-mono); border: 1px solid var(--card-border); color: var(--text-primary); }
                                                                 `}} />
                                                                 {exp.project.deepDive}
                                                             </div>

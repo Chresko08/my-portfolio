@@ -1,7 +1,8 @@
 # 📚 Master Interview Questions Compilation
 
 > **Compiled from 12 Enterprise Interview Rounds & Reference Questions Repository**  
-> *Consolidated into 7 core technical and architectural domains. Questions are kept generic and focused purely on the problem statement without company-specific references.*
+> *Consolidated into 7 core technical and architectural domains. Questions are kept generic and focused purely on the problem statement without company-specific references.*  
+> 🔗 **Live Portfolio, Interactive Q&As & Solutions:** [https://chresko08.github.io/my-portfolio/](https://chresko08.github.io/my-portfolio/)
 
 ---
 
@@ -151,4 +152,5 @@
 
 ---
 
-*Document generated and compiled for high-impact interview preparation.*
+*Document compiled for high-impact interview preparation.*  
+🔗 **Portfolio & Live Verification:** [https://chresko08.github.io/my-portfolio/](https://chresko08.github.io/my-portfolio/) — Shubham Srivastava (Senior Data & Cloud Platform Engineer)
